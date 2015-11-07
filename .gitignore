@@ -25,6 +25,7 @@
 *.log
 *.sql
 *.sqlite
+*.sdf
 
 # OS generated files #
 ######################
@@ -37,4 +38,5 @@ ehthumbs.db
 Thumbs.db
 
 # File that contains all licensing stuff #
-C:\Users\gillsp1\Documents\GitHub\Games-Project2\CollisionTypesv2.4\license_files
+license_files/
+Debug/
