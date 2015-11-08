@@ -3,12 +3,9 @@
 // Charles Kelly
 // Collision Types ship.h v1.0
 
-<<<<<<< HEAD
 #pragma once
-=======
 #ifndef _PLAYERTANK_H                 // Prevent multiple definitions if this 
 #define _PLAYERTANK_H                 // file is included in more than one place
->>>>>>> origin/master
 #define WIN32_LEAN_AND_MEAN
 
 class PlayerTank;
@@ -25,10 +22,7 @@ namespace playerTankNS
     const int Y = GAME_HEIGHT/2 - HEIGHT/2;
     const float ROTATION_RATE = (float)PI/3; // radians per second
     const float SPEED = 100;                // 100 pixels per second
-<<<<<<< HEAD
-=======
     enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
->>>>>>> origin/master
 }
 
 // inherits from Entity class
@@ -117,3 +111,4 @@ public:
 	}
 
 };
+#endif

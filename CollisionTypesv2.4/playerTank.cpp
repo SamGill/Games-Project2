@@ -10,7 +10,6 @@
 //=============================================================================
 PlayerTank::PlayerTank() : Entity()
 {
-<<<<<<< HEAD
 	spriteData.width = playerTankNS::WIDTH;           // size of PlayerTank1
 	spriteData.height = playerTankNS::HEIGHT;
 	spriteData.x = playerTankNS::X;                   // location on screen
@@ -25,7 +24,7 @@ PlayerTank::PlayerTank() : Entity()
 	collision = false;
 	collisionType = entityNS::BOX;
 	target = false;
-=======
+
     spriteData.width = playerTankNS::WIDTH;           // size of Ship1
     spriteData.height = playerTankNS::HEIGHT;
     spriteData.x = playerTankNS::X;                   // location on screen
@@ -41,16 +40,13 @@ PlayerTank::PlayerTank() : Entity()
     collision = false;
     collisionType = entityNS::CIRCLE;
     target = false;
->>>>>>> origin/master
 }
 
 //=============================================================================
 // Initialize the PlayerTank.
 // Post: returns true if successful, false if failed
 //=============================================================================
-bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols,
-<<<<<<< HEAD
-							TextureManager *textureM)
+bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols, TextureManager *textureM)
 {
 	return(Entity::initialize(gamePtr, width, height, ncols, textureM));
 }
@@ -69,9 +65,6 @@ bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 }
 
 void PlayerTank::draw()
-=======
-    TextureManager *textureM)
->>>>>>> origin/master
 {
 	Image::draw();
 
@@ -85,7 +78,6 @@ void PlayerTank::draw()
 //=============================================================================
 void PlayerTank::update(float frameTime)
 {
-<<<<<<< HEAD
 	//switch (direction)                          // rotate ship
 	//{
 	//case playerTankNS::LEFT:
@@ -103,7 +95,7 @@ void PlayerTank::update(float frameTime)
 
 	head.setX(spriteData.x);
 	head.setY(spriteData.y);
-=======
+
     switch (direction)                          // rotate ship
     {
     case playerTankNS::LEFT:
@@ -117,12 +109,10 @@ void PlayerTank::update(float frameTime)
     velocity.x = 0;
     spriteData.y += velocity.y * frameTime;
     velocity.y = 0;
->>>>>>> origin/master
 
 	head.update(frameTime);
 	Entity::update(frameTime);
 
-<<<<<<< HEAD
 	//// wrap around screen
 	//if (spriteData.x > GAME_WIDTH)                  // if off screen right
 	//    spriteData.x = -playerTankNS::WIDTH;              // position off screen left
@@ -132,7 +122,7 @@ void PlayerTank::update(float frameTime)
 	//    spriteData.y = GAME_HEIGHT;                 // position off screen bottom
 	//else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
 	//    spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
-=======
+
     // wrap around screen
     if (spriteData.x > GAME_WIDTH)                  // if off screen right
         spriteData.x = -playerTankNS::WIDTH;              // position off screen left
@@ -142,6 +132,5 @@ void PlayerTank::update(float frameTime)
         spriteData.y = GAME_HEIGHT;                 // position off screen bottom
     else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
         spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
->>>>>>> origin/master
 }
 

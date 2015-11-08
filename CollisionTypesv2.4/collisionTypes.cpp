@@ -127,7 +127,6 @@ void CollisionTypes::initialize(HWND hwnd)
 //=============================================================================
 void CollisionTypes::update()
 {
-<<<<<<< HEAD
 
 	if(input->isKeyDown(TANK_UP_KEY))
 		playerTank.move_up();
@@ -141,7 +140,6 @@ void CollisionTypes::update()
 	playerTank.update(frameTime);
 	//playerTankHead.update(frameTime);
 
-=======
     if (menuOn)
     {
         if (input->anyKeyPressed())
@@ -183,8 +181,6 @@ void CollisionTypes::update()
         ship.setCollisionType(entityNS::CIRCLE);
     if(input->getCharIn() == '4')
         ship.setCollisionType(entityNS::PIXEL_PERFECT);
->>>>>>> origin/master
-
 }
 
 //=============================================================================
