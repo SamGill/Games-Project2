@@ -54,14 +54,13 @@
     <ClCompile Include="tankHead.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="bullet.cpp">
-=======
+		<Filter>Source Files</Filter>
+	</ClCompile>
     <ClCompile Include="enemyTank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="patternStep.cpp">
->>>>>>> origin/master
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,14 +101,13 @@
     <ClInclude Include="tankHead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="bullet.h">
-=======
+		<Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="enemyTank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="patternStep.h">
->>>>>>> origin/master
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
