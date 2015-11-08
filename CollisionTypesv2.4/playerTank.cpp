@@ -3,38 +3,57 @@
 // Charles Kelly
 // CollisionTypes ship.cpp v1.0
 
-#include "ship.h"
+#include "playerTank.h"
 
 //=============================================================================
 // default constructor
 //=============================================================================
-Ship::Ship() : Entity()
+PlayerTank::PlayerTank() : Entity()
 {
-    spriteData.width = shipNS::WIDTH;           // size of Ship1
-    spriteData.height = shipNS::HEIGHT;
-    spriteData.x = shipNS::X;                   // location on screen
-    spriteData.y = shipNS::Y;
-    spriteData.rect.bottom = shipNS::HEIGHT;    // rectangle to select parts of an image
-    spriteData.rect.right = shipNS::WIDTH;
-    velocity.x = 0;                             // velocity X
-    velocity.y = 0;                             // velocity Y
-    startFrame = SHIP_START_FRAME;              // first frame of ship animation
-    endFrame     = SHIP_END_FRAME;              // last frame of ship animation
-    currentFrame = startFrame;
-    radius = shipNS::WIDTH/2.0;                 // collision radius
-    collision = false;
-    collisionType = entityNS::CIRCLE;
-    target = false;
+	spriteData.width = playerTankNS::WIDTH;           // size of PlayerTank1
+	spriteData.height = playerTankNS::HEIGHT;
+	spriteData.x = playerTankNS::X;                   // location on screen
+	spriteData.y = playerTankNS::Y;
+	spriteData.rect.bottom = playerTankNS::HEIGHT;    // rectangle to select parts of an image
+	spriteData.rect.right = playerTankNS::WIDTH;
+	velocity.x = 0;                             // velocity X
+	velocity.y = 0;                             // velocity Y
+
+
+	radius = playerTankNS::WIDTH/2.0;                 // collision radius
+	collision = false;
+	collisionType = entityNS::BOX;
+	target = false;
 }
 
 //=============================================================================
-// Initialize the Ship.
+// Initialize the PlayerTank.
 // Post: returns true if successful, false if failed
 //=============================================================================
-bool Ship::initialize(Game *gamePtr, int width, int height, int ncols,
-    TextureManager *textureM)
+bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols,
+							TextureManager *textureM)
 {
-    return(Entity::initialize(gamePtr, width, height, ncols, textureM));
+	return(Entity::initialize(gamePtr, width, height, ncols, textureM));
+}
+
+bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
+								TextureManager *textureM)
+{
+	bool result = head.initialize(gamePtr, width, height, ncols, textureM);
+	if (result)
+	{
+		head.setScale(spriteData.scale);
+		head.setCurrentFrame(0);
+	}
+
+	return result;
+}
+
+void PlayerTank::draw()
+{
+	Image::draw();
+
+	head.draw();
 }
 
 //=============================================================================
@@ -42,32 +61,37 @@ bool Ship::initialize(Game *gamePtr, int width, int height, int ncols,
 // typically called once per frame
 // frameTime is used to regulate the speed of movement and animation
 //=============================================================================
-void Ship::update(float frameTime)
+void PlayerTank::update(float frameTime)
 {
-    switch (direction)                          // rotate ship
-    {
-    case shipNS::LEFT:
-        spriteData.angle -= frameTime * shipNS::ROTATION_RATE;  // rotate left
-        break;
-    case shipNS::RIGHT:
-        spriteData.angle += frameTime * shipNS::ROTATION_RATE;  // rotate right
-        break;
-    }
-    spriteData.x += velocity.x * frameTime;
-    velocity.x = 0;
-    spriteData.y += velocity.y * frameTime;
-    velocity.y = 0;
+	//switch (direction)                          // rotate ship
+	//{
+	//case playerTankNS::LEFT:
+	//    spriteData.angle -= frameTime * playerTankNS::ROTATION_RATE;  // rotate left
+	//    break;64
+	//case playerTankNS::RIGHT:
+	//    spriteData.angle += frameTime * playerTankNS::ROTATION_RATE;  // rotate right
+	//    break;
+	//}
+	spriteData.x += velocity.x * frameTime;
+	spriteData.y += velocity.y * frameTime;
+	velocity.y = 0;
+	velocity.x = 0;
 
-    Entity::update(frameTime);
 
-    // wrap around screen
-    if (spriteData.x > GAME_WIDTH)                  // if off screen right
-        spriteData.x = -shipNS::WIDTH;              // position off screen left
-    else if (spriteData.x < -shipNS::WIDTH)         // else if off screen left
-        spriteData.x = GAME_WIDTH;                  // position off screen right
-    if (spriteData.y < -shipNS::HEIGHT)             // if off screen top
-        spriteData.y = GAME_HEIGHT;                 // position off screen bottom
-    else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
-        spriteData.y = -shipNS::HEIGHT;             // position off screen top
+	head.setX(spriteData.x);
+	head.setY(spriteData.y);
+
+	head.update(frameTime);
+	Entity::update(frameTime);
+
+	//// wrap around screen
+	//if (spriteData.x > GAME_WIDTH)                  // if off screen right
+	//    spriteData.x = -playerTankNS::WIDTH;              // position off screen left
+	//else if (spriteData.x < -playerTankNS::WIDTH)         // else if off screen left
+	//    spriteData.x = GAME_WIDTH;                  // position off screen right
+	//if (spriteData.y < -playerTankNS::HEIGHT)             // if off screen top
+	//    spriteData.y = GAME_HEIGHT;                 // position off screen bottom
+	//else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
+	//    spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
 }
 

@@ -51,6 +51,9 @@
     <ClCompile Include="entity.cpp">
       <Filter>Source Files\NotUsuallyEdited</Filter>
     </ClCompile>
+    <ClCompile Include="tankHead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="textureManager.h">
       <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+    <ClInclude Include="tankHead.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -95,6 +95,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="playerTank.cpp" />
     <ClCompile Include="ship.cpp" />
+    <ClCompile Include="tankHead.cpp" />
     <ClCompile Include="textureManager.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
@@ -109,6 +110,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="playerTank.h" />
     <ClInclude Include="ship.h" />
+    <ClInclude Include="tankHead.h" />
     <ClInclude Include="textureManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
