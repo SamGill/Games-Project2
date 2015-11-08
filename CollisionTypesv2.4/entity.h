@@ -23,6 +23,9 @@ namespace entityNS
 class Entity : public Image
 {
     // Entity properties
+private:
+	VECTOR2 position;
+
   protected:
     entityNS::COLLISION_TYPE collisionType;
     VECTOR2 center;         // center of entity
@@ -96,6 +99,12 @@ class Entity : public Image
         return &center;
     }
 
+	virtual const VECTOR2 getCenterPoint()   
+    {
+        center = VECTOR2(getCenterX(),getCenterY());
+        return center;
+    }
+
     // Return collision center
     virtual const VECTOR2* getCollisionCenter()
     { return &collisionCenter; }
@@ -135,6 +144,10 @@ class Entity : public Image
     // Return number of pixels colliding in pixel perfect collision
     virtual DWORD getpixelsColliding() const {return pixelsColliding;}
 
+	VECTOR2 getPosition() {return position;}
+	float getPositionX() {return position.x;}
+	float getPositionY() {return position.y;}
+
     ////////////////////////////////////////
     //           Set functions            //
     ////////////////////////////////////////
@@ -172,6 +185,14 @@ class Entity : public Image
 
     // Set rotatedBoxReady. Set to false to force recalculation.
     virtual void setRotatedBoxReady(bool r) {rotatedBoxReady = r;}
+
+	void setPosition(VECTOR2 pos) {position = pos;}
+	void setPositionX(float pos) {position.x = pos;}
+	void setPositionY(float pos) {position.y = pos;} 
+	void incPositionX(float pos) {position.x += pos;}
+	void incPositionY(float pos) {position.y += pos;}
+	void incPosition(VECTOR2 pos) {position += pos;}
+
 
     ////////////////////////////////////////
     //         Other functions            //

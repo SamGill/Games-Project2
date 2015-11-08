@@ -6,25 +6,36 @@ class enemyTank;
 
 #include "entity.h"
 #include "constants.h"
+#include "graphics.h"
 
 namespace enemyTankNS
 {
-    const int WIDTH = 512;                   // image width
-    const int HEIGHT = 512;                  // image height
+    const int WIDTH = 64;                   // image width
+    const int HEIGHT = 64;                  // image height
     const int X = GAME_WIDTH/2 - WIDTH/2;   // location on screen
     const int Y = GAME_HEIGHT/2 - HEIGHT/2;
-    const float ROTATION_RATE = (float)PI/3; // radians per second
-    const float SPEED = 100;                // 100 pixels per second
-    enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
+    const float SPEED_X = 0;                
+	const float SPEED_Y = -0;
+ 
 }
 
 // inherits from Entity class
 class enemyTank : public Entity
 {
 private:
-    enemyTankNS::DIRECTION direction;    // direction of rotation
-    bool collision;                 // true when ship is colliding
-    bool target;                    // true if target, false if ship
+   // puckNS::DIRECTION direction;    
+    bool collision;                 
+    bool target;  
+	int directionX;
+	int directionY;
+	VECTOR2 velocity;
+	VECTOR2 dir;
+	float speed;
+	Entity targetEntity;
+	//void vectorTrack();
+	//void deltaTrack();
+	//void evade();
+
 
 public:
     // constructor
@@ -55,22 +66,18 @@ public:
     // Get collision type
     entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
 
-    // direction of rotation force
-    void rotate(enemyTankNS::DIRECTION dir) {direction = dir;}
+	void setInvisible();
 
-    // move forward
-    void forward()
-    {
-        velocity.x = (float)cos(spriteData.angle) * enemyTankNS::SPEED;
-        velocity.y = (float)sin(spriteData.angle) * enemyTankNS::SPEED;
-    }
+	void setVisible();
 
-    // move in reverse
-    void reverse()
-    {
-        velocity.x = -(float)cos(spriteData.angle) * enemyTankNS::SPEED;
-        velocity.y = -(float)sin(spriteData.angle) * enemyTankNS::SPEED;
-    }
+	void setVelocity(VECTOR2 v) {velocity = v;}
+
+	VECTOR2 getVelocity() {return velocity;}
+
+	void ai(float time, Entity &t);
+
+	void vectorTrack();
+	void deltaTrack();
+	void evade();
 };
 #endif
-

@@ -48,7 +48,6 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	//enemyTank.setCurrentFrame(0);
-	enemyTank.setScale(.25f);
 	enemyTank.setX(GAME_WIDTH/2 - 100);
 	enemyTank.setY(GAME_HEIGHT/2 - 100);
 
@@ -133,8 +132,8 @@ void CollisionTypes::initialize(HWND hwnd)
 	line.setY(0);
 #pragma endregion Original Game Textures
 
-//patternsteps
-/*	patternStepIndex = 0;
+	//patternsteps
+	patternStepIndex = 0;
 	for (int i = 0; i< maxPatternSteps; i++)
 	{
 		patternSteps[i].initialize(&enemyTank);
@@ -148,8 +147,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	patternSteps[2].setTimeForStep(4);
 	patternSteps[3].setAction(NONE);
 	patternSteps[3].setTimeForStep(2);
-	patternSteps[4].setAction(EVADE);
-	patternSteps[4].setTimeForStep(3);*/
 
 	return;
 }
@@ -169,6 +166,7 @@ void CollisionTypes::update()
 		playerTank.move_right();
 
 	playerTank.update(frameTime);
+	enemyTank.update(frameTime);
 	//playerTankHead.update(frameTime);
 
 }
@@ -178,12 +176,12 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
-	/*enemyTank.ai(frameTime, playerTank);
+	enemyTank.ai(frameTime, playerTank);
 	if (patternStepIndex == maxPatternSteps)
 		return;
 	if (patternSteps[patternStepIndex].isFinished())
 		patternStepIndex++;
-	patternSteps[patternStepIndex].update(frameTime);*/
+	patternSteps[patternStepIndex].update(frameTime);
 
 }
 

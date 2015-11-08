@@ -5,31 +5,43 @@
 //=============================================================================
 enemyTank::enemyTank() : Entity()
 {
-    spriteData.width = enemyTankNS::WIDTH;           // size of Ship1
+    spriteData.width = enemyTankNS::WIDTH;           
     spriteData.height = enemyTankNS::HEIGHT;
     spriteData.x = enemyTankNS::X;                   // location on screen
     spriteData.y = enemyTankNS::Y;
-    spriteData.rect.bottom = enemyTankNS::HEIGHT;    // rectangle to select parts of an image
+    spriteData.rect.bottom = enemyTankNS::HEIGHT/2;    // rectangle to select parts of an image
     spriteData.rect.right = enemyTankNS::WIDTH;
-    velocity.x = 0;                             // velocity X
-    velocity.y = 0;                             // velocity Y
-    startFrame = SHIP_START_FRAME;              // first frame of ship animation
-    endFrame     = SHIP_END_FRAME;              // last frame of ship animation
+    
+	velocity = D3DXVECTOR2(0,0);
+    startFrame = 0;              // first frame of ship animation
+    endFrame     = 0;              // last frame of ship animation
     currentFrame = startFrame;
     radius = enemyTankNS::WIDTH/2.0;                 // collision radius
     collision = false;
-    collisionType = entityNS::CIRCLE;
+    collisionType =entityNS::BOX;// entityNS::CIRCLE;
     target = false;
+	edge.bottom = -enemyTankNS::HEIGHT/2;
+	spriteData.scale = 1;
+	active = true;
+	speed = 50;
 }
 
-//=============================================================================
-// Initialize the Ship.
-// Post: returns true if successful, false if failed
-//=============================================================================
 bool enemyTank::initialize(Game *gamePtr, int width, int height, int ncols,
     TextureManager *textureM)
 {
     return(Entity::initialize(gamePtr, width, height, ncols, textureM));
+}
+
+void enemyTank::setInvisible()
+{
+	Image::setVisible(false);
+	active = false;
+}
+
+void enemyTank::setVisible()
+{
+	Image::setVisible(true);
+	active = true;
 }
 
 //=============================================================================
@@ -39,30 +51,75 @@ bool enemyTank::initialize(Game *gamePtr, int width, int height, int ncols,
 //=============================================================================
 void enemyTank::update(float frameTime)
 {
-    switch (direction)                          // rotate ship
-    {
-    case enemyTankNS::LEFT:
-        spriteData.angle -= frameTime * enemyTankNS::ROTATION_RATE;  // rotate left
-        break;
-    case enemyTankNS::RIGHT:
-        spriteData.angle += frameTime * enemyTankNS::ROTATION_RATE;  // rotate right
-        break;
-    }
-    spriteData.x += velocity.x * frameTime;
-    velocity.x = 0;
-    spriteData.y += velocity.y * frameTime;
-    velocity.y = 0;
+	VECTOR2 foo = velocity*frameTime*speed;
+	if (getPositionX() + Image::getWidth()*Image::getScale() > GAME_WIDTH)
+	{
+		setPosition(D3DXVECTOR2(0,getPositionY()));
+	}
+	if (getPositionX() < 0)
+	{
+		setPosition(D3DXVECTOR2(GAME_WIDTH-Image::getWidth()*Image::getScale(),getPositionY()));
+	}
+	if (getPositionY() + Image::getHeight()*Image::getScale() > GAME_HEIGHT)
+	{
+		setPosition(D3DXVECTOR2(getPositionX(),0));
+	}
+	if (getPositionY() < 0)
+	{
+		setPosition(D3DXVECTOR2(getPositionX(),GAME_WIDTH-Image::getHeight()*Image::getScale()));
+	}
 
+	velocity = D3DXVECTOR2(0,0);
+	incPosition(foo);
+	Image::setX(getPositionX());
+	Image::setY(getPositionY());
     Entity::update(frameTime);
-
-    // wrap around screen
-    if (spriteData.x > GAME_WIDTH)                  // if off screen right
-        spriteData.x = -enemyTankNS::WIDTH;              // position off screen left
-    else if (spriteData.x < -enemyTankNS::WIDTH)         // else if off screen left
-        spriteData.x = GAME_WIDTH;                  // position off screen right
-    if (spriteData.y < -enemyTankNS::HEIGHT)             // if off screen top
-        spriteData.y = GAME_HEIGHT;                 // position off screen bottom
-    else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
-        spriteData.y = -enemyTankNS::HEIGHT;             // position off screen top
 }
 
+void enemyTank::evade()
+{
+	//add code here
+	VECTOR2 vel = D3DXVECTOR2(1,1);
+	VECTOR2 targetCenter = targetEntity.getCenterPoint();
+	if(getCenterPoint().y <= targetCenter.y)
+		vel.y = -1;
+	if(getCenterPoint().x <= targetCenter.x)
+		vel.x = -1;
+	setVelocity(vel);
+
+	return;
+}
+
+void enemyTank::deltaTrack()
+{
+	//add code here
+	VECTOR2 vel = D3DXVECTOR2(1,1);
+	VECTOR2 targetCenter = targetEntity.getCenterPoint();
+	if(getCenterPoint().y <= targetCenter.y)
+		vel.y = -1;
+	if(getCenterPoint().x <= targetCenter.x)
+		vel.x = -1;
+	setVelocity(-vel);
+	return;
+
+}
+void enemyTank::vectorTrack()
+{
+	//add code here
+	VECTOR2 vel = getCenterPoint() - targetEntity.getCenterPoint();
+	if(vel.x == 0 && vel.y == 0)
+		return;
+
+	VECTOR2* foo = D3DXVec2Normalize(&vel, &vel);
+	setVelocity(-vel);
+	
+}
+
+void enemyTank::ai(float time, Entity &t)
+{ 
+	targetEntity = t;
+	//vectorTrack();
+	//deltaTrack();
+	//evade();
+	return;
+}
