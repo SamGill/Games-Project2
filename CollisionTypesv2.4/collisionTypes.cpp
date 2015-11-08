@@ -127,6 +127,7 @@ void CollisionTypes::initialize(HWND hwnd)
 //=============================================================================
 void CollisionTypes::update()
 {
+<<<<<<< HEAD
 
 	if(input->isKeyDown(TANK_UP_KEY))
 		playerTank.move_up();
@@ -140,6 +141,49 @@ void CollisionTypes::update()
 	playerTank.update(frameTime);
 	//playerTankHead.update(frameTime);
 
+=======
+    if (menuOn)
+    {
+        if (input->anyKeyPressed())
+        {
+            menuOn = false;
+            input->clearAll();
+        }
+    } 
+    else
+    {
+        if(input->isKeyDown(TANK_UP_KEY))
+            ship.forward();
+		if(input->isKeyDown(TANK_DOWN_KEY))
+            ship.reverse();
+        ship.rotate(shipNS::NONE);
+        if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
+            ship.rotate(shipNS::LEFT);
+        if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
+            ship.rotate(shipNS::RIGHT);
+    }
+
+    rectangle.update(frameTime);
+    square.update(frameTime);
+    circle.update(frameTime);
+    ship.update(frameTime);
+    line.update(frameTime);
+
+    if(input->getCharIn() == '1')
+    {
+        ship.setEdge(COLLISION_RECTANGLE);
+        ship.setCollisionType(entityNS::ROTATED_BOX);
+    }
+    if(input->getCharIn() == '2')
+    {
+        ship.setEdge(COLLISION_BOX);
+        ship.setCollisionType(entityNS::BOX);
+    }
+    if(input->getCharIn() == '3')
+        ship.setCollisionType(entityNS::CIRCLE);
+    if(input->getCharIn() == '4')
+        ship.setCollisionType(entityNS::PIXEL_PERFECT);
+>>>>>>> origin/master
 
 }
 

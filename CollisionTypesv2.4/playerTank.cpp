@@ -10,6 +10,7 @@
 //=============================================================================
 PlayerTank::PlayerTank() : Entity()
 {
+<<<<<<< HEAD
 	spriteData.width = playerTankNS::WIDTH;           // size of PlayerTank1
 	spriteData.height = playerTankNS::HEIGHT;
 	spriteData.x = playerTankNS::X;                   // location on screen
@@ -24,6 +25,23 @@ PlayerTank::PlayerTank() : Entity()
 	collision = false;
 	collisionType = entityNS::BOX;
 	target = false;
+=======
+    spriteData.width = playerTankNS::WIDTH;           // size of Ship1
+    spriteData.height = playerTankNS::HEIGHT;
+    spriteData.x = playerTankNS::X;                   // location on screen
+    spriteData.y = playerTankNS::Y;
+    spriteData.rect.bottom = playerTankNS::HEIGHT;    // rectangle to select parts of an image
+    spriteData.rect.right = playerTankNS::WIDTH;
+    velocity.x = 0;                             // velocity X
+    velocity.y = 0;                             // velocity Y
+    startFrame = SHIP_START_FRAME;              // first frame of ship animation
+    endFrame     = SHIP_END_FRAME;              // last frame of ship animation
+    currentFrame = startFrame;
+    radius = playerTankNS::WIDTH/2.0;                 // collision radius
+    collision = false;
+    collisionType = entityNS::CIRCLE;
+    target = false;
+>>>>>>> origin/master
 }
 
 //=============================================================================
@@ -31,6 +49,7 @@ PlayerTank::PlayerTank() : Entity()
 // Post: returns true if successful, false if failed
 //=============================================================================
 bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols,
+<<<<<<< HEAD
 							TextureManager *textureM)
 {
 	return(Entity::initialize(gamePtr, width, height, ncols, textureM));
@@ -50,6 +69,9 @@ bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 }
 
 void PlayerTank::draw()
+=======
+    TextureManager *textureM)
+>>>>>>> origin/master
 {
 	Image::draw();
 
@@ -63,6 +85,7 @@ void PlayerTank::draw()
 //=============================================================================
 void PlayerTank::update(float frameTime)
 {
+<<<<<<< HEAD
 	//switch (direction)                          // rotate ship
 	//{
 	//case playerTankNS::LEFT:
@@ -80,10 +103,26 @@ void PlayerTank::update(float frameTime)
 
 	head.setX(spriteData.x);
 	head.setY(spriteData.y);
+=======
+    switch (direction)                          // rotate ship
+    {
+    case playerTankNS::LEFT:
+        spriteData.angle -= frameTime * playerTankNS::ROTATION_RATE;  // rotate left
+        break;
+    case playerTankNS::RIGHT:
+        spriteData.angle += frameTime * playerTankNS::ROTATION_RATE;  // rotate right
+        break;
+    }
+    spriteData.x += velocity.x * frameTime;
+    velocity.x = 0;
+    spriteData.y += velocity.y * frameTime;
+    velocity.y = 0;
+>>>>>>> origin/master
 
 	head.update(frameTime);
 	Entity::update(frameTime);
 
+<<<<<<< HEAD
 	//// wrap around screen
 	//if (spriteData.x > GAME_WIDTH)                  // if off screen right
 	//    spriteData.x = -playerTankNS::WIDTH;              // position off screen left
@@ -93,5 +132,16 @@ void PlayerTank::update(float frameTime)
 	//    spriteData.y = GAME_HEIGHT;                 // position off screen bottom
 	//else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
 	//    spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
+=======
+    // wrap around screen
+    if (spriteData.x > GAME_WIDTH)                  // if off screen right
+        spriteData.x = -playerTankNS::WIDTH;              // position off screen left
+    else if (spriteData.x < -playerTankNS::WIDTH)         // else if off screen left
+        spriteData.x = GAME_WIDTH;                  // position off screen right
+    if (spriteData.y < -playerTankNS::HEIGHT)             // if off screen top
+        spriteData.y = GAME_HEIGHT;                 // position off screen bottom
+    else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
+        spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
+>>>>>>> origin/master
 }
 
