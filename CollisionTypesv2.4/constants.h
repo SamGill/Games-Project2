@@ -113,6 +113,7 @@ const char MENU_IMAGE[] =     "pictures\\menu.png";      // menu texture
 const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
+const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
 
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
@@ -124,5 +125,8 @@ const UCHAR TANK_LEFT_KEY    = 0x41;     // left arrow
 const UCHAR TANK_RIGHT_KEY   = 0x44;    // right arrow
 const UCHAR TANK_UP_KEY      = 0x57;       // up arrow
 const UCHAR TANK_DOWN_KEY    = 0x53;     // down arrow
+
+// Pattern Step Action
+enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE};
 
 #endif
