@@ -112,6 +112,7 @@ const char MENU_IMAGE[] =     "pictures\\menu.png";      // menu texture
 
 const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
+const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used

@@ -1,37 +1,31 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 
-class TankHead;
+class Bullet;
 
 #include "entity.h"
 #include "constants.h"
-#include "bullet.h"
 
-namespace tankHeadNS
+namespace bulletNS
 {
-    const int WIDTH =  512;                   // image width
-    const int HEIGHT = 512;                  // image height
+    const int WIDTH =  32;                   // image width
+    const int HEIGHT = 32;                  // image height
     const int X = GAME_WIDTH/2;   // location on screen
     const int Y = GAME_HEIGHT/2;
     const float ROTATION_RATE = (float)PI/3; // radians per second
-    const float SPEED = 100;                // 100 pixels per second
+    const float SPEED = 200;                // 100 pixels per second
 }
 
 // inherits from Entity class
-class TankHead : public Entity
+class Bullet : public Entity
 {
 private:
-    //tankHeadNS::DIRECTION direction;    // direction of rotation
+    //bulletNS::DIRECTION direction;    // direction of rotation
     bool collision;                 // true when ship is colliding
     bool target;                    // true if target, false if ship
-
-	VECTOR2 angleVector; //This vector is used for making the bullets go in the right direction
-
 public:
-	Bullet bullet;
-
     // constructor
-    TankHead();
+    Bullet();
 
     // inherited member functions
     virtual bool initialize(Game *gamePtr, int width, int height, int ncols,
@@ -57,6 +51,10 @@ public:
 
     // Get collision type
     entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
-	    
-	void fireBullet();
+
+    // direction of rotation force
+    //void rotate(bulletNS::DIRECTION dir) {direction = dir;}
+
+    // move forward
+
 };

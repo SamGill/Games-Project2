@@ -28,6 +28,7 @@ private:
 
 	TextureManager tankBodyTexture;
 	TextureManager tankHeadTexture;
+	TextureManager bulletTexture;
 
 	PlayerTank     playerTank;
 	TankHead	   playerTankHead;

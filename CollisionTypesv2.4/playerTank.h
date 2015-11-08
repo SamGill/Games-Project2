@@ -40,12 +40,11 @@ public:
 	virtual void draw();
 
 	bool initializeHead(Game *gamePtr, int width, int height, int ncols,
-                            TextureManager *textureM);
+                            TextureManager *textureM, TextureManager *textureZ);
 
 	// Set collision Boolean
 	void setCollision(bool c)
 	{collision = c;}
-
 
 	// Set collision type (NONE, CIRCLE, BOX, ROTATED_BOX)
 	virtual void setCollisionType(entityNS::COLLISION_TYPE ctype)
@@ -99,5 +98,10 @@ public:
 
 		velocity.y = playerTankNS::SPEED;
 		spriteData.angle = PI;
+	}
+
+	void fireBullet()
+	{
+		head.fireBullet();
 	}
 };

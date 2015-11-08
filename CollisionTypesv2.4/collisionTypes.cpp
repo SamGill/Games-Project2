@@ -36,8 +36,15 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!tankHeadTexture.initialize(graphics, TANK_HEAD))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if (!bulletTexture.initialize(graphics, BULLET_IMAGE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+
 	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+
+
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.25f);
@@ -45,7 +52,7 @@ void CollisionTypes::initialize(HWND hwnd)
 	playerTank.setX(GAME_WIDTH/2);
 	playerTank.setY(GAME_HEIGHT/2);
 	
-	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture))
+	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
 
 	playerTank.setCollisionType(entityNS::ROTATED_BOX);
@@ -136,7 +143,8 @@ void CollisionTypes::update()
 		playerTank.move_left();
 	if (input->isKeyDown(TANK_RIGHT_KEY))  
 		playerTank.move_right();
-
+	if (input->getMouseLButton())
+		playerTank.fireBullet();
 	playerTank.update(frameTime);
 	//playerTankHead.update(frameTime);
 

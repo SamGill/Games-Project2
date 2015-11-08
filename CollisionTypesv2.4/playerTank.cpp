@@ -44,13 +44,14 @@ bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols, Tex
 }
 
 bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
-								TextureManager *textureM)
+								TextureManager *textureM, TextureManager *textureZ)
 {
-	bool result = head.initialize(gamePtr, width, height, ncols, textureM);
+	bool result = head.initialize(gamePtr, width, height, ncols, textureM) && head.bullet.initialize(gamePtr, bulletNS::WIDTH, bulletNS::HEIGHT, 0, textureZ);
 	if (result)
 	{
 		head.setScale(spriteData.scale);
 		head.setCurrentFrame(0);
+		head.bullet.setScale(spriteData.scale);
 	}
 
 	return result;
@@ -61,6 +62,7 @@ void PlayerTank::draw()
 	Image::draw();
 
 	head.draw();
+	head.bullet.draw();
 }
 
 
@@ -82,6 +84,7 @@ void PlayerTank::update(float frameTime)
 	head.setY(spriteData.y);
 
 	head.update(frameTime);
+	head.bullet.update(frameTime);
 	Entity::update(frameTime);
 
 	//// wrap around screen

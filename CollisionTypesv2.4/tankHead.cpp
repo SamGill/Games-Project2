@@ -20,7 +20,7 @@ TankHead::TankHead() : Entity()
     velocity.x = 0;                             // velocity X
     velocity.y = 0;                             // velocity Y
    
-    currentFrame = 0;
+	currentFrame = 0;
     radius = tankHeadNS::WIDTH/2.0;                 // collision radius
     collision = false;
     collisionType = entityNS::BOX;
@@ -47,21 +47,17 @@ void TankHead::update(float frameTime)
 {
 	D3DXVECTOR2 mouseLocation(input->getMouseX(), input->getMouseY());
 	
-	D3DXVECTOR2* deltaVector = new D3DXVECTOR2;
-	
-	D3DXVec2Normalize(deltaVector,(const D3DXVECTOR2*)new D3DXVECTOR2(mouseLocation.x - getCenterX(), mouseLocation.y - getCenterY()));
+
+	D3DXVec2Normalize(&angleVector,(const D3DXVECTOR2*)new D3DXVECTOR2(mouseLocation.x - getCenterX(), mouseLocation.y - getCenterY()));
 
 
-	float headAngle = acos(D3DXVec2Dot(deltaVector, &D3DXVECTOR2(0, -1)));
+	float headAngle = acos(D3DXVec2Dot(&angleVector, &D3DXVECTOR2(0, -1)));
 
 	spriteData.angle = headAngle;
 
-	if (deltaVector->x < 0)
+	if (angleVector.x < 0)
 		spriteData.angle = 2 * PI - spriteData.angle;
 
-	
-
-	delete deltaVector;
     Entity::update(frameTime);
 	   
     //spriteData.x += velocity.x * frameTime;
@@ -79,4 +75,16 @@ void TankHead::update(float frameTime)
     //    spriteData.y = GAME_HEIGHT;                 // position off screen bottom
     //else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
     //    spriteData.y = -tankHeadNS::HEIGHT;             // position off screen top
+}
+
+void TankHead::fireBullet()
+{
+	float nozzleRadius = getWidth()/2 * getScale();
+
+	bullet.setX(getCenterX() + angleVector.x * nozzleRadius);
+	bullet.setY(getCenterY() + angleVector.y * nozzleRadius);
+	bullet.setRadians(spriteData.angle);
+	bullet.setVelocity(angleVector * bulletNS::SPEED);
+	bullet.setVisible(true);
+
 }
