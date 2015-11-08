@@ -116,14 +116,14 @@ void CollisionTypes::update()
     } 
     else
     {
-        if(input->isKeyDown(SHIP_FORWARD_KEY))
+        if(input->isKeyDown(TANK_UP_KEY))
             ship.forward();
-        if(input->isKeyDown(SHIP_REVERSE_KEY))
+		if(input->isKeyDown(TANK_DOWN_KEY))
             ship.reverse();
         ship.rotate(shipNS::NONE);
-        if (input->isKeyDown(SHIP_LEFT_KEY))   // if turn ship0 left
+        if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
             ship.rotate(shipNS::LEFT);
-        if (input->isKeyDown(SHIP_RIGHT_KEY))  // if turn ship0 right
+        if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
             ship.rotate(shipNS::RIGHT);
     }
 

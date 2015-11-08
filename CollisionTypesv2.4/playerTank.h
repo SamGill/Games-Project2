@@ -3,8 +3,8 @@
 // Charles Kelly
 // Collision Types ship.h v1.0
 
-#ifndef _SHIP_H                 // Prevent multiple definitions if this 
-#define _SHIP_H                 // file is included in more than one place
+#ifndef _PLAYERTANK_H                 // Prevent multiple definitions if this 
+#define _PLAYERTANK_H                 // file is included in more than one place
 #define WIN32_LEAN_AND_MEAN
 
 class PlayerTank;
@@ -20,14 +20,14 @@ namespace playerTankNS
     const int Y = GAME_HEIGHT/2 - HEIGHT/2;
     const float ROTATION_RATE = (float)PI/3; // radians per second
     const float SPEED = 100;                // 100 pixels per second
-    //enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
+    enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
 }
 
 // inherits from Entity class
 class PlayerTank : public Entity
 {
 private:
-    //playerTankNS::DIRECTION direction;    // direction of rotation
+    playerTankNS::DIRECTION direction;    // direction of rotation
     bool collision;                 // true when ship is colliding
     bool target;                    // true if target, false if ship
 
