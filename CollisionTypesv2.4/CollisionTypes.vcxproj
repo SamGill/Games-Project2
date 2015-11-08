@@ -88,11 +88,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="collisionTypes.cpp" />
+    <ClCompile Include="enemyTank.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="patternStep.cpp" />
     <ClCompile Include="playerTank.cpp" />
     <ClCompile Include="ship.cpp" />
     <ClCompile Include="tankHead.cpp" />
@@ -102,12 +104,14 @@
   <ItemGroup>
     <ClInclude Include="collisionTypes.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="enemyTank.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameError.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="patternStep.h" />
     <ClInclude Include="playerTank.h" />
     <ClInclude Include="ship.h" />
     <ClInclude Include="tankHead.h" />

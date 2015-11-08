@@ -30,6 +30,11 @@ void CollisionTypes::initialize(HWND hwnd)
 {
     Game::initialize(hwnd); // throws GameError
 
+
+	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+
 	if (!tankBodyTexture.initialize(graphics, TANK_BODY))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
@@ -38,6 +43,14 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+	if (!enemyTank.initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+	//enemyTank.setCurrentFrame(0);
+	enemyTank.setScale(.25f);
+	enemyTank.setX(GAME_WIDTH/2 - 100);
+	enemyTank.setY(GAME_HEIGHT/2 - 100);
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.25f);
@@ -120,6 +133,24 @@ void CollisionTypes::initialize(HWND hwnd)
 	line.setY(0);
 #pragma endregion Original Game Textures
 
+//patternsteps
+/*	patternStepIndex = 0;
+	for (int i = 0; i< maxPatternSteps; i++)
+	{
+		patternSteps[i].initialize(&enemyTank);
+		patternSteps[i].setActive();
+	}
+	patternSteps[0].setAction(RIGHT);
+	patternSteps[0].setTimeForStep(3);
+	patternSteps[1].setAction(DOWN);
+	patternSteps[1].setTimeForStep(2);
+	patternSteps[2].setAction(TRACK);
+	patternSteps[2].setTimeForStep(4);
+	patternSteps[3].setAction(NONE);
+	patternSteps[3].setTimeForStep(2);
+	patternSteps[4].setAction(EVADE);
+	patternSteps[4].setTimeForStep(3);*/
+
 	return;
 }
 
@@ -146,7 +177,15 @@ void CollisionTypes::update()
 // Artificial Intelligence
 //=============================================================================
 void CollisionTypes::ai()
-{}
+{
+	/*enemyTank.ai(frameTime, playerTank);
+	if (patternStepIndex == maxPatternSteps)
+		return;
+	if (patternSteps[patternStepIndex].isFinished())
+		patternStepIndex++;
+	patternSteps[patternStepIndex].update(frameTime);*/
+
+}
 
 //=============================================================================
 // Handle collisions
@@ -197,6 +236,7 @@ void CollisionTypes::render()
     float angle;
     graphics->spriteBegin();                // begin drawing sprites
 
+	enemyTank.draw();
     playerTank.draw();
     graphics->spriteEnd();                  // end drawing sprites
 }
@@ -211,6 +251,7 @@ void CollisionTypes::releaseAll()
 	gameTextures.onLostDevice();
 	tankBodyTexture.onLostDevice();
 	tankHeadTexture.onLostDevice();
+	enemyTankTexture.onLostDevice();
 	Game::releaseAll();
     return;
 }
@@ -225,6 +266,7 @@ void CollisionTypes::resetAll()
 	menuTexture.onResetDevice();
 	tankBodyTexture.onResetDevice();
 	tankHeadTexture.onResetDevice();
+	enemyTankTexture.onResetDevice();
 	Game::resetAll();
     return;
 }
