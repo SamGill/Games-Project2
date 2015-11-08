@@ -14,7 +14,6 @@ class CollisionTypes;
 #include "image.h"
 #include "ship.h"
 #include "playerTank.h"
-#include "tankHead.h"
 #include <cmath>
 
 //=============================================================================
@@ -27,7 +26,6 @@ private:
     TextureManager menuTexture, gameTextures;   // game texture
     Ship    rectangle, square, circle, ship;    // targets and spaceship
 
-	
 	TextureManager tankBodyTexture;
 	TextureManager tankHeadTexture;
 

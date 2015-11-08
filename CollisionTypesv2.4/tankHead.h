@@ -1,8 +1,3 @@
-// Programming 2D Games
-// Copyright (c) 2012 by: 
-// Charles Kelly
-// Collision Types ship.h v1.0
-
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 
