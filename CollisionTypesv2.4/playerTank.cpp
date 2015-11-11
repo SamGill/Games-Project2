@@ -73,7 +73,16 @@ void PlayerTank::draw()
 //=============================================================================
 void PlayerTank::update(float frameTime)
 {
-    
+    switch (direction)                          // rotate ship
+    {
+    case playerTankNS::LEFT:
+        spriteData.angle -= frameTime * playerTankNS::ROTATION_RATE;  // rotate left
+        break;							
+    case playerTankNS::RIGHT:			
+        spriteData.angle += frameTime * playerTankNS::ROTATION_RATE;  // rotate right
+        break;
+    }
+
 	spriteData.x += velocity.x * frameTime;
 	spriteData.y += velocity.y * frameTime;
 	velocity.y = 0;

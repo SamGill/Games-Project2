@@ -18,7 +18,7 @@ class CollisionTypes;
 #include "patternStep.h"
 #include <cmath>
 
-#define maxPatternSteps 4
+#define maxPatternSteps 5
 
 //=============================================================================
 // This class is the core of the game
@@ -34,11 +34,15 @@ private:
 	TextureManager tankHeadTexture;
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
+	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
 
+	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
 
 	PlayerTank     playerTank;
 	TankHead	   playerTankHead;
 	enemyTank	   enemyTank;
+
+	GameStates gamestates;
 
 
     Image   menu;               // menu image
@@ -50,9 +54,11 @@ private:
     float   AxBx;
     float   AyBy;
     float   lineLength;
+
     VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
 	int patternStepIndex;
+	float timeInState;
 
 public:
     // Constructor
@@ -69,6 +75,8 @@ public:
     void render();      // "
     void releaseAll();
     void resetAll();
+
+	void gameStatesUpdate();
 };
 
 #endif

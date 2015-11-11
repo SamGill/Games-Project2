@@ -75,10 +75,10 @@ inline void safeOnResetDevice(T& ptr)
 
 // window
 const char CLASS_NAME[] = "Collisions";
-const char GAME_TITLE[] = "Collision Types";
+const char GAME_TITLE[] = "Tank Banditos";
 const bool FULLSCREEN = false;              // windowed or fullscreen
-const UINT GAME_WIDTH =  640;               // width of game in pixels
-const UINT GAME_HEIGHT = 480;               // height of game in pixels
+const UINT GAME_WIDTH =  800;               // width of game in pixels
+const UINT GAME_HEIGHT = 600;               // height of game in pixels
 
 // game
 const double PI = 3.14159265;
@@ -115,6 +115,18 @@ const char TANK_HEAD[]  =     "pictures\\tank_head.png";
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
 
+//Splash screen
+const char SPLASH_SCREEN[] =  "pictures\\splash_screen.png";
+
+//Game over screen
+const char GAME_OVER[] =	  "pictures\\game_over.png";
+
+//Menu screen
+const char MENU_SCREEN[] =	  "pictures\\game_menu.png";
+
+//Cheat code screen
+const char CHEAT_SCREEN[] =	  "pictures\\cheat_codes.png";	
+
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
 // it would be possible to save and restore key mappings from a data file.
@@ -128,5 +140,8 @@ const UCHAR TANK_DOWN_KEY    = 0x53;     // down arrow
 
 // Pattern Step Action
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE};
+
+// States
+enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gameover};
 
 #endif

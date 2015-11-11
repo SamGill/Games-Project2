@@ -19,13 +19,14 @@ namespace playerTankNS
 	const int Y = GAME_HEIGHT/2 - HEIGHT/2;
 	const float ROTATION_RATE = (float)PI/3; // radians per second
 	const float SPEED = 100;                // 100 pixels per second
-
+	enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
 }
 
 // inherits from Entity class
 class PlayerTank : public Entity
 {
 private:
+	playerTankNS::DIRECTION direction;    // direction of rotation
 	bool collision;                 // true when ship is colliding
 	bool target;                    // true if target, false if ship
 	TankHead head;
@@ -61,6 +62,9 @@ public:
 
 	// Get collision type
 	entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
+
+	 // direction of rotation force
+    void rotate(playerTankNS::DIRECTION dir) {direction = dir;}
 
 	void move_up()
 	{
@@ -104,4 +108,18 @@ public:
 	{
 		head.fireBullet();
 	}
+
+	 // move forward
+    void forward()
+    {
+        velocity.x = (float)cos(spriteData.angle) * playerTankNS::SPEED;
+        velocity.y = (float)sin(spriteData.angle) * playerTankNS::SPEED;
+    }
+
+    // move in reverse
+    void reverse()
+    {
+        velocity.x = -(float)cos(spriteData.angle) * playerTankNS::SPEED;
+        velocity.y = -(float)sin(spriteData.angle) * playerTankNS::SPEED;
+    }
 };

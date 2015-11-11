@@ -24,9 +24,6 @@
     <ClCompile Include="ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="collisionTypes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="playerTank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,12 +52,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bullet.cpp">
-		<Filter>Source Files</Filter>
-	</ClCompile>
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="enemyTank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="patternStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,7 +102,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bullet.h">
-		<Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="enemyTank.h">
       <Filter>Header Files</Filter>
