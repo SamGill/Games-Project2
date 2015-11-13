@@ -32,6 +32,9 @@ void CollisionTypes::initialize(HWND hwnd)
     Game::initialize(hwnd); // throws GameError
 	gamestates = intro;
 	timeInState = 0;
+	isMusicPlaying = false;
+
+#pragma region game_textures
 
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
@@ -100,6 +103,22 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
 
 	playerTank.setCollisionType(entityNS::ROTATED_BOX);
+
+#pragma endregion
+
+	// init sound system
+    audio = new Audio();
+
+    if (*WAVE_BANK != '\0' && *SOUND_BANK != '\0')  // if sound files defined
+    {
+        if( FAILED( hr = audio->initialize() ) )
+        {
+            if( hr == HRESULT_FROM_WIN32( ERROR_FILE_NOT_FOUND ) )
+                throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system because media file not found."));
+            else
+                throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
+        }
+    }
 
 #pragma region Original Game Textures
 	// menu texture
@@ -297,6 +316,11 @@ void CollisionTypes::update()
 			playerTank.move_left();
 		if (input->isKeyDown(TANK_RIGHT_KEY))  
 			playerTank.move_right();*/
+		if(!isMusicPlaying)
+		{
+			audio->playCue(MAIN_MUSIC);
+			isMusicPlaying = true;
+		}
 
 		if(input->isKeyDown(TANK_UP_KEY))
             playerTank.forward();

@@ -60,6 +60,9 @@ private:
 	int patternStepIndex;
 	float timeInState;
 
+	//For audio
+	bool isMusicPlaying;
+
 public:
     // Constructor
     CollisionTypes();

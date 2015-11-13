@@ -127,6 +127,17 @@ const char MENU_SCREEN[] =	  "pictures\\game_menu.png";
 //Cheat code screen
 const char CHEAT_SCREEN[] =	  "pictures\\cheat_codes.png";	
 
+// audio files required by audio.cpp
+// WAVE_BANK must be location of .xwb file.
+//const char WAVE_BANK[]  = "audio\\Win\\WavesExample1.xwb";
+const char WAVE_BANK[] = "audio\\Win\\Project2_waveBank.xwb";
+// SOUND_BANK must be location of .xsb file.
+//const char SOUND_BANK[] = "audio\\Win\\SoundsExample1.xsb";
+const char SOUND_BANK[] = "audio\\Win\\project2_soundBank.xsb";
+
+//Music
+const char MAIN_MUSIC[] = "main_music";
+
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
 // it would be possible to save and restore key mappings from a data file.
