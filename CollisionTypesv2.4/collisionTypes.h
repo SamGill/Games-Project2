@@ -35,8 +35,10 @@ private:
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
 	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
+	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
 
 	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
+	Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
 	TankHead	   playerTankHead;

@@ -114,6 +114,10 @@ const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
+const char WALL_LONG_HORIZONTAL[] = "pictures\\wall_long_horizontal.png";
+const char WALL_LONG_VERTICAL[] = "pictures\\wall_long_vertical.png";
+const char WALL_SHORT_HORIZONTAL[] = "pictures\\wall_short_horizontal.png";
+const char WALL_SHORT_VERTICAL[] = "pictures\\wall_short_vertical.png";
 
 //Splash screen
 const char SPLASH_SCREEN[] =  "pictures\\splash_screen.png";
@@ -154,5 +158,12 @@ enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE};
 
 // States
 enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gameover};
+
+#pragma region Level One Setup
+const int wallOneX = 0;
+const int wallOneY = 50;
+
+
+#pragma endregion Level One Setup
 
 #endif

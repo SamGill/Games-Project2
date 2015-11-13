@@ -36,6 +36,22 @@ void CollisionTypes::initialize(HWND hwnd)
 
 #pragma region game_textures
 
+#pragma region Level One Walls
+	//Texture initialization
+	if (!wallLgHzTexture.initialize(graphics,WALL_LONG_HORIZONTAL))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+	if (!wallShortHzTexture.initialize(graphics,WALL_SHORT_HORIZONTAL))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+	if (!wallLgVtTexture.initialize(graphics,WALL_LONG_VERTICAL))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+	if (!wallShortVtTexture.initialize(graphics,WALL_SHORT_VERTICAL))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if (!enemyTank.initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+#pragma endregion Level One Walls
+
+
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
