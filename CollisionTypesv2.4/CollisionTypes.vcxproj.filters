@@ -60,6 +60,9 @@
     <ClCompile Include="patternStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wall.cpp">
+		<Filter>Source Files</Filter>
+	</ClCompile>
     <ClCompile Include="collisionTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,7 +116,18 @@
     <ClInclude Include="patternStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shotBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+		<Filter>Header Files</Filter>
+	</ClInclude>
     <ClInclude Include="audio.h">
+		<Filter>Header Files</Filter>
+	</ClInclude>
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

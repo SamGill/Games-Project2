@@ -47,7 +47,7 @@ void PatternStep::update(float frameTime)
 		entity->vectorTrack();
 		break;
 	case EVADE:
-		//entity->evade();
+		entity->evade();
 		break;
 	}
 }

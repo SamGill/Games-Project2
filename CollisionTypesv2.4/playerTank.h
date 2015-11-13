@@ -66,7 +66,7 @@ public:
 	 // direction of rotation force
     void rotate(playerTankNS::DIRECTION dir) {direction = dir;}
 
-	void move_up()
+	/*void move_up()
 	{
 		if (velocity.x != 0.0f)
 			return;
@@ -102,11 +102,21 @@ public:
 
 		velocity.y = playerTankNS::SPEED;
 		spriteData.angle = PI;
-	}
+	}*/
 
 	void fireBullet()
 	{
 		head.fireBullet();
+	}
+
+	bool isFiring()
+	{
+		return head.bullet[0].getVisible();
+	}
+
+	Bullet* getBullets()
+	{
+		return head.bullet;
 	}
 
 	 // move forward
@@ -122,4 +132,5 @@ public:
         velocity.x = -(float)cos(spriteData.angle) * playerTankNS::SPEED;
         velocity.y = -(float)sin(spriteData.angle) * playerTankNS::SPEED;
     }
+
 };

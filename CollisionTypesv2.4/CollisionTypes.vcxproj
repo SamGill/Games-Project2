@@ -101,6 +101,7 @@
     <ClCompile Include="ship.cpp" />
     <ClCompile Include="tankHead.cpp" />
     <ClCompile Include="textureManager.cpp" />
+    <ClCompile Include="wall.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -118,8 +119,10 @@
     <ClInclude Include="patternStep.h" />
     <ClInclude Include="playerTank.h" />
     <ClInclude Include="ship.h" />
+    <ClInclude Include="shotBuffer.h" />
     <ClInclude Include="tankHead.h" />
     <ClInclude Include="textureManager.h" />
+    <ClInclude Include="wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

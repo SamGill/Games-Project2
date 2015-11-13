@@ -36,7 +36,6 @@ private:
 	//void vectorTrack();
 	//void deltaTrack();
 	//void evade();
-
 	VECTOR2 angleVector;
 
 public:
@@ -64,7 +63,6 @@ public:
 
     // Get collision
     bool getCollision() {return collision;}
-
     // Get collision type
     entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
 

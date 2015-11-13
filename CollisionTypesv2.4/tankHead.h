@@ -6,6 +6,8 @@ class TankHead;
 #include "entity.h"
 #include "constants.h"
 #include "bullet.h"
+#include "shotBuffer.h"
+#include <algorithm>
 
 namespace tankHeadNS
 {
@@ -24,11 +26,30 @@ private:
     //tankHeadNS::DIRECTION direction;    // direction of rotation
     bool collision;                 // true when ship is colliding
     bool target;                    // true if target, false if ship
-
+	
+	ShotBuffer shotBuffer;
+	unsigned int numBulletsFired;
 	VECTOR2 angleVector; //This vector is used for making the bullets go in the right direction
 
+	//Function sorts the bullets in such a way that visible bullets are more early on in the list and 
+	//updates numBulletsFired to accurately say how many bullets are visible on the screen at once
+	void organizeBullets()
+	{
+		numBulletsFired = 0;
+		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		{
+			if (bullet[i].getVisible())
+			{
+				//puts the bullet in the earliest spot that isn't a visible as well.
+				std::swap(bullet[numBulletsFired], bullet[i]);
+				numBulletsFired++;
+			}
+			
+		}
+	}
+	
 public:
-	Bullet bullet;
+	Bullet bullet[MAX_PLAYER_SHOTS];
 
     // constructor
     TankHead();

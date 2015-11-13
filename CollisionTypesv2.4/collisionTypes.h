@@ -16,7 +16,9 @@ class CollisionTypes;
 #include "playerTank.h"
 #include "enemyTank.h"
 #include "patternStep.h"
+#include "wall.h"
 #include <cmath>
+
 
 #define maxPatternSteps 5
 
@@ -34,6 +36,7 @@ private:
 	TextureManager tankHeadTexture;
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
+	TextureManager wallTexture;
 	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
 
@@ -41,8 +44,8 @@ private:
 	Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
-	TankHead	   playerTankHead;
-	enemyTank	   enemyTank;
+	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
+	Wall           wall;
 
 	GameStates gamestates;
 
