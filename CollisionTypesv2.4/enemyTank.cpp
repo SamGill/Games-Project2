@@ -70,7 +70,10 @@ void enemyTank::update(float frameTime)
 	}
 
 	velocity = D3DXVECTOR2(0,0);
+
+	
 	incPosition(foo);
+
 	Image::setX(getPositionX());
 	Image::setY(getPositionY());
     Entity::update(frameTime);
@@ -117,6 +120,7 @@ void enemyTank::vectorTrack()
 
 void enemyTank::ai(float time, Entity &t)
 { 
+	
 	targetEntity = t;
 	//vectorTrack();
 	//deltaTrack();

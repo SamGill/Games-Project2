@@ -25,12 +25,12 @@ PlayerTank::PlayerTank() : Entity()
 	collisionType = entityNS::BOX;
 	target = false;
 
-    spriteData.width = playerTankNS::WIDTH;           // size of Ship1
-    spriteData.height = playerTankNS::HEIGHT;
-    spriteData.x = playerTankNS::X;                   // location on screen
-    spriteData.y = playerTankNS::Y;
-    spriteData.rect.bottom = playerTankNS::HEIGHT;    // rectangle to select parts of an image
-    spriteData.rect.right = playerTankNS::WIDTH;
+	spriteData.width = playerTankNS::WIDTH;           // size of Ship1
+	spriteData.height = playerTankNS::HEIGHT;
+	spriteData.x = playerTankNS::X;                   // location on screen
+	spriteData.y = playerTankNS::Y;
+	spriteData.rect.bottom = playerTankNS::HEIGHT;    // rectangle to select parts of an image
+	spriteData.rect.right = playerTankNS::WIDTH;
 }
 
 //=============================================================================
@@ -46,12 +46,18 @@ bool PlayerTank::initialize(Game *gamePtr, int width, int height, int ncols, Tex
 bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 								TextureManager *textureM, TextureManager *textureZ)
 {
-	bool result = head.initialize(gamePtr, width, height, ncols, textureM) && head.bullet.initialize(gamePtr, bulletNS::WIDTH, bulletNS::HEIGHT, 0, textureZ);
+	bool result = head.initialize(gamePtr, width, height, ncols, textureM);
+
+	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		head.bullet[i].initialize(gamePtr, bulletNS::WIDTH, bulletNS::HEIGHT, 0, textureZ);
+
 	if (result)
 	{
 		head.setScale(spriteData.scale);
 		head.setCurrentFrame(0);
-		head.bullet.setScale(spriteData.scale);
+
+		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+			head.bullet[i].setScale(spriteData.scale);
 	}
 
 	return result;
@@ -62,7 +68,9 @@ void PlayerTank::draw()
 	Image::draw();
 
 	head.draw();
-	head.bullet.draw();
+
+	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		head.bullet[i].draw();
 }
 
 
@@ -73,9 +81,11 @@ void PlayerTank::draw()
 //=============================================================================
 void PlayerTank::update(float frameTime)
 {
-    
-	spriteData.x += velocity.x * frameTime;
-	spriteData.y += velocity.y * frameTime;
+	/*if (collision == false)
+	{*/
+		spriteData.x += velocity.x * frameTime;
+		spriteData.y += velocity.y * frameTime;
+	
 	velocity.y = 0;
 	velocity.x = 0;
 
@@ -84,7 +94,10 @@ void PlayerTank::update(float frameTime)
 	head.setY(spriteData.y);
 
 	head.update(frameTime);
-	head.bullet.update(frameTime);
+
+	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		head.bullet[i].update(frameTime);
+
 	Entity::update(frameTime);
 
 	//// wrap around screen

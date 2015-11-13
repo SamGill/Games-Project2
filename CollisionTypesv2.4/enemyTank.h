@@ -10,8 +10,8 @@ class enemyTank;
 
 namespace enemyTankNS
 {
-    const int WIDTH = 64;                   // image width
-    const int HEIGHT = 64;                  // image height
+    const int WIDTH = 512;                   // image width
+    const int HEIGHT = 512;                  // image height
     const int X = GAME_WIDTH/2 - WIDTH/2;   // location on screen
     const int Y = GAME_HEIGHT/2 - HEIGHT/2;
     const float SPEED_X = 0;                
@@ -35,7 +35,7 @@ private:
 	//void vectorTrack();
 	//void deltaTrack();
 	//void evade();
-
+	
 
 public:
     // constructor
@@ -62,7 +62,6 @@ public:
 
     // Get collision
     bool getCollision() {return collision;}
-
     // Get collision type
     entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
 

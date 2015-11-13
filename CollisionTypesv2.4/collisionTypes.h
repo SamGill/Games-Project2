@@ -16,9 +16,11 @@ class CollisionTypes;
 #include "playerTank.h"
 #include "enemyTank.h"
 #include "patternStep.h"
+#include "wall.h"
 #include <cmath>
 
-#define maxPatternSteps 4
+
+#define maxPatternSteps 5
 
 //=============================================================================
 // This class is the core of the game
@@ -34,11 +36,12 @@ private:
 	TextureManager tankHeadTexture;
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
+	TextureManager wallTexture;
 
 
 	PlayerTank     playerTank;
-	TankHead	   playerTankHead;
-	enemyTank	   enemyTank;
+	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
+	Wall           wall;
 
 
     Image   menu;               // menu image

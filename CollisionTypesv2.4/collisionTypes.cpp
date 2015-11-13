@@ -11,7 +11,7 @@
 //=============================================================================
 CollisionTypes::CollisionTypes()
 {
-    menuOn = true;
+	menuOn = true;
 }
 
 //=============================================================================
@@ -19,7 +19,7 @@ CollisionTypes::CollisionTypes()
 //=============================================================================
 CollisionTypes::~CollisionTypes()
 {
-    releaseAll();           // call onLostDevice() for every graphics item
+	releaseAll();           // call onLostDevice() for every graphics item
 }
 
 //=============================================================================
@@ -28,7 +28,7 @@ CollisionTypes::~CollisionTypes()
 //=============================================================================
 void CollisionTypes::initialize(HWND hwnd)
 {
-    Game::initialize(hwnd); // throws GameError
+	Game::initialize(hwnd); // throws GameError
 
 
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
@@ -44,28 +44,57 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!bulletTexture.initialize(graphics, BULLET_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if (!wallTexture.initialize(graphics, WALL_IMAGE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+
 
 	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		if (!enemyTanks[i].initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
-	if (!enemyTank.initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
+	if (!wall.initialize(this, wallNS::WIDTH, wallNS::HEIGHT, 0, &wallTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	//enemyTank.setCurrentFrame(0);
-	enemyTank.setX(GAME_WIDTH/2 - 100);
-	enemyTank.setY(GAME_HEIGHT/2 - 100);
+	/*enemyTank.setX(GAME_WIDTH/7  );
+	enemyTank.setY(GAME_HEIGHT/7 );*/
+
+
+	wall.setScale(.5f);
+	wall.setCollisionType(entityNS::BOX);
+
+	RECT collision  = {-45,-10,45,10};
+	wall.setEdge(WALL_RECTANGLE);
+	wall.setX(100);
+	wall.setY(100);
+
+	//playerTank.getBullets()[0].setEdge(collision);
+
+	//wall.setEdge();
+
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		enemyTanks[i].setPositionX(GAME_WIDTH/(i + 1));
+		enemyTanks[i].setPositionY(GAME_HEIGHT/7);
+		enemyTanks[i].setScale(.25f);
+		enemyTanks[i].setEdge(TANK_RECTANGLE);
+	}
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.25f);
-	
+
 	playerTank.setX(GAME_WIDTH/2);
 	playerTank.setY(GAME_HEIGHT/2);
-	
+
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
 
-	playerTank.setCollisionType(entityNS::ROTATED_BOX);
+	//playerTank.setCollisionType(entityNS::ROTATED_BOX);
+	playerTank.setEdge(TANK_RECTANGLE);
 
 #pragma region Original Game Textures
 	// menu texture
@@ -139,28 +168,40 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	//patternsteps
 	patternStepIndex = 0;
-	for (int i = 0; i< maxPatternSteps; i++)
+	for (int i = 0; i < maxPatternSteps; i++)
 	{
-		patternSteps[i].initialize(&enemyTank);
+		patternSteps[i].initialize(&enemyTanks[0]);
 		patternSteps[i].setActive();
 	}
+
 	patternSteps[0].setAction(RIGHT);
-	patternSteps[0].setTimeForStep(3);
+	patternSteps[0].setTimeForStep(2);
 	patternSteps[1].setAction(DOWN);
 	patternSteps[1].setTimeForStep(2);
-	patternSteps[2].setAction(TRACK);
+
+	patternSteps[2].setAction(LEFT);
+	patternSteps[2].setTimeForStep(2);
+
+	patternSteps[3].setAction(UP);
+	patternSteps[3].setTimeForStep(2);
+	patternSteps[4].setAction(EVADE);
+	patternSteps[4].setTimeForStep(3);
+
+	/*patternSteps[2].setAction(TRACK);
 	patternSteps[2].setTimeForStep(4);
 	patternSteps[3].setAction(NONE);
-	patternSteps[3].setTimeForStep(2);
+	patternSteps[3].setTimeForStep(2);*/
 
 	return;
 }
+
 
 //=============================================================================
 // Update all game items
 //=============================================================================
 void CollisionTypes::update()
 {
+
 	if(input->isKeyDown(TANK_UP_KEY))
 		playerTank.move_up();
 	if(input->isKeyDown(TANK_DOWN_KEY))
@@ -169,10 +210,13 @@ void CollisionTypes::update()
 		playerTank.move_left();
 	if (input->isKeyDown(TANK_RIGHT_KEY))  
 		playerTank.move_right();
+
 	if (input->getMouseLButton())
 		playerTank.fireBullet();
 	playerTank.update(frameTime);
-	enemyTank.update(frameTime);
+
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		enemyTanks[i].update(frameTime);
 	//playerTankHead.update(frameTime);
 
 }
@@ -182,11 +226,29 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
-	enemyTank.ai(frameTime, playerTank);
-	if (patternStepIndex == maxPatternSteps)
-		return;
+	if (playerTank.isFiring() == false)
+		enemyTanks[0].ai(frameTime, playerTank);
+	else
+	{
+		enemyTanks[0].ai(frameTime, playerTank.getBullets()[0]);
+		patternStepIndex = 4;
+		patternSteps[4].initialize(&enemyTanks[0]);
+		patternSteps[4].setActive();
+	}
+	/*if (patternStepIndex == maxPatternSteps)
+	return;*/
+	if ( (patternStepIndex == maxPatternSteps - 1 && !playerTank.isFiring()) || patternStepIndex == maxPatternSteps)
+	{
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps[i].initialize(&enemyTanks[0]);
+			patternSteps[i].setActive();
+		}
+		patternStepIndex = 0;
+	}
 	if (patternSteps[patternStepIndex].isFinished())
 		patternStepIndex++;
+
 	patternSteps[patternStepIndex].update(frameTime);
 
 }
@@ -196,40 +258,123 @@ void CollisionTypes::ai()
 //=============================================================================
 void CollisionTypes::collisions()
 {
-    collisionVector.x = 0;      // clear collision vector
-    collisionVector.y = 0;
+	Bullet* bullets = playerTank.getBullets();
 
-    // if collision between ship and targets
-    ship.setCollision(false);
-    rectangle.setCollision(false);
-    square.setCollision(false);
-    circle.setCollision(false);
-    if(ship.collidesWith(rectangle, collisionVector))
-    {
-        ship.setCollision(true);
-        rectangle.setCollision(true);
-        lineEnds[1].x = rectangle.getCollisionCenter()->x;
-        lineEnds[1].y = rectangle.getCollisionCenter()->y;
-    }
-    if(ship.collidesWith(square, collisionVector))
-    {
-        //ship.bounce(collisionVector, square);
-        ship.setCollision(true);
-        square.setCollision(true);
-        lineEnds[1].x = square.getCollisionCenter()->x;
-        lineEnds[1].y = square.getCollisionCenter()->y;
-    }
-    if(ship.collidesWith(circle, collisionVector))
-    {
-        ship.setCollision(true);
-        circle.setCollision(true);
-        lineEnds[1].x = circle.getCollisionCenter()->x;
-        lineEnds[1].y = circle.getCollisionCenter()->y;
-    }
-    // Initialize line endpoints for drawing collision vector
-    lineEnds[0].x = ship.getCollisionCenter()->x;
-    lineEnds[0].y = ship.getCollisionCenter()->y;
+	collisionVector.x = 0;      // clear collision vector
+	collisionVector.y = 0;
 
+	playerTank.setCollision(false);
+
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		if (playerTank.collidesWith(enemyTanks[i], collisionVector))
+		{
+
+			playerTank.setVelocity(VECTOR2(-collisionVector));
+			enemyTanks[i].setVelocity(VECTOR2(collisionVector));
+			playerTank.setCollision(true);
+
+		}
+	}
+
+	if (playerTank.collidesWith(wall, collisionVector))
+	{
+		
+
+		playerTank.setCollision(true);
+
+		if (collisionVector.x != 0)
+		{
+			if (collisionVector.x < 0)
+				playerTank.setX(wall.getWidth()*wall.getScale() + wall.getX()); 
+
+
+		}
+		//playerTank.setX(wall.getWidth()
+		//playerTank.setVelocity(VECTOR2(0,0));
+	}
+
+
+
+	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		//save some comparisons
+		if (bullets[i].getVisible() == false)
+		{
+			bullets[i].setCollision(false);
+			break;
+		}
+
+		if (bullets[i].collidesWith(wall, collisionVector))
+		{
+			if (bullets[i].getCollision() == false)
+			{
+				bullets[i].setCollision(true);
+
+				VECTOR2 currentVelocity = bullets[i].getVelocity();
+
+				if (collisionVector.x != 0)
+					currentVelocity.x *= -1;
+				else
+					currentVelocity.y *= -1;
+
+				bullets[i].setVelocity(currentVelocity);
+			}
+		}
+		else 
+			bullets[i].setCollision(false);
+
+		for (int j = 0; j < MAX_ENEMY_TANKS; j++)
+		{
+			if (enemyTanks[j].getVisible() && bullets[i].collidesWith(enemyTanks[j], collisionVector))
+			{
+				float currentHealth = enemyTanks[j].getHealth();
+				enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
+				if (enemyTanks[j].getHealth() == 0.0f)
+					enemyTanks[j].setInvisible();
+
+				bullets[i].setVisible(false);
+
+
+			}
+		}
+	}
+
+#pragma region Original code
+	collisionVector.x = 0;      // clear collision vector
+	collisionVector.y = 0;
+
+	// if collision between ship and targets
+	ship.setCollision(false);
+	rectangle.setCollision(false);
+	square.setCollision(false);
+	circle.setCollision(false);
+	if(ship.collidesWith(rectangle, collisionVector))
+	{
+		ship.setCollision(true);
+		rectangle.setCollision(true);
+		lineEnds[1].x = rectangle.getCollisionCenter()->x;
+		lineEnds[1].y = rectangle.getCollisionCenter()->y;
+	}
+	if(ship.collidesWith(square, collisionVector))
+	{
+		//ship.bounce(collisionVector, square);
+		ship.setCollision(true);
+		square.setCollision(true);
+		lineEnds[1].x = square.getCollisionCenter()->x;
+		lineEnds[1].y = square.getCollisionCenter()->y;
+	}
+	if(ship.collidesWith(circle, collisionVector))
+	{
+		ship.setCollision(true);
+		circle.setCollision(true);
+		lineEnds[1].x = circle.getCollisionCenter()->x;
+		lineEnds[1].y = circle.getCollisionCenter()->y;
+	}
+	// Initialize line endpoints for drawing collision vector
+	lineEnds[0].x = ship.getCollisionCenter()->x;
+	lineEnds[0].y = ship.getCollisionCenter()->y;
+#pragma endregion 
 }
 
 //=============================================================================
@@ -237,12 +382,14 @@ void CollisionTypes::collisions()
 //=============================================================================
 void CollisionTypes::render()
 {
-    float angle;
-    graphics->spriteBegin();                // begin drawing sprites
+	float angle;
+	graphics->spriteBegin();                // begin drawing sprites
 
-	enemyTank.draw();
-    playerTank.draw();
-    graphics->spriteEnd();                  // end drawing sprites
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		enemyTanks[i].draw();
+	wall.draw();
+	playerTank.draw();
+	graphics->spriteEnd();                  // end drawing sprites
 }
 
 //=============================================================================
@@ -251,13 +398,14 @@ void CollisionTypes::render()
 //=============================================================================
 void CollisionTypes::releaseAll()
 {
-    menuTexture.onLostDevice();
+	menuTexture.onLostDevice();
 	gameTextures.onLostDevice();
 	tankBodyTexture.onLostDevice();
 	tankHeadTexture.onLostDevice();
 	enemyTankTexture.onLostDevice();
+	wallTexture.onLostDevice();
 	Game::releaseAll();
-    return;
+	return;
 }
 
 //=============================================================================
@@ -266,11 +414,12 @@ void CollisionTypes::releaseAll()
 //=============================================================================
 void CollisionTypes::resetAll()
 {
-    gameTextures.onResetDevice();
+	gameTextures.onResetDevice();
 	menuTexture.onResetDevice();
 	tankBodyTexture.onResetDevice();
 	tankHeadTexture.onResetDevice();
 	enemyTankTexture.onResetDevice();
+	wallTexture.onResetDevice();
 	Game::resetAll();
-    return;
+	return;
 }

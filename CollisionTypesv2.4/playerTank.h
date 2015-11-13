@@ -104,4 +104,14 @@ public:
 	{
 		head.fireBullet();
 	}
+
+	bool isFiring()
+	{
+		return head.bullet[0].getVisible();
+	}
+
+	Bullet* getBullets()
+	{
+		return head.bullet;
+	}
 };

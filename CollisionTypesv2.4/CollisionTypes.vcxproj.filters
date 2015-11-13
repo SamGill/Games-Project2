@@ -55,12 +55,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bullet.cpp">
-		<Filter>Source Files</Filter>
-	</ClCompile>
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="enemyTank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="patternStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,13 +104,19 @@
     <ClInclude Include="tankHead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bullet.h">
-		<Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="enemyTank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="patternStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shotBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
