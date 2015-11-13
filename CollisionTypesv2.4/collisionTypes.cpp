@@ -275,9 +275,9 @@ void CollisionTypes::initialize(HWND hwnd)
 	}
 
 	//Moves to game over screen, but only for testing
-	if(gamestates == level_one && timeInState > 5)
+	if(gamestates == level_one && timeInState > 10)
 	{
-		gamestates = gameover;
+		//gamestates = gameover;
 		timeInState = 0;
 	}
 

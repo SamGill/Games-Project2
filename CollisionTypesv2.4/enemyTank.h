@@ -16,14 +16,15 @@ namespace enemyTankNS
     const int Y = GAME_HEIGHT/2 - HEIGHT/2;
     const float SPEED_X = 0;                
 	const float SPEED_Y = -0;
- 
+	const float ROTATION_RATE = (float)PI/3; // radians per second
+	enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
 }
 
 // inherits from Entity class
 class enemyTank : public Entity
 {
 private:
-   // puckNS::DIRECTION direction;    
+	enemyTankNS::DIRECTION direction;    // direction of rotation
     bool collision;                 
     bool target;  
 	int directionX;
@@ -36,6 +37,7 @@ private:
 	//void deltaTrack();
 	//void evade();
 
+	VECTOR2 angleVector;
 
 public:
     // constructor
@@ -71,6 +73,8 @@ public:
 	void setVisible();
 
 	void setVelocity(VECTOR2 v) {velocity = v;}
+
+	void rotate(enemyTankNS::DIRECTION dir) {direction = dir;}
 
 	VECTOR2 getVelocity() {return velocity;}
 
