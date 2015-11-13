@@ -116,6 +116,19 @@ void enemyTank::vectorTrack()
 	VECTOR2* foo = D3DXVec2Normalize(&vel, &vel);
 	setVelocity(-vel);
 	
+	D3DXVECTOR2 targetLocation(targetEntity.getCenterPoint());
+	
+
+	D3DXVec2Normalize(&angleVector,(const D3DXVECTOR2*)new D3DXVECTOR2(targetLocation.x - getCenterX(), targetLocation.y - getCenterY()));
+
+
+	float headAngle = acos(D3DXVec2Dot(&angleVector, &D3DXVECTOR2(0, -1)));
+
+	spriteData.angle = headAngle;
+
+	if (angleVector.x < 0)
+		spriteData.angle = 2 * PI - spriteData.angle;
+	
 }
 
 void enemyTank::ai(float time, Entity &t)

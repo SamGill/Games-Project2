@@ -37,11 +37,15 @@ private:
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
 	TextureManager wallTexture;
+	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
 
+	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
 
 	PlayerTank     playerTank;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	Wall           wall;
+
+	GameStates gamestates;
 
 
     Image   menu;               // menu image
@@ -53,9 +57,14 @@ private:
     float   AxBx;
     float   AyBy;
     float   lineLength;
+
     VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
 	int patternStepIndex;
+	float timeInState;
+
+	//For audio
+	bool isMusicPlaying;
 
 public:
     // Constructor
@@ -72,6 +81,8 @@ public:
     void render();      // "
     void releaseAll();
     void resetAll();
+
+	void gameStatesUpdate();
 };
 
 #endif

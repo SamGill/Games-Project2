@@ -28,12 +28,16 @@ CollisionTypes::~CollisionTypes()
 //=============================================================================
 void CollisionTypes::initialize(HWND hwnd)
 {
-	Game::initialize(hwnd); // throws GameError
 
+	Game::initialize(hwnd); // throws GameError
+	gamestates = intro;
+	timeInState = 0;
+	isMusicPlaying = false;
+
+#pragma region game_textures
 
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
-
 
 	if (!tankBodyTexture.initialize(graphics, TANK_BODY))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
@@ -57,7 +61,39 @@ void CollisionTypes::initialize(HWND hwnd)
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	if (!wall.initialize(this, wallNS::WIDTH, wallNS::HEIGHT, 0, &wallTexture))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+
+		//SPLASH SCREEN
+			if (!splashScreenTexture.initialize(graphics,SPLASH_SCREEN))
+				throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing splash screen texture"));
+	if (!splashScreen.initialize(graphics, splashScreenTexture.getWidth(),splashScreenTexture.getHeight(),0, &splashScreenTexture))
+		throw(GameError(gameErrorNS::WARNING, "Splashscreen not initialized"));
+	splashScreen.setX(0);
+	splashScreen.setY(0);
+
+	//GAME OVER SCREEN
+	if(!gameOverTexture.initialize(graphics, GAME_OVER))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing game over screen texture"));
+	if(!gameOverScreen.initialize(graphics, gameOverTexture.getWidth(), gameOverTexture.getHeight(), 0, &gameOverTexture))
+		throw(GameError(gameErrorNS::WARNING, "Game over screen not initialized"));
+	gameOverScreen.setX(0);
+	gameOverScreen.setY(0);
+
+	//MENU SCREEN
+	if(!gameMenuTexture.initialize(graphics, MENU_SCREEN))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing game menu screen texture"));
+	if(!gameMenuScreen.initialize(graphics, gameMenuTexture.getWidth(), gameMenuTexture.getHeight(), 0, &gameMenuTexture))
+		throw(GameError(gameErrorNS::WARNING, "Game menu screen not initialized"));
+	gameMenuScreen.setX(0);
+	gameMenuScreen.setY(0);
+
+	//CHEAT CODE SCREEN
+	if(!cheatCodeTexture.initialize(graphics, CHEAT_SCREEN))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing cheat code screen texture"));
+	if(!cheatCodeScreen.initialize(graphics, cheatCodeTexture.getWidth(), cheatCodeTexture.getHeight(), 0, &cheatCodeTexture))
+		throw(GameError(gameErrorNS::WARNING, "Cheat code screen not initialized"));
+	cheatCodeScreen.setX(0);
+	cheatCodeScreen.setY(0);
 
 	//enemyTank.setCurrentFrame(0);
 	/*enemyTank.setX(GAME_WIDTH/7  );
@@ -90,108 +126,65 @@ void CollisionTypes::initialize(HWND hwnd)
 	playerTank.setX(GAME_WIDTH/2);
 	playerTank.setY(GAME_HEIGHT/2);
 
+
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
 
 	//playerTank.setCollisionType(entityNS::ROTATED_BOX);
 	playerTank.setEdge(TANK_RECTANGLE);
 
-#pragma region Original Game Textures
-	// menu texture
-	if (!menuTexture.initialize(graphics,MENU_IMAGE))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menu texture"));
-	// main game textures
-	if (!gameTextures.initialize(graphics,TEXTURES_IMAGE))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing game textures"));
+#pragma endregion
 
-	// menu image
-	if (!menu.initialize(graphics,0,0,0,&menuTexture))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing menu"));
+	// init sound system
+	audio = new Audio();
 
-	// rectangle
-	if (!rectangle.initialize(this, shipNS::WIDTH, shipNS::HEIGHT, TEXTURE_COLS, &gameTextures))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing rectangle"));
-	rectangle.setFrames(RECTANGLE_START_FRAME, RECTANGLE_END_FRAME);
-	rectangle.setCurrentFrame(RECTANGLE_START_FRAME);
-	rectangle.setX(GAME_WIDTH/4);
-	rectangle.setY(GAME_HEIGHT/2);
-	rectangle.setCollisionType(entityNS::ROTATED_BOX);
-	// edge specifies the collision box relative to the center of the entity.
-	rectangle.setEdge(COLLISION_RECTANGLE);
-	rectangle.setDegrees(45);
-	rectangle.setTarget(true);
-
-	// square
-	if (!square.initialize(this, shipNS::WIDTH, shipNS::HEIGHT, TEXTURE_COLS, &gameTextures))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing square"));
-	square.setFrames(SQUARE_START_FRAME, SQUARE_END_FRAME);
-	square.setCurrentFrame(SQUARE_START_FRAME);
-	square.setX(GAME_WIDTH/2);
-	square.setY(GAME_HEIGHT/2);
-	square.setCollisionType(entityNS::BOX);
-	// edge specifies the collision box relative to the center of the entity.
-	square.setEdge(COLLISION_BOX);
-	square.setTarget(true);
-
-	// circle
-	if (!circle.initialize(this, shipNS::WIDTH, shipNS::HEIGHT, TEXTURE_COLS, &gameTextures))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing circle"));
-	circle.setFrames(CIRCLE_START_FRAME, CIRCLE_END_FRAME);
-	circle.setCurrentFrame(CIRCLE_START_FRAME);
-	circle.setX(GAME_WIDTH - GAME_WIDTH/4);
-	circle.setY(GAME_HEIGHT/2);
-	circle.setCollisionType(entityNS::CIRCLE);
-	circle.setCollisionRadius(COLLISION_RADIUS);
-	circle.setTarget(true);
-
-	// ship
-	if (!ship.initialize(this, shipNS::WIDTH, shipNS::HEIGHT, TEXTURE_COLS, &gameTextures))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing ship"));
-	ship.setFrames(SHIP_START_FRAME, SHIP_END_FRAME);
-	ship.setCurrentFrame(SHIP_START_FRAME);
-	ship.setX(GAME_WIDTH/2);
-	ship.setY(GAME_HEIGHT/4);
-	ship.setCollisionType(entityNS::CIRCLE);
-	// edge specifies the collision box relative to the center of the entity.
-	ship.setEdge(COLLISION_BOX);
-	ship.setCollisionRadius(COLLISION_RADIUS);
-
-	// line
-	if (!line.initialize(graphics, shipNS::WIDTH, shipNS::HEIGHT, TEXTURE_COLS, &gameTextures))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing line"));
-	line.setFrames(LINE_START_FRAME, LINE_END_FRAME);
-	line.setCurrentFrame(LINE_START_FRAME);
-	line.setScale(LINE_SCALE);
-	line.setX(0);
-	line.setY(0);
-#pragma endregion Original Game Textures
-
-	//patternsteps
-	patternStepIndex = 0;
-	for (int i = 0; i < maxPatternSteps; i++)
+	if (*WAVE_BANK != '\0' && *SOUND_BANK != '\0')  // if sound files defined
 	{
-		patternSteps[i].initialize(&enemyTanks[0]);
-		patternSteps[i].setActive();
+		if( FAILED( hr = audio->initialize() ) )
+		{
+			if( hr == HRESULT_FROM_WIN32( ERROR_FILE_NOT_FOUND ) )
+				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system because media file not found."));
+			else
+				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
+		}
 	}
 
-	patternSteps[0].setAction(RIGHT);
-	patternSteps[0].setTimeForStep(2);
-	patternSteps[1].setAction(DOWN);
-	patternSteps[1].setTimeForStep(2);
 
-	patternSteps[2].setAction(LEFT);
-	patternSteps[2].setTimeForStep(2);
-
-	patternSteps[3].setAction(UP);
-	patternSteps[3].setTimeForStep(2);
-	patternSteps[4].setAction(EVADE);
-	patternSteps[4].setTimeForStep(3);
-
-	/*patternSteps[2].setAction(TRACK);
-	patternSteps[2].setTimeForStep(4);
-	patternSteps[3].setAction(NONE);
-	patternSteps[3].setTimeForStep(2);*/
-
+	//patternsteps
+	//	patternStepIndex = 0;
+	//	for (int i = 0; i < maxPatternSteps; i++)
+	//	{
+	//		patternSteps[i].initialize(&enemyTanks[0]);
+	//		patternSteps[i].setActive();
+	//	}
+	//
+	//	patternSteps[0].setAction(RIGHT);
+	//	patternSteps[0].setTimeForStep(2);
+	//	patternSteps[1].setAction(DOWN);
+	//	patternSteps[1].setTimeForStep(2);
+	//<<<<<<< HEAD
+	//
+	//	patternSteps[2].setAction(LEFT);
+	//	patternSteps[2].setTimeForStep(2);
+	//
+	//	patternSteps[3].setAction(UP);
+	//	patternSteps[3].setTimeForStep(2);
+	//	patternSteps[4].setAction(EVADE);
+	//	patternSteps[4].setTimeForStep(3);
+	//
+	//	/*patternSteps[2].setAction(TRACK);
+	//	patternSteps[2].setTimeForStep(4);
+	//	patternSteps[3].setAction(NONE);
+	//	patternSteps[3].setTimeForStep(2);*/
+	//=======
+	//	patternSteps[2].setAction(LEFT);
+	//	patternSteps[2].setTimeForStep(2);
+	//	patternSteps[3].setAction(UP);
+	//	patternSteps[3].setTimeForStep(2);
+	//	patternSteps[4].setAction(TRACK);
+	//	patternSteps[4].setTimeForStep(5);
+	//>>>>>>> origin/master
+	//
 	return;
 }
 
@@ -199,26 +192,139 @@ void CollisionTypes::initialize(HWND hwnd)
 //=============================================================================
 // Update all game items
 //=============================================================================
+
+void CollisionTypes::gameStatesUpdate()
+{
+	timeInState += frameTime;
+
+	if(gamestates == intro && timeInState > 3)
+	{
+		gamestates = gameMenu;
+		timeInState = 0;
+	}
+	if(gamestates == gameMenu)
+	{
+		//If "Enter" is pressed, start game
+		if(input->wasKeyPressed(0x0D))
+		{
+			gamestates = level_one;
+			timeInState = 0;
+		}
+		//If "C" is pressed, go to cheat code screen
+		if(input->wasKeyPressed(0x43))
+		{
+			gamestates = cheatCodes;
+			timeInState = 0;
+		}
+
+		//If "E" is pressed, exit the game
+		if(input->wasKeyPressed(0x45))
+		{
+			PostQuitMessage(0);
+		}
+	}
+	if(gamestates == cheatCodes)
+	{
+		//If "U" was pressed, give unlimited health
+		if(input->wasKeyPressed(0x55))
+		{
+			//Give ulimited health
+			;
+		}
+		//If "W" was pressed, give all weapons
+		if(input->wasKeyPressed(0x57))
+		{
+			//Give all weapons
+			;
+		}
+		//If "2" was pressed, jump to level 2
+		if(input->wasKeyPressed(0x32))
+		{
+			//Jump to level 2
+			;
+		}
+		//If "ESC" was pressed, go back to main menu
+		if(input->wasKeyPressed(ESC_KEY))
+		{
+			gamestates = gameMenu;
+			timeInState = 0;
+		}
+	}
+
+	//Moves to game over screen, but only for testing
+	if(gamestates == level_one && timeInState > 10)
+	{
+		//gamestates = gameover;
+		timeInState = 0;
+	}
+
+	//Restarts game back to menu 
+	if(gamestates == gameover)
+	{
+		if(input->wasKeyPressed(0x52))
+		{
+			gamestates = intro;
+			timeInState = 0;
+		}
+		else if(input->wasKeyPressed(0x45))
+		{
+			PostQuitMessage(0);
+		}
+	}
+}
+
 void CollisionTypes::update()
 {
 
-	if(input->isKeyDown(TANK_UP_KEY))
+	gameStatesUpdate();
+	switch (gamestates)
+	{
+	case intro:
+		break;
+	case gameMenu:
+		break;
+	case cheatCodes:
+		break;
+	case level_one:
+		/*		if(input->isKeyDown(TANK_UP_KEY))
 		playerTank.move_up();
-	if(input->isKeyDown(TANK_DOWN_KEY))
+		if(input->isKeyDown(TANK_DOWN_KEY))
 		playerTank.move_down();
-	if (input->isKeyDown(TANK_LEFT_KEY))   
+		if (input->isKeyDown(TANK_LEFT_KEY))   
 		playerTank.move_left();
-	if (input->isKeyDown(TANK_RIGHT_KEY))  
-		playerTank.move_right();
+		if (input->isKeyDown(TANK_RIGHT_KEY))  
+		playerTank.move_right();*/
+		if(!isMusicPlaying)
+		{
+			audio->playCue(MAIN_MUSIC);
+			isMusicPlaying = true;
+		}
 
-	if (input->getMouseLButton())
-		playerTank.fireBullet();
-	playerTank.update(frameTime);
+		if(input->isKeyDown(TANK_UP_KEY))
+			playerTank.forward();
+		if(input->isKeyDown(TANK_DOWN_KEY))
+			playerTank.reverse();
+		playerTank.rotate(playerTankNS::NONE);
+		if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
+			playerTank.rotate(playerTankNS::LEFT);
+		if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
+			playerTank.rotate(playerTankNS::RIGHT);
 
-	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-		enemyTanks[i].update(frameTime);
-	//playerTankHead.update(frameTime);
-
+		if (input->getMouseLButton())
+			playerTank.fireBullet();
+		playerTank.update(frameTime);
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			enemyTanks[i].update(frameTime);
+		break;
+	case level_two:
+		break;
+	case victory:
+		break;
+	case gameover:
+		break;
+	default:
+		break;
+	}
 }
 
 //=============================================================================
@@ -226,33 +332,55 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
-	if (playerTank.isFiring() == false)
-		enemyTanks[0].ai(frameTime, playerTank);
-	else
-	{
-		enemyTanks[0].ai(frameTime, playerTank.getBullets()[0]);
-		patternStepIndex = 4;
-		patternSteps[4].initialize(&enemyTanks[0]);
-		patternSteps[4].setActive();
-	}
-	/*if (patternStepIndex == maxPatternSteps)
-	return;*/
-	if ( (patternStepIndex == maxPatternSteps - 1 && !playerTank.isFiring()) || patternStepIndex == maxPatternSteps)
-	{
-		for (int i = 0; i < maxPatternSteps - 1; i++)
-		{
-			patternSteps[i].initialize(&enemyTanks[0]);
-			patternSteps[i].setActive();
-		}
-		patternStepIndex = 0;
-	}
-	if (patternSteps[patternStepIndex].isFinished())
-		patternStepIndex++;
+	//if (playerTank.isFiring() == false)
+	//	enemyTanks[0].ai(frameTime, playerTank);
+	//else
+	//{
+	//	enemyTanks[0].ai(frameTime, playerTank.getBullets()[0]);
+	//	patternStepIndex = 4;
+	//	patternSteps[4].initialize(&enemyTanks[0]);
+	//	patternSteps[4].setActive();
+	//}
+	///*if (patternStepIndex == maxPatternSteps)
+	//return;*/
+	//if ( (patternStepIndex == maxPatternSteps - 1 && !playerTank.isFiring()) || patternStepIndex == maxPatternSteps)
+	//{
+	//	for (int i = 0; i < maxPatternSteps - 1; i++)
+	//	{
+	//		patternSteps[i].initialize(&enemyTanks[0]);
+	//		
+	//			enemyTank.ai(frameTime, playerTank);
 
-	patternSteps[patternStepIndex].update(frameTime);
+	//		float distance = D3DXVec2Length(&(enemyTank.getCenterPoint()-playerTank.getCenterPoint()));
 
+	//		if(distance < 200.0f)
+	//		{
+	//			enemyTank.ai(frameTime, playerTank);
+	//			patternStepIndex = 4;
+	//			patternSteps[4].initialize(&enemyTank);
+	//			patternSteps[4].setActive();
+	//		}
+	//		else if(patternStepIndex == maxPatternSteps - 1)
+	//		{
+	//			enemyTank.ai(frameTime, playerTank);
+	//			for (int i = 0; i < maxPatternSteps - 1; i++)
+	//			{
+	//				patternSteps[i].initialize(&enemyTank);
+	//				>>>>>>> origin/master
+	//					patternSteps[i].setActive();
+	//			}
+	//			patternStepIndex = 0;
+	//		}
+	//		<<<<<<< HEAD
+	//			=======
+
+	//			>>>>>>> origin/master
+	//			if (patternSteps[patternStepIndex].isFinished())
+	//				patternStepIndex++;
+
+	//		patternSteps[patternStepIndex].update(frameTime);
+	//	}
 }
-
 //=============================================================================
 // Handle collisions
 //=============================================================================
@@ -279,7 +407,7 @@ void CollisionTypes::collisions()
 
 	if (playerTank.collidesWith(wall, collisionVector))
 	{
-		
+
 
 		playerTank.setCollision(true);
 
@@ -382,13 +510,39 @@ void CollisionTypes::collisions()
 //=============================================================================
 void CollisionTypes::render()
 {
+
+
+
 	float angle;
 	graphics->spriteBegin();                // begin drawing sprites
 
-	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-		enemyTanks[i].draw();
-	wall.draw();
-	playerTank.draw();
+	switch (gamestates)
+	{
+	case intro:
+		splashScreen.draw();
+		break;
+	case cheatCodes:
+		cheatCodeScreen.draw();
+		break;
+	case gameMenu:
+		gameMenuScreen.draw();
+		break;
+	case level_one:
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			enemyTanks[i].draw();
+		playerTank.draw();
+		wall.draw();
+		break;
+	case level_two:
+		break;
+	case victory:
+		break;
+	case gameover:
+		gameOverScreen.draw();
+		break;
+	default:
+		break;
+	}
 	graphics->spriteEnd();                  // end drawing sprites
 }
 
@@ -404,6 +558,11 @@ void CollisionTypes::releaseAll()
 	tankHeadTexture.onLostDevice();
 	enemyTankTexture.onLostDevice();
 	wallTexture.onLostDevice();
+	gameOverTexture.onLostDevice();
+	bulletTexture.onLostDevice();
+	splashScreenTexture.onLostDevice();
+	gameMenuTexture.onLostDevice();
+	cheatCodeTexture.onLostDevice();
 	Game::releaseAll();
 	return;
 }
@@ -420,6 +579,11 @@ void CollisionTypes::resetAll()
 	tankHeadTexture.onResetDevice();
 	enemyTankTexture.onResetDevice();
 	wallTexture.onResetDevice();
+	gameOverTexture.onResetDevice();
+	bulletTexture.onResetDevice();
+	splashScreenTexture.onResetDevice();
+	gameMenuTexture.onResetDevice();
+	cheatCodeTexture.onResetDevice();
 	Game::resetAll();
 	return;
 }
