@@ -41,11 +41,13 @@ private:
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
 
 	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
-	Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
+	//Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
+	enemyTank	   enemyTank;
 	Wall           wall;
+	Wall		   wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	GameStates gamestates;
 

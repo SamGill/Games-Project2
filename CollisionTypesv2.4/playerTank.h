@@ -66,6 +66,8 @@ public:
 	 // direction of rotation force
     void rotate(playerTankNS::DIRECTION dir) {direction = dir;}
 
+	void stop();
+
 	/*void move_up()
 	{
 		if (velocity.x != 0.0f)

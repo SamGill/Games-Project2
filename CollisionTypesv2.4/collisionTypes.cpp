@@ -47,8 +47,18 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!wallShortVtTexture.initialize(graphics,WALL_SHORT_VERTICAL))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
-	if (!enemyTank.initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
-		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+	if (!wallLgHzScreen.initialize(this, 320, 32, 0, &wallLgHzTexture))
+		throw(GameError(gameErrorNS::WARNING, "wall long horizontal not initialized"));
+	if (!wallLgVtScreen.initialize(this, wallLgVtTexture.getWidth(),wallLgVtTexture.getHeight(),0, &wallLgVtTexture))
+		throw(GameError(gameErrorNS::WARNING, "wall long vertical not initialized"));
+	if (!wallShortHzScreen.initialize(this, wallShortHzTexture.getWidth(),wallShortHzTexture.getHeight(),0, &wallShortHzTexture))
+		throw(GameError(gameErrorNS::WARNING, "wall short horizontal not initialized"));
+	if (!wallShortVtScreen.initialize(this, wallShortVtTexture.getWidth(),wallShortVtTexture.getHeight(),0, &wallShortVtTexture))
+		throw(GameError(gameErrorNS::WARNING, "wall short vertical not initialized"));
+
+	//Placement of walls
+	wallLgHzScreen.setX(wallOneX);
+	wallLgHzScreen.setY(wallOneY);
 #pragma endregion Level One Walls
 
 
@@ -77,11 +87,11 @@ void CollisionTypes::initialize(HWND hwnd)
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	if (!wall.initialize(this, wallNS::WIDTH, wallNS::HEIGHT, 0, &wallTexture))
-
+		throw(GameError(gameErrorNS::WARNING, "wall not initialized"));
 
 		//SPLASH SCREEN
-			if (!splashScreenTexture.initialize(graphics,SPLASH_SCREEN))
-				throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing splash screen texture"));
+	if (!splashScreenTexture.initialize(graphics,SPLASH_SCREEN))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing splash screen texture"));
 	if (!splashScreen.initialize(graphics, splashScreenTexture.getWidth(),splashScreenTexture.getHeight(),0, &splashScreenTexture))
 		throw(GameError(gameErrorNS::WARNING, "Splashscreen not initialized"));
 	splashScreen.setX(0);
@@ -111,9 +121,9 @@ void CollisionTypes::initialize(HWND hwnd)
 	cheatCodeScreen.setX(0);
 	cheatCodeScreen.setY(0);
 
-	//enemyTank.setCurrentFrame(0);
-	/*enemyTank.setX(GAME_WIDTH/7  );
-	enemyTank.setY(GAME_HEIGHT/7 );*/
+	//Wall long horizontal collision box
+	wallLgHzScreen.setCollisionType(entityNS::BOX);
+	wallLgHzScreen.setEdge(WALL_LONG_HZ_RECT);
 
 
 	wall.setScale(.5f);
@@ -121,8 +131,8 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	RECT collision  = {-45,-10,45,10};
 	wall.setEdge(WALL_RECTANGLE);
-	wall.setX(100);
-	wall.setY(100);
+	wall.setX(400);
+	wall.setY(400);
 
 	//playerTank.getBullets()[0].setEdge(collision);
 
@@ -137,16 +147,16 @@ void CollisionTypes::initialize(HWND hwnd)
 	}
 
 	playerTank.setCurrentFrame(0);
-	playerTank.setScale(.25f);
+	playerTank.setScale(.20f);
 
-	playerTank.setX(GAME_WIDTH/2);
-	playerTank.setY(GAME_HEIGHT/2);
+	playerTank.setX(levelOnePlayerX);
+	playerTank.setY(levelOnePlayerY);
 
 
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
 
-	//playerTank.setCollisionType(entityNS::ROTATED_BOX);
+	playerTank.setCollisionType(entityNS::ROTATED_BOX);
 	playerTank.setEdge(TANK_RECTANGLE);
 
 #pragma endregion
@@ -424,10 +434,10 @@ void CollisionTypes::collisions()
 	if (playerTank.collidesWith(wall, collisionVector))
 	{
 
-
 		playerTank.setCollision(true);
+		playerTank.bounce(collisionVector, wall);
 
-		if (collisionVector.x != 0)
+		/*if (collisionVector.x != 0)
 		{
 			if (collisionVector.x < 0)
 				playerTank.setX(wall.getWidth()*wall.getScale() + wall.getX()); 
@@ -435,7 +445,7 @@ void CollisionTypes::collisions()
 
 		}
 		//playerTank.setX(wall.getWidth()
-		//playerTank.setVelocity(VECTOR2(0,0));
+		//playerTank.setVelocity(VECTOR2(0,0));*/
 	}
 
 
@@ -482,6 +492,13 @@ void CollisionTypes::collisions()
 
 			}
 		}
+	}
+
+
+	if(playerTank.collidesWith(wallLgHzScreen, collisionVector))
+	{
+		playerTank.setCollision(true);
+		playerTank.bounce(collisionVector, wallLgHzScreen);
 	}
 
 #pragma region Original code
@@ -544,8 +561,9 @@ void CollisionTypes::render()
 		gameMenuScreen.draw();
 		break;
 	case level_one:
-		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-			enemyTanks[i].draw();
+		wallLgHzScreen.draw();
+		//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			//enemyTanks[i].draw();
 		playerTank.draw();
 		wall.draw();
 		break;
@@ -579,6 +597,10 @@ void CollisionTypes::releaseAll()
 	splashScreenTexture.onLostDevice();
 	gameMenuTexture.onLostDevice();
 	cheatCodeTexture.onLostDevice();
+	wallLgHzTexture.onLostDevice();
+	wallLgVtTexture.onLostDevice();
+	wallShortHzTexture.onLostDevice();
+	wallShortVtTexture.onLostDevice();
 	Game::releaseAll();
 	return;
 }
@@ -600,6 +622,10 @@ void CollisionTypes::resetAll()
 	splashScreenTexture.onResetDevice();
 	gameMenuTexture.onResetDevice();
 	cheatCodeTexture.onResetDevice();
+	wallLgHzTexture.onResetDevice();
+	wallLgVtTexture.onResetDevice();
+	wallShortHzTexture.onResetDevice();
+	wallShortVtTexture.onResetDevice();
 	Game::resetAll();
 	return;
 }

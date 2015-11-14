@@ -77,7 +77,7 @@ inline void safeOnResetDevice(T& ptr)
 const char CLASS_NAME[] = "Collisions";
 const char GAME_TITLE[] = "Tank Banditos";
 const bool FULLSCREEN = false;              // windowed or fullscreen
-const UINT GAME_WIDTH =  800;               // width of game in pixels
+const UINT GAME_WIDTH =  1200;               // width of game in pixels
 const UINT GAME_HEIGHT = 600;               // height of game in pixels
 
 const int MAX_PLAYER_SHOTS = 10;
@@ -109,7 +109,9 @@ const float LINE_SCALE  = 3.0f;         // this makes the line 96 pixels long
 
 const RECT BULLET_RECTANGLE = {-16, -16, 16, 16};
 const RECT WALL_RECTANGLE   = {-64, -64, 64, 64};
-const RECT TANK_RECTANGLE   = {-106, -106, 220, 200};
+//const RECT TANK_RECTANGLE   = {-106, -106, 220, 200};
+const RECT WALL_LONG_HZ_RECT = {-160, -16, 160, 16};
+const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
 
 
 const RECT  COLLISION_RECTANGLE = {-30,-16,30,16};
@@ -120,7 +122,7 @@ const float   COLLISION_RADIUS = 29;
 const char TEXTURES_IMAGE[] = "pictures\\textures.png";  // game textures
 const char MENU_IMAGE[] =     "pictures\\menu.png";      // menu texture
 
-const char TANK_BODY[]  =     "pictures\\tank_body_sample.png";
+const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
@@ -172,7 +174,10 @@ enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gam
 
 #pragma region Level One Setup
 const int wallOneX = 0;
-const int wallOneY = 50;
+const int wallOneY = 100;
+
+const int levelOnePlayerX = 10;
+const int levelOnePlayerY = 10;
 
 
 #pragma endregion Level One Setup
