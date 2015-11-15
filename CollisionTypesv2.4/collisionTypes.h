@@ -47,7 +47,7 @@ private:
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
 	Wall           wall;
-	Wall		   wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
+	Wall		   wallLgHzScreen[LONG_HZ_WALLS], wallLgVtScreen, wallShortHzScreen[SHORT_HZ_WALLS], wallShortVtScreen[SHORT_VT_WALLS];
 
 	GameStates gamestates;
 

@@ -53,7 +53,6 @@ void TankHead::update(float frameTime)
 {
 	D3DXVECTOR2 mouseLocation(input->getMouseX(), input->getMouseY());
 
-
 	D3DXVec2Normalize(&angleVector,(const D3DXVECTOR2*)new D3DXVECTOR2(mouseLocation.x - getCenterX(), mouseLocation.y - getCenterY()));
 
 

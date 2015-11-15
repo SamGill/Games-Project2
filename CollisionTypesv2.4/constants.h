@@ -84,6 +84,11 @@ const int MAX_PLAYER_SHOTS = 10;
 const int SHOT_TIME_BUFFER = 1;
 const int MAX_ENEMY_TANKS = 10;
 
+const int LONG_HZ_WALLS = 3;
+const int SHORT_HZ_WALLS = 3;
+const int LONG_VT_WALLS = 0;
+const int SHORT_VT_WALLS = 2;
+
 // game
 const double PI = 3.14159265;
 const float FRAME_RATE = 200.0f;                // the target frame rate (frames/sec)
@@ -109,8 +114,9 @@ const float LINE_SCALE  = 3.0f;         // this makes the line 96 pixels long
 
 const RECT BULLET_RECTANGLE = {-16, -16, 16, 16};
 const RECT WALL_RECTANGLE   = {-64, -64, 64, 64};
-//const RECT TANK_RECTANGLE   = {-106, -106, 220, 200};
 const RECT WALL_LONG_HZ_RECT = {-160, -16, 160, 16};
+const RECT WALL_SHORT_VT_RECT = {-18, -80, 18, 80};
+const RECT WALL_SHORT_HZ_RECT = {-80, -18, 80, 18};
 const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
 
 
@@ -175,6 +181,33 @@ enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gam
 #pragma region Level One Setup
 const int wallOneX = 0;
 const int wallOneY = 100;
+
+const int wallTwoX = GAME_WIDTH/2;
+const int wallTwoY = 0;
+
+const int wallFourX = GAME_WIDTH/2;
+const int wallFourY = 150;
+
+const int wallFiveX = 475;
+const int wallFiveY = 150;
+
+const int wallSixX = 315;
+const int wallSixY = 200;
+
+const int wallSevenX = 1040;
+const int wallSevenY = 200;
+
+const int wallEightX = 1040;
+const int wallEightY = 300;
+
+const int wallNineX = 0;
+const int wallNineY = 300;
+
+const int wallElevenX = 160;
+const int wallElevenY = 500;
+
+const int wallTwelveX = 880;
+const int wallTwelveY = 300;
 
 const int levelOnePlayerX = 10;
 const int levelOnePlayerY = 10;
