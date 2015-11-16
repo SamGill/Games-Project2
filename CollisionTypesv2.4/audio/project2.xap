@@ -16,8 +16,8 @@ Global Settings
     Header File = project2.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 1647659479;
-    Last Modified High = 30481818;
+    Last Modified Low = 2370678330;
+    Last Modified High = 30482523;
 
     Category
     {
@@ -227,12 +227,12 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 4078245658;
-    PC Bank Last Modified High = 30481792;
+    PC Bank Last Modified Low = 863000057;
+    PC Bank Last Modified High = 30482519;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 2852214396;
-    Bank Last Revised High = 30481792;
+    Bank Last Revised Low = 759919972;
+    Bank Last Revised High = 30482519;
 
     Wave
     {
@@ -256,6 +256,98 @@ Wave Bank
             Last Modified High = 30481792;
         }
     }
+
+    Wave
+    {
+        Name = cannon;
+        File = cannon.wav;
+        Build Settings Last Modified Low = 686307647;
+        Build Settings Last Modified High = 30482519;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 175932;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 396263248;
+            Last Modified High = 30482518;
+        }
+    }
+
+    Wave
+    {
+        Name = explosion;
+        File = explosion.wav;
+        Build Settings Last Modified Low = 686307647;
+        Build Settings Last Modified High = 30482519;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 11025;
+            Bits Per Sample = 0;
+            Play Region Offset = 44;
+            Play Region Length = 21696;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2261294356;
+            Last Modified High = 30482518;
+        }
+    }
+
+    Wave
+    {
+        Name = laser;
+        File = laser.wav;
+        Build Settings Last Modified Low = 686317650;
+        Build Settings Last Modified High = 30482519;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 11025;
+            Bits Per Sample = 0;
+            Play Region Offset = 44;
+            Play Region Length = 6653;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2652876079;
+            Last Modified High = 30482518;
+        }
+    }
+
+    Wave
+    {
+        Name = powerup;
+        File = powerup.wav;
+        Build Settings Last Modified Low = 686317650;
+        Build Settings Last Modified High = 30482519;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 22050;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 37468;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3583550036;
+            Last Modified High = 30482518;
+        }
+    }
 }
 
 Sound Bank
@@ -265,8 +357,8 @@ Sound Bank
     Windows File = Win\project2_soundBank.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1647719523;
-    Bank Last Modified High = 30481818;
+    Bank Last Modified Low = 2370738374;
+    Bank Last Modified High = 30482523;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -318,6 +410,194 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = powerup;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = project2_waveBank;
+                    Bank Index = 0;
+                    Entry Name = powerup;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = cannon;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = project2_waveBank;
+                    Bank Index = 0;
+                    Entry Name = cannon;
+                    Entry Index = 1;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = explosion;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = project2_waveBank;
+                    Bank Index = 0;
+                    Entry Name = explosion;
+                    Entry Index = 2;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = laser;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = project2_waveBank;
+                    Bank Index = 0;
+                    Entry Name = laser;
+                    Entry Index = 3;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = main_music;
@@ -335,6 +615,125 @@ Sound Bank
             Index = 0;
             Weight Min = 0;
             Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = powerup;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = powerup;
+            Index = 1;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 0;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 0;
+            }
+        }
+    }
+
+    Cue
+    {
+        Name = cannon;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = cannon;
+            Index = 2;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 0;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 0;
+            }
+        }
+    }
+
+    Cue
+    {
+        Name = explosion;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = explosion;
+            Index = 3;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = laser;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = laser;
+            Index = 4;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 0;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 0;
+            }
         }
     }
 }

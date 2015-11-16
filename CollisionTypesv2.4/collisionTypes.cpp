@@ -41,6 +41,9 @@ void CollisionTypes::initialize(HWND hwnd)
 	isBaseOneDead = false;
 	isBaseTwoDead = false;
 	havePowerUp = false;
+	isLaserPlaying = false;
+	isCannonPlaying = false;
+	isPowerupPlaying = false;
 
 #pragma region game_textures
 
@@ -603,8 +606,7 @@ void CollisionTypes::gameStatesUpdate()
 		//If "W" was pressed, give all weapons
 		if(input->wasKeyPressed(0x57))
 		{
-			//Give all weapons
-			;
+			havePowerUp = true;
 		}
 		//If "2" was pressed, jump to level 2
 		if(input->wasKeyPressed(0x32))
@@ -756,7 +758,26 @@ void CollisionTypes::update()
 			playerTank.rotate(playerTankNS::RIGHT);
 
 		if (input->getMouseLButton())
+		{
+			if(havePowerUp)
+			{
+				timeInState = 0;
+				audio->playCue(LASER);
+				isLaserPlaying = true;
+			}
+			else if(!havePowerUp)
+			{
+				timeInState = 0;
+				audio->playCue(CANNON);
+				isCannonPlaying = true;
+			}
+
 			playerTank.fireBullet();
+		
+
+
+		}
+		
 		playerTank.update(frameTime);
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].update(frameTime);
@@ -1162,6 +1183,11 @@ void CollisionTypes::collisions()
 		   {
 			   powerup.setVisible(false);
 			   havePowerUp = true;
+			   if(!isPowerupPlaying)
+			   {
+					audio->playCue(POWERUP);
+					isPowerupPlaying = true;
+			   }
 		   }
 
 		   if(havePowerUp)
@@ -1339,6 +1365,7 @@ void CollisionTypes::collisions()
 								{
 										enemyTanks[j].setInvisible();
 										score += 100;
+										audio->playCue(EXPLOSION);
 								}
 								bullets[i].setVisible(false);
 							}
@@ -1356,6 +1383,7 @@ void CollisionTypes::collisions()
                                   //enemyBase.setInvisible();
                                   score += 1000;
 								  isBaseOneDead = true;
+								  audio->playCue(EXPLOSION);
 								  gamestates = levelTransition;
                            }
                            bullets[i].setVisible(false);

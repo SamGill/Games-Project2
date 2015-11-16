@@ -193,6 +193,12 @@ const char SOUND_BANK[] = "audio\\Win\\project2_soundBank.xsb";
 //Music
 const char MAIN_MUSIC[] = "main_music";
 
+//Sounds
+const char EXPLOSION[] = "explosion";
+const char POWERUP[] = "powerup";
+const char LASER[] = "laser";
+const char CANNON[] = "cannon";
+
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
 // it would be possible to save and restore key mappings from a data file.
