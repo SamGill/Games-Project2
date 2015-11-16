@@ -17,10 +17,12 @@ class CollisionTypes;
 #include "enemyTank.h"
 #include "patternStep.h"
 #include "wall.h"
+#include "murray.h"
+#include "gill.h"
 #include <cmath>
+#include "textDX.h"
 
-
-#define maxPatternSteps 4
+#define maxPatternSteps 5
 
 //=============================================================================
 // This class is the core of the game
@@ -40,9 +42,10 @@ private:
 	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
 	//Wall texture Managers for level1
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
+	TextureManager powerupTexture, enemyBaseTexture;
 
 	//Wall textures for level2
-	TextureManager circleWallTexture;
+	Wall wallLvl2Vertical[3], wallLvl2Horizontal[4], wallLgHzScreenLvl2;
 
 
 	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
@@ -51,12 +54,19 @@ private:
 	PlayerTank     playerTank;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
-	Wall		   wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen, circleWall;
 
-	Wall wallLvl2Vertical[3], wallLvl2Horizontal[4];
+	Wall           wall;
+	Wall		   wallLgHzScreen[LONG_HZ_WALLS], wallLgVtScreen, wallShortHzScreen[SHORT_HZ_WALLS], wallShortVtScreen[SHORT_VT_WALLS];
+	murray		   powerup;
+	gill		   enemyBase;
 
+	TextDX		   *scoreFont;
 
 	GameStates gamestates;
+
+	bulletType bullet_type;
+
+	int score;
 
 
 	Image   menu;               // menu image
@@ -72,8 +82,21 @@ private:
 	VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
 
+	PatternStep patternSteps2[maxPatternSteps];
+	PatternStep patternSteps3[maxPatternSteps];
+	PatternStep patternSteps4[maxPatternSteps];
+	PatternStep patternSteps5[maxPatternSteps];
+	PatternStep patternSteps6[maxPatternSteps];
+	PatternStep patternSteps7[maxPatternSteps];
 
 	int patternStepIndex;
+	int patternStepIndex2;
+	int patternStepIndex3;
+	int patternStepIndex4;
+	int patternStepIndex5;
+	int patternStepIndex6;
+	int patternStepIndex7;
+
 
 	float timeInState;
 
@@ -105,6 +128,14 @@ public:
 	void resetAll();
 
 	void gameStatesUpdate();
+
+	void enemyUpDown();
+	void enemyUpDown2();
+	void enemyLeftRight();
+	void enemyLeftRight2();
+	void enemyLeftRight3();
+	void enemyLeftRight4();
+	void enemyLeftRight5();
 };
 
 #endif

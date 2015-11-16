@@ -19,6 +19,7 @@ class Graphics;
 #include "gameError.h"
 
 // DirectX pointer types
+#define LP_DXFONT LPD3DXFONT
 #define LP_TEXTURE  LPDIRECT3DTEXTURE9
 #define LP_SPRITE   LPD3DXSPRITE
 #define LP_3DDEVICE LPDIRECT3DDEVICE9
