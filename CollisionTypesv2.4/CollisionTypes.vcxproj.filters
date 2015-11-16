@@ -20,6 +20,11 @@
     <ClCompile Include="murray.cpp" />
     <ClCompile Include="gill.cpp" />
     <ClCompile Include="textDX.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="crackOne.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+=======
   </ItemGroup>
   <ItemGroup>
 <<<<<<< HEAD
@@ -166,6 +171,7 @@
 		<Filter>Header Files</Filter>
     </ClInclude>
 =======
+>>>>>>> origin/master
     <ClInclude Include="audio.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="collisionTypes.h" />
@@ -187,6 +193,10 @@
     <ClInclude Include="murray.h" />
     <ClInclude Include="gill.h" />
     <ClInclude Include="textDX.h" />
+<<<<<<< HEAD
+    <ClInclude Include="crackOne.h" />
+=======
+>>>>>>> origin/master
 >>>>>>> origin/master
   </ItemGroup>
 </Project>

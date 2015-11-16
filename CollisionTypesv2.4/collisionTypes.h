@@ -35,6 +35,7 @@ private:
 	Ship    rectangle, square, circle, ship;    // targets and spaceship
 
 	TextureManager tankBodyTexture;
+	TextureManager tankCrackOneTexture, tankCrackTwoTexture, tankCrackThreeTexture;
 	TextureManager tankHeadTexture;
 	TextureManager bulletTexture;
 	TextureManager enemyTankTexture;
@@ -43,15 +44,18 @@ private:
 	//Wall texture Managers for level1
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
 	TextureManager powerupTexture, enemyBaseTexture;
+	TextureManager victoryTexture, instructionsTexture, transitionTexture;
+	TextureManager sandTexture;
 
 	//Wall textures for level2
 	Wall wallLvl2Vertical[3], wallLvl2Horizontal[4], wallLgHzScreenLvl2;
 
-
-	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
+	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen, instructionsScreen, victoryScreen, transitionScreen;
+	Image sandScreen;
 	//Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
+	PlayerTank     crackTwo;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
 
@@ -61,13 +65,15 @@ private:
 	gill		   enemyBase;
 
 	TextDX		   *scoreFont;
+	TextDX		   *finalScoreFont;
+
+
 
 	GameStates gamestates;
 
 	bulletType bullet_type;
 
 	int score;
-
 
 	Image   menu;               // menu image
 	bool    menuOn;
@@ -81,7 +87,6 @@ private:
 
 	VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
-
 	PatternStep patternSteps2[maxPatternSteps];
 	PatternStep patternSteps3[maxPatternSteps];
 	PatternStep patternSteps4[maxPatternSteps];
@@ -102,6 +107,12 @@ private:
 
 	//For audio
 	bool isMusicPlaying;
+
+	//For level one base
+	bool isBaseOneDead;
+	bool isBaseTwoDead;
+
+	bool havePowerUp;
 
 	//Level two patternSteps
 	PatternStep patternStepsLvl2[MAX_ENEMY_TANKS][maxPatternSteps];

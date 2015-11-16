@@ -90,6 +90,7 @@
     <ClCompile Include="audio.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="collisionTypes.cpp" />
+    <ClCompile Include="crackOne.cpp" />
     <ClCompile Include="enemyTank.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="collisionTypes.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="crackOne.h" />
     <ClInclude Include="enemyTank.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />

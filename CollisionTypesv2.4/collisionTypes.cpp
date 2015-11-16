@@ -38,6 +38,8 @@ void CollisionTypes::initialize(HWND hwnd)
 	timeInState = 0;
 	score = 0;
 	isMusicPlaying = false;
+	isBaseOneDead = false;
+	isBaseTwoDead = false;
 
 #pragma region game_textures
 
@@ -74,9 +76,10 @@ void CollisionTypes::initialize(HWND hwnd)
 	wallLgHzScreen[0].setX(wallOneX);
 	wallLgHzScreen[0].setY(wallOneY);
 
-
 #pragma endregion Level One Walls
 
+
+#pragma region levelOneTextures
 #pragma region Level Two Walls
 
 	for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)
@@ -123,6 +126,15 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if (!tankCrackOneTexture.initialize(graphics, TANK_CRACK_ONE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if (!tankCrackTwoTexture.initialize(graphics, TANK_CRACK_TWO))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+
+
+
 	if (!tankBodyTexture.initialize(graphics, TANK_BODY))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
@@ -142,12 +154,24 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
 	if(!enemyBase.initialize(this, gillNS::WIDTH, gillNS::HEIGHT, 0, &enemyBaseTexture))
+
+
+		if(!enemyBaseTexture.initialize(graphics, ENEMY_BASE))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if(!enemyBase.initialize(this, gillNS::WIDTH, gillNS::HEIGHT, 0, &enemyBaseTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
 
 	if (!powerup.initialize(this, murrayNS::WIDTH, murrayNS::HEIGHT, 0, &powerupTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
 
-	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
+	if (!powerup.initialize(this, murrayNS::WIDTH, murrayNS::HEIGHT, 0, &powerupTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
+
+	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 3, &tankBodyTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+	if (!crackTwo.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankCrackTwoTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
@@ -157,12 +181,10 @@ void CollisionTypes::initialize(HWND hwnd)
 
 		enemyTanks[i].setScale(.20f);
 
-
 		if (!enemyTanks[i].initializeBullets(this, bulletNS::WIDTH, bulletNS::HEIGHT, 0, &bulletTexture))
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing enemy bullet"));
 
 	}
-
 	//SPLASH SCREEN
 	if (!splashScreenTexture.initialize(graphics,SPLASH_SCREEN))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing splash screen texture"));
@@ -170,6 +192,30 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::WARNING, "Splashscreen not initialized"));
 	splashScreen.setX(0);
 	splashScreen.setY(0);
+
+	//TRANSITION SCREEN
+	if (!transitionTexture.initialize(graphics,TRANSITION))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing transition screen texture"));
+	if (!transitionScreen.initialize(graphics, transitionTexture.getWidth(), transitionTexture.getHeight(),0, &transitionTexture))
+		throw(GameError(gameErrorNS::WARNING, "Transition not initialized"));
+	transitionScreen.setX(0);
+	transitionScreen.setY(0);
+
+	//INSTRUCTION SCREEN
+	if (!instructionsTexture.initialize(graphics,INSTRUCTIONS))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing instructions screen texture"));
+	if (!instructionsScreen.initialize(graphics, instructionsTexture.getWidth(),instructionsTexture.getHeight(),0, &instructionsTexture))
+		throw(GameError(gameErrorNS::WARNING, "instructions not initialized"));
+	instructionsScreen.setX(0);
+	instructionsScreen.setY(0);
+
+	//VICTORY SCREEN
+	if (!victoryTexture.initialize(graphics,VICTORY))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing victory screen texture"));
+	if (!victoryScreen.initialize(graphics, victoryTexture.getWidth(), victoryTexture.getHeight(),0, &victoryTexture))
+		throw(GameError(gameErrorNS::WARNING, "victory not initialized"));
+	victoryScreen.setX(0);
+	victoryScreen.setY(0);
 
 	//GAME OVER SCREEN
 	if(!gameOverTexture.initialize(graphics, GAME_OVER))
@@ -186,6 +232,14 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::WARNING, "Game menu screen not initialized"));
 	gameMenuScreen.setX(0);
 	gameMenuScreen.setY(0);
+
+	//SAND BACKGROUND
+	if(!sandTexture.initialize(graphics, SAND_BACKGROUND))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing sand screen texture"));
+	if(!sandScreen.initialize(graphics, sandTexture.getWidth(), sandTexture.getHeight(), 0, &sandTexture))
+		throw(GameError(gameErrorNS::WARNING, "Game menu screen not initialized"));
+	sandScreen.setX(0);
+	sandScreen.setY(0);
 
 	//CHEAT CODE SCREEN
 	if(!cheatCodeTexture.initialize(graphics, CHEAT_SCREEN))
@@ -245,7 +299,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	powerup.setCollisionType(entityNS::BOX);
 	powerup.setEdge(POWERUP_RECT);
 
-
 	//Base placement
 	enemyBase.setX(1040);
 	enemyBase.setY(520);
@@ -278,9 +331,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	wallLgVtScreen.setCollisionType(entityNS::BOX);
 	wallLgVtScreen.setEdge(WALL_LONG_VT_RECT);
 
-
-
-
 	wall.setScale(.5f);
 	wall.setCollisionType(entityNS::BOX);
 
@@ -297,7 +347,6 @@ void CollisionTypes::initialize(HWND hwnd)
 		enemyTanks[i].setEdge(TANK_RECTANGLE);
 		enemyTanks[i].setPosition(VECTOR2(-1,-1));
 	}
-
 
 #pragma region stateTwo information
 	enemyTanks[0].setPositionX(2 * GAME_WIDTH/3);
@@ -322,8 +371,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	enemyTanks[6].setPositionY(GAME_HEIGHT - enemyTanks[6].getWidth());
 #pragma endregion
 
-	/*enemyTanks[3].setPositionX(
-	enemyTanks[3].setPositionY(*/
 	//Enemy tank placement
 	enemyTanks[0].setPositionX(levelOneTankOneX);
 	enemyTanks[0].setPositionY(levelOneTankOneY);
@@ -342,11 +389,12 @@ void CollisionTypes::initialize(HWND hwnd)
 
 
 	playerTank.setCurrentFrame(0);
-	playerTank.setScale(.20f);
+	playerTank.setScale(.15f);
+	crackTwo.setScale(.15f);
+
 
 	playerTank.setX(levelOnePlayerX);
 	playerTank.setY(levelOnePlayerY);
-
 
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
@@ -362,11 +410,16 @@ void CollisionTypes::initialize(HWND hwnd)
 	}
 
 	scoreFont = new TextDX();
+	finalScoreFont = new TextDX();
 
 	//Initialize the game text
 	if(scoreFont->initialize(graphics, 24, true, false, "Arial") == false)
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing output font"));
 
+	if(finalScoreFont->initialize(graphics, 48, true, false, "Bauhaus 93") == false)
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing output font"));
+
+	finalScoreFont->setFontColor(graphicsNS::RED);
 	scoreFont->setFontColor(graphicsNS::RED);
 
 
@@ -385,6 +438,64 @@ void CollisionTypes::initialize(HWND hwnd)
 				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
 		}
 	}
+#pragma region patternStepInitialize
+	patternStepIndex = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps[i].initialize(&enemyTanks[0]);
+		patternSteps[i].setActive();
+	}
+
+	patternStepIndex2 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps2[i].initialize(&enemyTanks[1]);
+		patternSteps2[i].setActive();
+	}
+
+	patternStepIndex3 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps3[i].initialize(&enemyTanks[2]);
+		patternSteps3[i].setActive();
+	}
+
+	patternStepIndex4 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps4[i].initialize(&enemyTanks[3]);
+		patternSteps4[i].setActive();
+	}
+
+	patternStepIndex5 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps5[i].initialize(&enemyTanks[4]);
+		patternSteps5[i].setActive();
+	}
+
+	patternStepIndex6 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps6[i].initialize(&enemyTanks[5]);
+		patternSteps6[i].setActive();
+	}
+
+	patternStepIndex7 = 0;
+	for (int i = 0; i < maxPatternSteps; i++)
+	{
+		patternSteps7[i].initialize(&enemyTanks[6]);
+		patternSteps7[i].setActive();
+	}
+
+#pragma endregion patternStepInitialize
+	enemyUpDown();
+	enemyUpDown2();
+	enemyLeftRight();
+	enemyLeftRight2();
+	enemyLeftRight3();
+	enemyLeftRight4();
+	enemyLeftRight5();
 
 	initializeLvlTwoPatterns();
 
@@ -478,6 +589,12 @@ void CollisionTypes::gameStatesUpdate()
 			timeInState = 0;
 		}
 
+		if(input->wasKeyPressed(0x49))
+		{
+			gamestates = instructions;
+			timeInState = 0;
+		}
+
 		//If "E" is pressed, exit the game
 		if(input->wasKeyPressed(0x45))
 		{
@@ -490,7 +607,7 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x55))
 		{
 			//Give ulimited health
-			;
+			playerTank.setHealth(10000000.0f);
 		}
 		//If "W" was pressed, give all weapons
 		if(input->wasKeyPressed(0x57))
@@ -502,7 +619,8 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x32))
 		{
 			//Jump to level 2
-			;
+			gamestates = level_two;
+			timeInState = 0;
 		}
 		//If "ESC" was pressed, go back to main menu
 		if(input->wasKeyPressed(ESC_KEY))
@@ -513,11 +631,62 @@ void CollisionTypes::gameStatesUpdate()
 	}
 
 	//Moves to game over screen, but only for testing
-	if(gamestates == level_one && timeInState > 10)
+	if(gamestates == level_one)
 	{
-		//gamestates = gameover;
+		if(isBaseOneDead)
+		{
+			gamestates = levelTransition;
+			timeInState = 0;
+		}
+
+		//Just for testing
+		if(input->wasKeyPressed(0x32))
+		{
+			//Jump to level 2
+			gamestates = victory;
+		}
+
+
+	}
+
+	if(gamestates == levelTransition && timeInState > 3)
+	{
+		gamestates = level_two;
 		timeInState = 0;
 	}
+
+	if(gamestates == instructions)
+	{
+		if(input->wasKeyPressed(ESC_KEY))
+		{
+			gamestates = gameMenu;
+			timeInState = 0;
+		}
+	}
+
+	if(gamestates == level_two)
+	{
+		if(isBaseTwoDead)
+		{
+			gamestates = victory;
+			timeInState = 0;
+		}
+	}
+
+	if(gamestates == victory)
+	{
+		//If "Y" pressed
+		if(input->wasKeyPressed(0x59))
+		{
+			gamestates = intro;
+			timeInState = 0;
+		}
+		if(input->wasKeyPressed(0x4E))
+		{
+			PostQuitMessage(0);
+		}
+	}
+
 
 	//Restarts game back to menu 
 	if(gamestates == gameover)
@@ -545,6 +714,10 @@ void CollisionTypes::update()
 	case gameMenu:
 		break;
 	case cheatCodes:
+		break;
+	case instructions:
+		break;
+	case levelTransition:
 		break;
 	case level_one:
 		if(!isMusicPlaying)
@@ -579,22 +752,36 @@ void CollisionTypes::update()
 
 		playerTank.setVelocity(VECTOR2(0,0));
 		if(input->isKeyDown(TANK_UP_KEY))
+		{
 			playerTank.forward();
+		}
 		if(input->isKeyDown(TANK_DOWN_KEY))
+		{
 			playerTank.reverse();
-
-
+		}
 		playerTank.rotate(playerTankNS::NONE);
-		if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
+		if (input->isKeyDown(TANK_LEFT_KEY))
+		{
 			playerTank.rotate(playerTankNS::LEFT);
-		if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
+		}
+		if (input->isKeyDown(TANK_RIGHT_KEY))
+		{
 			playerTank.rotate(playerTankNS::RIGHT);
+		}
 
 		if (input->getMouseLButton())
 			playerTank.fireBullet();
 		playerTank.update(frameTime);
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].update(frameTime);
+
+		if(playerTank.getHealth() <= 80.0f && playerTank.getHealth() > 40.0f)
+			playerTank.setCurrentFrame(1);
+		else if(playerTank.getHealth() <= 40.0f && playerTank.getHealth() > 0.0f)
+			playerTank.setCurrentFrame(2);
+		else
+			playerTank.setCurrentFrame(0);
+
 		break;
 	case victory:
 		break;
@@ -610,7 +797,7 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
-
+	enemyTanks[0].ai(frameTime, playerTank);
 	float distance =  D3DXVec2Length(&(enemyTanks[0].getCenterPoint()-playerTank.getCenterPoint()));
 	float distance2 = D3DXVec2Length(&(enemyTanks[1].getCenterPoint()-playerTank.getCenterPoint()));
 	float distance3 = D3DXVec2Length(&(enemyTanks[2].getCenterPoint()-playerTank.getCenterPoint()));
@@ -618,6 +805,159 @@ void CollisionTypes::ai()
 	float distance5 = D3DXVec2Length(&(enemyTanks[4].getCenterPoint()-playerTank.getCenterPoint()));
 	float distance6 = D3DXVec2Length(&(enemyTanks[5].getCenterPoint()-playerTank.getCenterPoint()));
 	float distance7 = D3DXVec2Length(&(enemyTanks[6].getCenterPoint()-playerTank.getCenterPoint()));
+
+#pragma region distance
+	if(distance < 100.0f)
+	{
+		enemyTanks[0].ai(frameTime, playerTank);
+		patternStepIndex = 4;
+		patternSteps[4].initialize(&enemyTanks[0]);
+		patternSteps[4].setActive();
+	}
+	else if(patternStepIndex == maxPatternSteps - 1)
+	{
+		enemyTanks[0].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps[i].initialize(&enemyTanks[0]);
+			patternSteps[i].setActive();
+		}
+		patternStepIndex = 0;
+	}
+	if(distance2 < 100.0f)
+	{
+		enemyTanks[1].ai(frameTime, playerTank);
+		patternStepIndex2 = 4;
+		patternSteps2[4].initialize(&enemyTanks[1]);
+		patternSteps2[4].setActive();
+	}
+	else if(patternStepIndex2 == maxPatternSteps - 1)
+	{
+		enemyTanks[1].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps2[i].initialize(&enemyTanks[1]);
+			patternSteps2[i].setActive();
+		}
+		patternStepIndex2 = 0;
+	}
+	if(distance3 < 100.0f)
+	{
+		enemyTanks[2].ai(frameTime, playerTank);
+		patternStepIndex3 = 4;
+		patternSteps3[4].initialize(&enemyTanks[2]);
+		patternSteps3[4].setActive();
+	}
+	else if(patternStepIndex3 == maxPatternSteps - 1)
+	{
+		enemyTanks[2].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps3[i].initialize(&enemyTanks[2]);
+			patternSteps3[i].setActive();
+		}
+		patternStepIndex3 = 0;
+	}
+	if(distance4 < 100.0f)
+	{
+		enemyTanks[3].ai(frameTime, playerTank);
+		patternStepIndex4 = 4;
+		patternSteps4[4].initialize(&enemyTanks[3]);
+		patternSteps4[4].setActive();
+	}
+	else if(patternStepIndex4 == maxPatternSteps - 1)
+	{
+		enemyTanks[3].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps4[i].initialize(&enemyTanks[3]);
+			patternSteps4[i].setActive();
+		}
+		patternStepIndex4 = 0;
+	}
+	if(distance5 < 100.0f)
+	{
+		enemyTanks[4].ai(frameTime, playerTank);
+		patternStepIndex5 = 4;
+		patternSteps5[4].initialize(&enemyTanks[4]);
+		patternSteps5[4].setActive();
+	}
+	else if(patternStepIndex5 == maxPatternSteps - 1)
+	{
+		enemyTanks[4].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps5[i].initialize(&enemyTanks[4]);
+			patternSteps5[i].setActive();
+		}
+		patternStepIndex5 = 0;
+	}
+	if(distance6 < 100.0f)
+	{
+		enemyTanks[5].ai(frameTime, playerTank);
+		patternStepIndex6 = 4;
+		patternSteps6[4].initialize(&enemyTanks[5]);
+		patternSteps6[4].setActive();
+	}
+	else if(patternStepIndex6 == maxPatternSteps - 1)
+	{
+		enemyTanks[5].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps6[i].initialize(&enemyTanks[5]);
+			patternSteps6[i].setActive();
+		}
+		patternStepIndex6 = 0;
+	}
+
+	if(distance7 < 100.0f)
+	{
+		enemyTanks[6].ai(frameTime, playerTank);
+		patternStepIndex7 = 4;
+		patternSteps7[4].initialize(&enemyTanks[6]);
+		patternSteps7[4].setActive();
+	}
+	else if(patternStepIndex7 == maxPatternSteps - 1)
+	{
+		enemyTanks[6].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps7[i].initialize(&enemyTanks[6]);
+			patternSteps7[i].setActive();
+		}
+		patternStepIndex7 = 0;
+	}
+#pragma endregion distance
+
+#pragma region updatePattern
+	if (patternSteps[patternStepIndex].isFinished())
+		patternStepIndex++;
+	patternSteps[patternStepIndex].update(frameTime);
+
+	if (patternSteps2[patternStepIndex2].isFinished())
+		patternStepIndex2++;
+	patternSteps2[patternStepIndex2].update(frameTime);
+
+	if (patternSteps3[patternStepIndex3].isFinished())
+		patternStepIndex3++;
+	patternSteps3[patternStepIndex3].update(frameTime);
+
+	if (patternSteps4[patternStepIndex4].isFinished())
+		patternStepIndex4++;
+	patternSteps4[patternStepIndex4].update(frameTime);
+
+	if (patternSteps5[patternStepIndex5].isFinished())
+		patternStepIndex5++;
+	patternSteps5[patternStepIndex5].update(frameTime);
+
+	if (patternSteps6[patternStepIndex6].isFinished())
+		patternStepIndex6++;
+	patternSteps6[patternStepIndex6].update(frameTime);
+
+	if (patternSteps7[patternStepIndex7].isFinished())
+		patternStepIndex7++;
+	patternSteps7[patternStepIndex7].update(frameTime);
+#pragma endregion updatePattern
 	switch(gamestates)
 	{
 	case level_one:
@@ -980,6 +1320,7 @@ void CollisionTypes::collisions()
 			}
 
 		}
+
 #pragma endregion bulletWall
 
 #pragma region playerWall
@@ -1025,7 +1366,7 @@ void CollisionTypes::collisions()
 			playerTank.bounce(collisionVector, wallLgHzScreen[0]);
 		}
 
-		
+
 
 		//First Check for all player Tank collisions
 		for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)
@@ -1075,7 +1416,7 @@ void CollisionTypes::collisions()
 					bullets[i].reflectVelocity(collisionVector);
 					bullets[i].setCollision(true);
 				}
-				continue;			
+				continue;                  
 			}
 
 
@@ -1114,6 +1455,7 @@ void CollisionTypes::collisions()
 #pragma endregion playerWall
 }
 
+
 //=============================================================================
 // Render game items
 //=============================================================================
@@ -1123,6 +1465,11 @@ void CollisionTypes::render()
 	std::stringstream scoreDisplay;
 	scoreDisplay << "Score: ";
 	scoreDisplay << score;
+
+	//Final score display
+	std::stringstream finalScoreDisplay;
+	finalScoreDisplay << "Final score: ";
+	finalScoreDisplay << score;
 
 	float angle;
 	graphics->spriteBegin();                // begin drawing sprites
@@ -1135,10 +1482,17 @@ void CollisionTypes::render()
 	case cheatCodes:
 		cheatCodeScreen.draw();
 		break;
+	case instructions:
+		instructionsScreen.draw();
+		break;
+	case levelTransition:
+		transitionScreen.draw();
+		break;
 	case gameMenu:
 		gameMenuScreen.draw();
 		break;
 	case level_one:
+		sandScreen.draw();
 		//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 		//enemyTanks[i].draw();
 		playerTank.draw();
@@ -1160,9 +1514,12 @@ void CollisionTypes::render()
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].draw();
 		playerTank.draw();
+		//crackone.draw();
+		//crackTwo.draw();
 
 		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 
+		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 		break;
 	case level_two:
 		playerTank.draw();
@@ -1177,6 +1534,8 @@ void CollisionTypes::render()
 		//circleWall.draw();
 		break;
 	case victory:
+		victoryScreen.draw();
+		finalScoreFont->print(finalScoreDisplay.str(), GAME_WIDTH/2 - 200, GAME_HEIGHT/2 - 200);
 		break;
 	case gameover:
 		gameOverScreen.draw();

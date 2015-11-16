@@ -104,7 +104,8 @@ public:
 
 	void ai(float time, Entity &t);
 
-	Bullet* getBullets() { return bullets; }
+
+	Bullet* getBullets() {return bullets; }
 
 	void vectorTrack();
 	void deltaTrack();

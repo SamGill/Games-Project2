@@ -84,6 +84,7 @@ const int NUM_ENEMY_BULLETS = 6;
 const int MAX_PLAYER_SHOTS = 10;
 const int SHOT_TIME_BUFFER = 1;
 const int MAX_ENEMY_TANKS = 7;
+
 const int NUM_LVL_TWO_HZ_WALL = 4;
 const int NUM_LVL_TWO_VT_WALL = 3;
 
@@ -126,10 +127,6 @@ const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
 const RECT POWERUP_RECT = {-16, -16, 16, 16};
 const RECT ENEMY_BASE_RECT = {-32, -64, 32, 64};
 
-//const RECT WALL_SHORT_HZ_RECT = {-80, -17, 80, 17};
-//const RECT WALL_SHORT_VT_RECT = {-17, -80, 17, 80};
-
-
 const RECT  COLLISION_RECTANGLE = {-30,-16,30,16};
 const RECT  COLLISION_BOX = {-30,-30,30,30};
 const float   COLLISION_RADIUS = 29;
@@ -140,6 +137,13 @@ const char MENU_IMAGE[] =     "pictures\\menu.png";      // menu texture
 
 const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
+
+const char TANK_CRACK_ONE[] = "pictures\\tank_body2.png";
+const char TANK_CRACK_TWO[] = "pictures\\tank_body3.png";
+//const char TANK_CRACK_ONE[] = "pictures\\tank_body2.png";
+
+
+
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
 const char WALL_LONG_HORIZONTAL[] = "pictures\\wall_long_horizontal.png";
@@ -147,7 +151,11 @@ const char WALL_LONG_VERTICAL[] = "pictures\\wall_long_vertical.png";
 const char WALL_SHORT_HORIZONTAL[] = "pictures\\wall_short_horizontal.png";
 const char WALL_SHORT_VERTICAL[] = "pictures\\wall_short_vertical.png";
 const char WALL_IMAGE[] =     "pictures\\sand_background.png";
+
+const char SAND_BACKGROUND[] = "pictures\\background.png";
+
 const char WALL_CIRCLE[] =    "pictures\\circular_wall.png";
+
 
 const char POWER_UP[] =		  "pictures\\powerup.png";
 const char ENEMY_BASE[] =	  "pictures\\enemy_base.png";
@@ -164,6 +172,15 @@ const char MENU_SCREEN[] =	  "pictures\\game_menu.png";
 
 //Cheat code screen
 const char CHEAT_SCREEN[] =	  "pictures\\cheat_codes.png";	
+
+//Instructions code screen
+const char INSTRUCTIONS[] =   "pictures\\instructions.png";
+
+//Victory screen
+const char VICTORY[] =		  "pictures\\high_score.png";
+
+//Transition screen
+const char TRANSITION[] =	  "pictures\\level2.png";
 
 // audio files required by audio.cpp
 // WAVE_BANK must be location of .xwb file.
@@ -191,7 +208,7 @@ const UCHAR TANK_DOWN_KEY    = 0x53;     // down arrow
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE};
 
 // States
-enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gameover};
+enum GameStates {intro, gameMenu, cheatCodes, instructions, levelTransition, level_one, level_two, victory, gameover};
 
 //Bullet type
 enum bulletType {normal, mega};
@@ -250,6 +267,10 @@ const int levelOneTankSixX = 700;
 const int levelOneTankSixY = 450;
 const int levelOneTankSevenX = 880;
 const int levelOneTankSevenY = 325;
+const int  JPO_COLS = 3;
+const int  JPO_WIDTH = 512;
+const int  JPO_HEIGHT = 512;
+//JPO actions
 
 #pragma endregion Level One Setup
 
