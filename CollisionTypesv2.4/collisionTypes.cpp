@@ -489,7 +489,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	enemyLeftRight4();
 	enemyLeftRight5();
 
-	initializeLvlTwoPatterns();
 
 #pragma region patternStepInitialize
 	patternStepIndex = 0;
@@ -643,6 +642,33 @@ void CollisionTypes::gameStatesUpdate()
 
 	if(gamestates == levelTransition && timeInState > 3)
 	{
+		initializeLvlTwoPatterns();
+
+		enemyTanks[0].setPositionX(2 * GAME_WIDTH/3);
+		enemyTanks[0].setPositionY(GAME_HEIGHT/5);
+		enemyTanks[1].setPositionX(GAME_WIDTH/2 - enemyTanks[1].getWidth());
+		enemyTanks[1].setPositionY(GAME_HEIGHT/3);
+		enemyTanks[2].setPositionX(GAME_WIDTH/2 - enemyTanks[1].getWidth());
+		enemyTanks[2].setPositionY(GAME_HEIGHT - enemyTanks[2].getWidth() * enemyTanks[2].getScale());
+		enemyTanks[3].setPositionX(GAME_WIDTH/3);
+		enemyTanks[3].setPositionY(2 * GAME_HEIGHT/3);
+		enemyTanks[4].setPositionX(GAME_WIDTH - 4 * enemyTanks[4].getWidth() * enemyTanks[4].getScale());
+		enemyTanks[4].setPositionY(GAME_HEIGHT -3 * enemyTanks[4].getWidth() * enemyTanks[4].getScale());
+		enemyTanks[5].setPositionX(GAME_WIDTH  - 5 * enemyTanks[5].getWidth() * enemyTanks[5].getScale() - 10);
+		enemyTanks[5].setPositionY(GAME_HEIGHT - 2 * enemyTanks[5].getWidth() * enemyTanks[5].getScale() + 50);
+		enemyTanks[6].setPositionX(GAME_WIDTH  - enemyTanks[6].getWidth());
+		enemyTanks[6].setPositionY(GAME_HEIGHT - enemyTanks[6].getWidth());
+
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		{
+			enemyTanks[i].setHealth(100);
+			enemyTanks[i].setVisible();
+		}
+
+		playerTank.setX(levelOnePlayerX);
+		playerTank.setY(levelOnePlayerY);
+		playerTank.setRadians(PI/4);
+
 		gamestates = level_two;
 		timeInState = 0;
 	}
@@ -1336,7 +1362,6 @@ void CollisionTypes::collisions()
                      }
 
               }
-
 #pragma endregion bulletWall
 
 #pragma region playerWall
@@ -1470,7 +1495,6 @@ void CollisionTypes::collisions()
 
 #pragma endregion playerWall
 }
-
 
 //=============================================================================
 // Render game items
@@ -1711,10 +1735,19 @@ void CollisionTypes::resetAll()
 void CollisionTypes::performEnemyTankPatternStep(int index)
 {
 	//enemyTanks[index].ai(frameTime, playerTank);
-
-	if (patternStepIndexLvlTwo[index] == maxPatternSteps)
+	float distance =  D3DXVec2Length(&(enemyTanks[index].getCenterPoint()-playerTank.getCenterPoint()));
+	if  (distance < 200.0f)
 	{
-		for (int i = 0; i < maxPatternSteps; i++)
+		enemyTanks[index].ai(frameTime, playerTank);
+
+		patternStepIndexLvlTwo[index] = 4;
+		patternStepsLvl2[index][maxPatternSteps - 1].initialize(&enemyTanks[index]);
+		patternStepsLvl2[index][maxPatternSteps - 1].initialize(&enemyTanks[index]);
+		patternStepsLvl2[index][maxPatternSteps - 1].setActive();
+	}
+	else if (patternStepIndexLvlTwo[index] == maxPatternSteps - 1)
+	{
+		for (int i = 0; i < maxPatternSteps - 1; i++)
 		{
 			patternStepsLvl2[index][i].initialize(&enemyTanks[index]);
 			patternStepsLvl2[index][i].setActive();
@@ -1751,6 +1784,8 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[0][2].setTimeForStep(2);
 	patternStepsLvl2[0][3].setAction(DOWN);
 	patternStepsLvl2[0][3].setTimeForStep(2);
+	patternStepsLvl2[0][4].setAction(TRACK);
+	patternStepsLvl2[0][4].setTimeForStep(5);
 
 	patternStepsLvl2[1][0].setAction(RIGHT);
 	patternStepsLvl2[1][0].setTimeForStep(2);
@@ -1760,6 +1795,9 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[1][2].setTimeForStep(2);
 	patternStepsLvl2[1][3].setAction(UP);
 	patternStepsLvl2[1][3].setTimeForStep(1);
+	patternStepsLvl2[1][4].setAction(TRACK);
+	patternStepsLvl2[1][4].setTimeForStep(5);
+
 
 	patternStepsLvl2[2][0].setAction(RIGHT);
 	patternStepsLvl2[2][0].setTimeForStep(1);
@@ -1769,6 +1807,8 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[2][2].setTimeForStep(1);
 	patternStepsLvl2[2][3].setAction(DOWN);
 	patternStepsLvl2[2][3].setTimeForStep(1);
+	patternStepsLvl2[2][4].setAction(TRACK);
+	patternStepsLvl2[2][4].setTimeForStep(5);
 
 	patternStepsLvl2[3][0].setAction(RIGHT);
 	patternStepsLvl2[3][0].setTimeForStep(1);
@@ -1778,6 +1818,9 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[3][2].setTimeForStep(1);
 	patternStepsLvl2[3][3].setAction(UP);
 	patternStepsLvl2[3][3].setTimeForStep(1);
+	patternStepsLvl2[3][4].setAction(TRACK);
+	patternStepsLvl2[3][4].setTimeForStep(5);
+
 
 	patternStepsLvl2[4][0].setAction(RIGHT);
 	patternStepsLvl2[4][0].setTimeForStep(2);
@@ -1787,6 +1830,8 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[4][2].setTimeForStep(2);
 	patternStepsLvl2[4][3].setAction(UP);
 	patternStepsLvl2[4][3].setTimeForStep(1);
+	patternStepsLvl2[4][4].setAction(TRACK);
+	patternStepsLvl2[4][4].setTimeForStep(5);
 
 	patternStepsLvl2[5][0].setAction(RIGHT);
 	patternStepsLvl2[5][0].setTimeForStep(1);
@@ -1796,6 +1841,9 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[5][2].setTimeForStep(1);
 	patternStepsLvl2[5][3].setAction(LEFT);
 	patternStepsLvl2[5][3].setTimeForStep(1);
+	patternStepsLvl2[5][4].setAction(TRACK);
+	patternStepsLvl2[5][4].setTimeForStep(5);
+
 
 	patternStepsLvl2[6][0].setAction(RIGHT);
 	patternStepsLvl2[6][0].setTimeForStep(1);
@@ -1805,4 +1853,7 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[6][2].setTimeForStep(1);
 	patternStepsLvl2[6][3].setAction(UP);
 	patternStepsLvl2[6][3].setTimeForStep(1);
+	patternStepsLvl2[6][4].setAction(TRACK);
+	patternStepsLvl2[6][4].setTimeForStep(5);
+
 }
