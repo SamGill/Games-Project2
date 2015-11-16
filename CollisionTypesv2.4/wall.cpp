@@ -20,10 +20,11 @@ Wall::Wall() : Entity()
 	velocity.x = 0;                             // velocity X
 	velocity.y = 0;                             // velocity Y
 
-	
+	radius = wallNS::COLLISION_RADIUS;
 	currentFrame = 0;
 	collision = false;
 	collisionType = entityNS::BOX;
+	mass = wallNS::MASS;
 }
 
 //=============================================================================

@@ -94,7 +94,7 @@ void TankHead::fireBullet()
 		bullet[numBulletsFired].setX(getCenterX() + angleVector.x * nozzleRadius);
 		bullet[numBulletsFired].setY(getCenterY() + angleVector.y * nozzleRadius);
 		bullet[numBulletsFired].setRadians(spriteData.angle);
-		bullet[numBulletsFired].setVelocity(angleVector * bulletNS::SPEED);
+		bullet[numBulletsFired].setVelocity(*D3DXVec2Normalize(&angleVector, &angleVector) * bulletNS::SPEED);
 		bullet[numBulletsFired].setVisible(true);	
 	}
 	//This is the case where the player has too many bullets on the screen, but he should be able to fire based on the time buffer.

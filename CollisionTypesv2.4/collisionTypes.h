@@ -20,7 +20,7 @@ class CollisionTypes;
 #include <cmath>
 
 
-#define maxPatternSteps 5
+#define maxPatternSteps 4
 
 //=============================================================================
 // This class is the core of the game
@@ -28,9 +28,9 @@ class CollisionTypes;
 class CollisionTypes : public Game
 {
 private:
-    // game items
-    TextureManager menuTexture, gameTextures;   // game texture
-    Ship    rectangle, square, circle, ship;    // targets and spaceship
+	// game items
+	TextureManager menuTexture, gameTextures;   // game texture
+	Ship    rectangle, square, circle, ship;    // targets and spaceship
 
 	TextureManager tankBodyTexture;
 	TextureManager tankHeadTexture;
@@ -38,7 +38,12 @@ private:
 	TextureManager enemyTankTexture;
 	TextureManager wallTexture;
 	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
+	//Wall texture Managers for level1
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
+
+	//Wall textures for level2
+	TextureManager circleWallTexture;
+
 
 	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen;
 	//Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
@@ -46,45 +51,58 @@ private:
 	PlayerTank     playerTank;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
-	Wall           wall;
-	Wall		   wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
+	Wall		   wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen, circleWall;
+
+	Wall wallLvl2Vertical[3], wallLvl2Horizontal[4];
+
 
 	GameStates gamestates;
 
 
-    Image   menu;               // menu image
-    bool    menuOn;
-    VECTOR2 collisionVector;    // collision vector
-    Image   line;               // for drawing collision vector
-    float   lineRadians;
-    float   lineScale;          // distance/LINE_LENGTH
-    float   AxBx;
-    float   AyBy;
-    float   lineLength;
+	Image   menu;               // menu image
+	bool    menuOn;
+	VECTOR2 collisionVector;    // collision vector
+	Image   line;               // for drawing collision vector
+	float   lineRadians;
+	float   lineScale;          // distance/LINE_LENGTH
+	float   AxBx;
+	float   AyBy;
+	float   lineLength;
 
-    VECTOR2 lineEnds[2];        // x,y of line endpoints
+	VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
+
+
 	int patternStepIndex;
+
 	float timeInState;
 
 	//For audio
 	bool isMusicPlaying;
 
+	//Level two patternSteps
+	PatternStep patternStepsLvl2[MAX_ENEMY_TANKS][maxPatternSteps];
+	int patternStepIndexLvlTwo[MAX_ENEMY_TANKS];
+
+	void performEnemyTankPatternStep(int index);
+
+	void initializeLvlTwoPatterns();
+
 public:
-    // Constructor
-    CollisionTypes();
+	// Constructor
+	CollisionTypes();
 
-    // Destructor
-    virtual ~CollisionTypes();
+	// Destructor
+	virtual ~CollisionTypes();
 
-    // Initialize the game
-    void initialize(HWND hwnd);
-    void update();      // must override pure virtual from Game
-    void ai();          // "
-    void collisions();  // "
-    void render();      // "
-    void releaseAll();
-    void resetAll();
+	// Initialize the game
+	void initialize(HWND hwnd);
+	void update();      // must override pure virtual from Game
+	void ai();          // "
+	void collisions();  // "
+	void render();      // "
+	void releaseAll();
+	void resetAll();
 
 	void gameStatesUpdate();
 };

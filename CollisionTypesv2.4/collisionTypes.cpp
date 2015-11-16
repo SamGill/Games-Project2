@@ -30,7 +30,9 @@ void CollisionTypes::initialize(HWND hwnd)
 {
 
 	Game::initialize(hwnd); // throws GameError
-	gamestates = intro;
+	//gamestates = intro;
+	gamestates = level_two;
+
 	timeInState = 0;
 	isMusicPlaying = false;
 
@@ -56,11 +58,66 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!wallShortVtScreen.initialize(this, wallShortVtTexture.getWidth(),wallShortVtTexture.getHeight(),0, &wallShortVtTexture))
 		throw(GameError(gameErrorNS::WARNING, "wall short vertical not initialized"));
 
+
+
+
 	//Placement of walls
 	wallLgHzScreen.setX(wallOneX);
 	wallLgHzScreen.setY(wallOneY);
+
+
 #pragma endregion Level One Walls
 
+#pragma region Level Two Walls
+
+	if (!circleWallTexture.initialize(graphics, WALL_CIRCLE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if (!circleWall.initialize(this, circleWallTexture.getWidth(), circleWallTexture.getHeight(), 0, &circleWallTexture))
+		throw(GameError(gameErrorNS::WARNING, "wall circle not initialized"));
+
+	for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)
+	{
+		if (!wallLvl2Horizontal[i].initialize(this, wallShortHzTexture.getWidth(),wallShortHzTexture.getHeight(), 0, &wallShortHzTexture))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+		wallLvl2Horizontal[i].setEdge(WALL_SHORT_HZ_RECT);
+	}
+
+	for (int i = 0; i < NUM_LVL_TWO_VT_WALL; i++)
+	{
+		if (!wallLvl2Vertical[i].initialize(this, wallShortVtTexture.getWidth(),wallShortVtTexture.getHeight() - 20, 0, &wallShortVtTexture))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+		wallLvl2Vertical[i].setEdge(WALL_SHORT_VT_RECT);
+	}
+
+	wallLvl2Horizontal[0].setX(0);
+	wallLvl2Horizontal[0].setY(2 * GAME_HEIGHT/3);
+
+	wallLvl2Horizontal[1].setX(GAME_WIDTH - wallLvl2Horizontal[1].getWidth());
+	wallLvl2Horizontal[1].setY(GAME_HEIGHT/3);
+
+	wallLvl2Horizontal[2].setX(GAME_WIDTH/2 + circleWall.getWidth()/2 - 10);
+	wallLvl2Horizontal[2].setY(GAME_HEIGHT/2);
+
+
+	wallLvl2Vertical[0].setX(GAME_WIDTH/2);
+	wallLvl2Vertical[0].setY(0);
+
+	wallLvl2Vertical[1].setX(GAME_WIDTH/5);
+	wallLvl2Vertical[1].setY(GAME_HEIGHT - wallLvl2Vertical[1].getHeight());
+
+	wallLvl2Vertical[2].setX(GAME_WIDTH/2 - 10);
+	wallLvl2Vertical[2].setY(GAME_HEIGHT/2 + circleWall.getHeight()/2 + 40);
+
+
+
+	circleWall.setX(GAME_WIDTH/2 - circleWall.getWidth()/2 - 10);
+	circleWall.setY(GAME_HEIGHT/2 - circleWall.getHeight()/3 - 10);
+	circleWall.setCollisionType(entityNS::CIRCLE);
+	circleWall.setCollisionRadius(circleWallTexture.getHeight()/2);
+#pragma endregion
 
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
@@ -77,19 +134,23 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!wallTexture.initialize(graphics, WALL_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
-
-
 	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
 		if (!enemyTanks[i].initialize(this, enemyTankNS::WIDTH, enemyTankNS::HEIGHT, 0, &enemyTankTexture))
 			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
-	if (!wall.initialize(this, wallNS::WIDTH, wallNS::HEIGHT, 0, &wallTexture))
-		throw(GameError(gameErrorNS::WARNING, "wall not initialized"));
+		enemyTanks[i].setScale(.20f);
 
-		//SPLASH SCREEN
+
+		if (!enemyTanks[i].initializeBullets(this, bulletNS::WIDTH, bulletNS::HEIGHT, 0, &bulletTexture))
+			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing enemy bullet"));
+
+	}
+
+	//SPLASH SCREEN
 	if (!splashScreenTexture.initialize(graphics,SPLASH_SCREEN))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing splash screen texture"));
 	if (!splashScreen.initialize(graphics, splashScreenTexture.getWidth(),splashScreenTexture.getHeight(),0, &splashScreenTexture))
@@ -126,25 +187,37 @@ void CollisionTypes::initialize(HWND hwnd)
 	wallLgHzScreen.setEdge(WALL_LONG_HZ_RECT);
 
 
-	wall.setScale(.5f);
-	wall.setCollisionType(entityNS::BOX);
-
-	RECT collision  = {-45,-10,45,10};
-	wall.setEdge(WALL_RECTANGLE);
-	wall.setX(400);
-	wall.setY(400);
-
-	//playerTank.getBullets()[0].setEdge(collision);
-
-	//wall.setEdge();
 
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 	{
-		enemyTanks[i].setPositionX(GAME_WIDTH/(i + 1));
-		enemyTanks[i].setPositionY(GAME_HEIGHT/7);
-		enemyTanks[i].setScale(.25f);
 		enemyTanks[i].setEdge(TANK_RECTANGLE);
+		enemyTanks[i].setPosition(VECTOR2(-1,-1));
 	}
+
+	enemyTanks[0].setPositionX(2 * GAME_WIDTH/3);
+	enemyTanks[0].setPositionY(GAME_HEIGHT/5);
+
+	enemyTanks[1].setPositionX(GAME_WIDTH/2 - enemyTanks[1].getWidth());
+	enemyTanks[1].setPositionY(GAME_HEIGHT/3);
+
+	enemyTanks[2].setPositionX(GAME_WIDTH/2 - enemyTanks[1].getWidth());
+	enemyTanks[2].setPositionY(GAME_HEIGHT - enemyTanks[2].getWidth() * enemyTanks[2].getScale());
+
+	enemyTanks[3].setPositionX(GAME_WIDTH/3);
+	enemyTanks[3].setPositionY(2 * GAME_HEIGHT/3);
+
+	enemyTanks[4].setPositionX(GAME_WIDTH - 4 * enemyTanks[4].getWidth() * enemyTanks[4].getScale());
+	enemyTanks[4].setPositionY(GAME_HEIGHT -3 * enemyTanks[4].getWidth() * enemyTanks[4].getScale());
+
+	enemyTanks[5].setPositionX(GAME_WIDTH  - 5 * enemyTanks[5].getWidth() * enemyTanks[5].getScale() - 10);
+	enemyTanks[5].setPositionY(GAME_HEIGHT - 2 * enemyTanks[5].getWidth() * enemyTanks[5].getScale() + 50);
+
+	enemyTanks[6].setPositionX(GAME_WIDTH  - enemyTanks[6].getWidth());
+	enemyTanks[6].setPositionY(GAME_HEIGHT - enemyTanks[6].getWidth());
+
+
+	/*enemyTanks[3].setPositionX(
+	enemyTanks[3].setPositionY(*/
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.20f);
@@ -155,6 +228,7 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing head"));
+
 
 	playerTank.setCollisionType(entityNS::ROTATED_BOX);
 	playerTank.setEdge(TANK_RECTANGLE);
@@ -174,6 +248,8 @@ void CollisionTypes::initialize(HWND hwnd)
 				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
 		}
 	}
+
+	initializeLvlTwoPatterns();
 
 
 	//patternsteps
@@ -234,6 +310,8 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x0D))
 		{
 			gamestates = level_one;
+			gamestates = level_two;
+
 			timeInState = 0;
 		}
 		//If "C" is pressed, go to cheat code screen
@@ -343,6 +421,30 @@ void CollisionTypes::update()
 			enemyTanks[i].update(frameTime);
 		break;
 	case level_two:
+		if(!isMusicPlaying)
+		{
+			//audio->playCue(MAIN_MUSIC);
+			isMusicPlaying = true;
+		}
+
+		playerTank.setVelocity(VECTOR2(0,0));
+		if(input->isKeyDown(TANK_UP_KEY))
+			playerTank.forward();
+		if(input->isKeyDown(TANK_DOWN_KEY))
+			playerTank.reverse();
+
+
+		playerTank.rotate(playerTankNS::NONE);
+		if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
+			playerTank.rotate(playerTankNS::LEFT);
+		if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
+			playerTank.rotate(playerTankNS::RIGHT);
+
+		if (input->getMouseLButton())
+			playerTank.fireBullet();
+		playerTank.update(frameTime);
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			enemyTanks[i].update(frameTime);
 		break;
 	case victory:
 		break;
@@ -358,6 +460,12 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		enemyTanks[i].ai(frameTime, playerTank);
+		performEnemyTankPatternStep(i);
+	}
+
 	//if (playerTank.isFiring() == false)
 	//	enemyTanks[0].ai(frameTime, playerTank);
 	//else
@@ -417,66 +525,24 @@ void CollisionTypes::collisions()
 	collisionVector.x = 0;      // clear collision vector
 	collisionVector.y = 0;
 
-	playerTank.setCollision(false);
+	//playerTank.setCollision(false);
 
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 	{
 		if (playerTank.collidesWith(enemyTanks[i], collisionVector))
 		{
-
 			playerTank.setVelocity(VECTOR2(-collisionVector));
 			enemyTanks[i].setVelocity(VECTOR2(collisionVector));
 			playerTank.setCollision(true);
-
 		}
 	}
-
-	if (playerTank.collidesWith(wall, collisionVector))
-	{
-
-		playerTank.setCollision(true);
-		playerTank.bounce(collisionVector, wall);
-
-		/*if (collisionVector.x != 0)
-		{
-			if (collisionVector.x < 0)
-				playerTank.setX(wall.getWidth()*wall.getScale() + wall.getX()); 
-
-
-		}
-		//playerTank.setX(wall.getWidth()
-		//playerTank.setVelocity(VECTOR2(0,0));*/
-	}
-
 
 
 	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
 		//save some comparisons
 		if (bullets[i].getVisible() == false)
-		{
-			bullets[i].setCollision(false);
 			break;
-		}
-
-		if (bullets[i].collidesWith(wall, collisionVector))
-		{
-			if (bullets[i].getCollision() == false)
-			{
-				bullets[i].setCollision(true);
-
-				VECTOR2 currentVelocity = bullets[i].getVelocity();
-
-				if (collisionVector.x != 0)
-					currentVelocity.x *= -1;
-				else
-					currentVelocity.y *= -1;
-
-				bullets[i].setVelocity(currentVelocity);
-			}
-		}
-		else 
-			bullets[i].setCollision(false);
 
 		for (int j = 0; j < MAX_ENEMY_TANKS; j++)
 		{
@@ -488,8 +554,6 @@ void CollisionTypes::collisions()
 					enemyTanks[j].setInvisible();
 
 				bullets[i].setVisible(false);
-
-
 			}
 		}
 	}
@@ -501,41 +565,186 @@ void CollisionTypes::collisions()
 		playerTank.bounce(collisionVector, wallLgHzScreen);
 	}
 
-#pragma region Original code
-	collisionVector.x = 0;      // clear collision vector
-	collisionVector.y = 0;
+	/*for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+	if (bullets[i].collidesWith(wallLgHzScreen, collisionVector))
+	{
+	bullets[i].reflectVelocity(collisionVector);			
+	}
+	}*/
 
-	// if collision between ship and targets
-	ship.setCollision(false);
-	rectangle.setCollision(false);
-	square.setCollision(false);
-	circle.setCollision(false);
-	if(ship.collidesWith(rectangle, collisionVector))
+
+	switch (gamestates)
 	{
-		ship.setCollision(true);
-		rectangle.setCollision(true);
-		lineEnds[1].x = rectangle.getCollisionCenter()->x;
-		lineEnds[1].y = rectangle.getCollisionCenter()->y;
+	case level_two:
+
+
+		//First Check for all player Tank collisions
+		for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)
+		{
+			if (playerTank.collidesWith(wallLvl2Horizontal[i], collisionVector))
+			{
+				playerTank.setCollision(true);
+				playerTank.bounce(collisionVector, wallLvl2Horizontal[i]);
+			}
+
+			for (int j = 0; j < MAX_ENEMY_TANKS; j++)
+			{
+				if (enemyTanks[j].collidesWith(wallLvl2Horizontal[i], collisionVector))
+				{
+					enemyTanks[j].setCollision(true);
+					enemyTanks[j].bounce(collisionVector, wallLvl2Horizontal[i]);
+				}
+			}
+		}
+		for (int i = 0; i < NUM_LVL_TWO_VT_WALL; i++)
+		{
+			if (playerTank.collidesWith(wallLvl2Vertical[i], collisionVector))
+			{
+				playerTank.setCollision(true);
+				playerTank.bounce(collisionVector, wallLvl2Vertical[i]);
+			}
+
+			for (int j = 0; j < MAX_ENEMY_TANKS; j++)
+			{
+				if (enemyTanks[j].collidesWith(wallLvl2Vertical[i], collisionVector))
+				{
+					enemyTanks[j].setCollision(true);
+					enemyTanks[j].bounce(collisionVector, wallLvl2Vertical[i]);
+				}
+			}
+		}
+
+		//if (playerTank.collidesWith(circleWall, collisionVector))
+		//{
+		//	playerTank.setCollision(true);
+		//	playerTank.circleBounce(collisionVector, circleWall, frameTime);
+		//	//playerTank.bounce(collisionVector, circleWall);
+		//}
+		//else
+		//	playerTank.setCollision(false);
+
+
+		//next check for all bullet collisoins
+		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		{
+			//if this statements is true, the rest should all be invisible as well
+			/*if (bullets[i].getVisible() == false)
+			{
+			for (int j = i; j < MAX_PLAYER_SHOTS; j++)
+			bullets[j].setCollision(false);
+			break;
+			}*/
+
+			//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+
+
+
+
+			if (bullets[i].collidesWith(wallLgHzScreen, collisionVector))
+			{
+				if (bullets[i].getCollision() == false)
+				{
+					bullets[i].reflectVelocity(collisionVector);
+					bullets[i].setCollision(true);
+				}
+				continue;			
+			}
+
+			//Collision with the circle wall
+			//if (bullets[i].collidesWith(circleWall, collisionVector))
+			//{
+			//	if (bullets[i].getCollision() == false)
+			//	{
+
+			//		/*VECTOR2 currentVelocity = bullets[i].getVelocity();
+			//		collisionVector *= -1;
+			//		bool changeXDirection = collisionVector.x < 0 && currentVelocity.x > 0 || collisionVector.x > 0 && currentVelocity.x < 0;
+			//		bool changeYDirection = collisionVector.y < 0 && currentVelocity.y > 0 || collisionVector.y > 0 && currentVelocity.y < 0;
+			//		if (changeXDirection)
+			//		currentVelocity.x *= -1;
+			//		if (changeYDirection)
+			//		currentVelocity.y *= -1;
+			//		bullets[i].setVelocity(currentVelocity);*/
+
+			//		//D3DXVec2Normalize(&collisionVector, &collisionVector);
+			//		/*VECTOR2 oldVelocity = bullets[i].getVelocity();
+
+			//		float cosineOfAngle = D3DXVec2Dot(&collisionVector, &oldVelocity)/(D3DXVec2Length(&collisionVector) * D3DXVec2Length(&oldVelocity));*/
+
+			//		bullets[i].circleBounce(collisionVector, circleWall);
+
+
+			//		bullets[i].setCollision(true);
+			//	}
+			//	continue;
+			//}
+
+			for (int j = 0; j < NUM_LVL_TWO_HZ_WALL; j++)
+			{
+				if (bullets[i].collidesWith(wallLvl2Horizontal[j], collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].reflectVelocity(collisionVector);
+						bullets[i].setCollision(true);
+					}
+					continue;
+				}
+			}
+
+			for (int j = 0; j < NUM_LVL_TWO_VT_WALL; j++)
+			{
+				if (bullets[i].collidesWith(wallLvl2Vertical[j], collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].reflectVelocity(collisionVector);
+						bullets[i].setCollision(true);
+					}
+					continue;
+				}
+			}
+
+			bullets[i].setCollision(false);
+		}
 	}
-	if(ship.collidesWith(square, collisionVector))
-	{
-		//ship.bounce(collisionVector, square);
-		ship.setCollision(true);
-		square.setCollision(true);
-		lineEnds[1].x = square.getCollisionCenter()->x;
-		lineEnds[1].y = square.getCollisionCenter()->y;
-	}
-	if(ship.collidesWith(circle, collisionVector))
-	{
-		ship.setCollision(true);
-		circle.setCollision(true);
-		lineEnds[1].x = circle.getCollisionCenter()->x;
-		lineEnds[1].y = circle.getCollisionCenter()->y;
-	}
-	// Initialize line endpoints for drawing collision vector
-	lineEnds[0].x = ship.getCollisionCenter()->x;
-	lineEnds[0].y = ship.getCollisionCenter()->y;
-#pragma endregion 
+
+	//#pragma region Original code
+	//	collisionVector.x = 0;      // clear collision vector
+	//	collisionVector.y = 0;
+	//
+	//	// if collision between ship and targets
+	//	ship.setCollision(false);
+	//	rectangle.setCollision(false);
+	//	square.setCollision(false);
+	//	circle.setCollision(false);
+	//	if(ship.collidesWith(rectangle, collisionVector))
+	//	{
+	//		ship.setCollision(true);
+	//		rectangle.setCollision(true);
+	//		lineEnds[1].x = rectangle.getCollisionCenter()->x;
+	//		lineEnds[1].y = rectangle.getCollisionCenter()->y;
+	//	}
+	//	if(ship.collidesWith(square, collisionVector))
+	//	{
+	//		//ship.bounce(collisionVector, square);
+	//		ship.setCollision(true);
+	//		square.setCollision(true);
+	//		lineEnds[1].x = square.getCollisionCenter()->x;
+	//		lineEnds[1].y = square.getCollisionCenter()->y;
+	//	}
+	//	if(ship.collidesWith(circle, collisionVector))
+	//	{
+	//		ship.setCollision(true);
+	//		circle.setCollision(true);
+	//		lineEnds[1].x = circle.getCollisionCenter()->x;
+	//		lineEnds[1].y = circle.getCollisionCenter()->y;
+	//	}
+	//	// Initialize line endpoints for drawing collision vector
+	//	lineEnds[0].x = ship.getCollisionCenter()->x;
+	//	lineEnds[0].y = ship.getCollisionCenter()->y;
+	//#pragma endregion 
 }
 
 //=============================================================================
@@ -543,9 +752,6 @@ void CollisionTypes::collisions()
 //=============================================================================
 void CollisionTypes::render()
 {
-
-
-
 	float angle;
 	graphics->spriteBegin();                // begin drawing sprites
 
@@ -563,11 +769,20 @@ void CollisionTypes::render()
 	case level_one:
 		wallLgHzScreen.draw();
 		//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-			//enemyTanks[i].draw();
+		//enemyTanks[i].draw();
 		playerTank.draw();
-		wall.draw();
 		break;
 	case level_two:
+		playerTank.draw();
+		wallLgHzScreen.draw();
+		for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)
+			wallLvl2Horizontal[i].draw();
+		for (int i = 0; i < NUM_LVL_TWO_VT_WALL; i++)
+			wallLvl2Vertical[i].draw();
+
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			enemyTanks[i].draw();
+		//circleWall.draw();
 		break;
 	case victory:
 		break;
@@ -601,6 +816,7 @@ void CollisionTypes::releaseAll()
 	wallLgVtTexture.onLostDevice();
 	wallShortHzTexture.onLostDevice();
 	wallShortVtTexture.onLostDevice();
+	circleWallTexture.onLostDevice();
 	Game::releaseAll();
 	return;
 }
@@ -626,6 +842,107 @@ void CollisionTypes::resetAll()
 	wallLgVtTexture.onResetDevice();
 	wallShortHzTexture.onResetDevice();
 	wallShortVtTexture.onResetDevice();
+	circleWallTexture.onResetDevice();
 	Game::resetAll();
 	return;
+}
+
+
+void CollisionTypes::performEnemyTankPatternStep(int index)
+{
+	//enemyTanks[index].ai(frameTime, playerTank);
+
+	if (patternStepIndexLvlTwo[index] == maxPatternSteps)
+	{
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternStepsLvl2[index][i].initialize(&enemyTanks[index]);
+			patternStepsLvl2[index][i].setActive();
+		}
+		patternStepIndexLvlTwo[index] = 0;
+	}
+
+	patternStepsLvl2[index][patternStepIndexLvlTwo[index]].update(frameTime);
+
+
+	if (patternStepsLvl2[index][patternStepIndexLvlTwo[index]].isFinished())
+		patternStepIndexLvlTwo[index]++;
+
+}
+
+void CollisionTypes::initializeLvlTwoPatterns()
+{
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		patternStepIndexLvlTwo[i] = 0;
+
+		for (int j = 0; j < maxPatternSteps; j++)
+		{
+			patternStepsLvl2[i][j].initialize(&enemyTanks[i]);
+			patternStepsLvl2[i][j].setActive();
+		}
+	}
+
+	patternStepsLvl2[0][0].setAction(RIGHT);
+	patternStepsLvl2[0][0].setTimeForStep(2);
+	patternStepsLvl2[0][1].setAction(UP);
+	patternStepsLvl2[0][1].setTimeForStep(2);
+	patternStepsLvl2[0][2].setAction(LEFT);
+	patternStepsLvl2[0][2].setTimeForStep(2);
+	patternStepsLvl2[0][3].setAction(DOWN);
+	patternStepsLvl2[0][3].setTimeForStep(2);
+
+	patternStepsLvl2[1][0].setAction(RIGHT);
+	patternStepsLvl2[1][0].setTimeForStep(2);
+	patternStepsLvl2[1][1].setAction(DOWN);
+	patternStepsLvl2[1][1].setTimeForStep(1);
+	patternStepsLvl2[1][2].setAction(LEFT);
+	patternStepsLvl2[1][2].setTimeForStep(2);
+	patternStepsLvl2[1][3].setAction(UP);
+	patternStepsLvl2[1][3].setTimeForStep(1);
+
+	patternStepsLvl2[2][0].setAction(RIGHT);
+	patternStepsLvl2[2][0].setTimeForStep(1);
+	patternStepsLvl2[2][1].setAction(UP);
+	patternStepsLvl2[2][1].setTimeForStep(1);
+	patternStepsLvl2[2][2].setAction(LEFT);
+	patternStepsLvl2[2][2].setTimeForStep(1);
+	patternStepsLvl2[2][3].setAction(DOWN);
+	patternStepsLvl2[2][3].setTimeForStep(1);
+
+	patternStepsLvl2[3][0].setAction(RIGHT);
+	patternStepsLvl2[3][0].setTimeForStep(1);
+	patternStepsLvl2[3][1].setAction(DOWN);
+	patternStepsLvl2[3][1].setTimeForStep(1);
+	patternStepsLvl2[3][2].setAction(LEFT);
+	patternStepsLvl2[3][2].setTimeForStep(1);
+	patternStepsLvl2[3][3].setAction(UP);
+	patternStepsLvl2[3][3].setTimeForStep(1);
+
+	patternStepsLvl2[4][0].setAction(RIGHT);
+	patternStepsLvl2[4][0].setTimeForStep(2);
+	patternStepsLvl2[4][1].setAction(DOWN);
+	patternStepsLvl2[4][1].setTimeForStep(1);
+	patternStepsLvl2[4][2].setAction(LEFT);
+	patternStepsLvl2[4][2].setTimeForStep(2);
+	patternStepsLvl2[4][3].setAction(UP);
+	patternStepsLvl2[4][3].setTimeForStep(1);
+
+	patternStepsLvl2[5][0].setAction(RIGHT);
+	patternStepsLvl2[5][0].setTimeForStep(1);
+	patternStepsLvl2[5][1].setAction(RIGHT);
+	patternStepsLvl2[5][1].setTimeForStep(1);
+	patternStepsLvl2[5][2].setAction(LEFT);
+	patternStepsLvl2[5][2].setTimeForStep(1);
+	patternStepsLvl2[5][3].setAction(LEFT);
+	patternStepsLvl2[5][3].setTimeForStep(1);
+
+	patternStepsLvl2[6][0].setAction(RIGHT);
+	patternStepsLvl2[6][0].setTimeForStep(1);
+	patternStepsLvl2[6][1].setAction(DOWN);
+	patternStepsLvl2[6][1].setTimeForStep(1);
+	patternStepsLvl2[6][2].setAction(LEFT);
+	patternStepsLvl2[6][2].setTimeForStep(1);
+	patternStepsLvl2[6][3].setAction(UP);
+	patternStepsLvl2[6][3].setTimeForStep(1);
 }
