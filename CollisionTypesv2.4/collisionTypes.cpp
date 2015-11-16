@@ -5,6 +5,8 @@
 // Press '1', '2' or '3' to select collision type for ship.
 
 #include "collisionTypes.h"
+#include <sstream>
+#include <string>
 
 //=============================================================================
 // Constructor
@@ -32,6 +34,7 @@ void CollisionTypes::initialize(HWND hwnd)
 	Game::initialize(hwnd); // throws GameError
 	gamestates = intro;
 	timeInState = 0;
+	score = 0;
 	isMusicPlaying = false;
 
 #pragma region game_textures
@@ -47,22 +50,28 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!wallShortVtTexture.initialize(graphics,WALL_SHORT_VERTICAL))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < LONG_HZ_WALLS; i++)
+	{
 		if (!wallLgHzScreen[i].initialize(this, 320, 32, 0, &wallLgHzTexture))
 			throw(GameError(gameErrorNS::WARNING, "wall long horizontal not initialized"));
+	}
 	if (!wallLgVtScreen.initialize(this, wallLgVtTexture.getWidth(),wallLgVtTexture.getHeight(),0, &wallLgVtTexture))
 		throw(GameError(gameErrorNS::WARNING, "wall long vertical not initialized"));
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < SHORT_HZ_WALLS; i++)
+	{
 		if (!wallShortHzScreen[i].initialize(this, wallShortHzTexture.getWidth(),wallShortHzTexture.getHeight(),0, &wallShortHzTexture))
 			throw(GameError(gameErrorNS::WARNING, "wall short horizontal not initialized"));
-	for(int i = 0; i < 2; i++)
+	}
+	for(int i = 0; i < SHORT_VT_WALLS; i++)
+	{
 		if (!wallShortVtScreen[i].initialize(this, wallShortVtTexture.getWidth(),wallShortVtTexture.getHeight(),0, &wallShortVtTexture))
 			throw(GameError(gameErrorNS::WARNING, "wall short vertical not initialized"));
+	}
 
 	
 #pragma endregion Level One Walls
 
-
+#pragma region levelOneTextures
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
@@ -78,7 +87,20 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!wallTexture.initialize(graphics, WALL_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if(!powerupTexture.initialize(graphics, POWER_UP))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if(!enemyBaseTexture.initialize(graphics, ENEMY_BASE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if(!enemyBase.initialize(this, gillNS::WIDTH, gillNS::HEIGHT, 0, &enemyBaseTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
+
+	if (!powerup.initialize(this, murrayNS::WIDTH, murrayNS::HEIGHT, 0, &powerupTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
+
+	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
@@ -121,9 +143,9 @@ void CollisionTypes::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::WARNING, "Cheat code screen not initialized"));
 	cheatCodeScreen.setX(0);
 	cheatCodeScreen.setY(0);
-
+#pragma endregion levelOneTextures
 	//Placement of walls
-
+#pragma region levelOneWall
 	//Long horizontal walls
 	wallLgHzScreen[0].setX(wallOneX);
 	wallLgHzScreen[0].setY(wallOneY);
@@ -137,12 +159,18 @@ void CollisionTypes::initialize(HWND hwnd)
 	wallLgHzScreen[3].setX(wallFourX);
 	wallLgHzScreen[3].setY(wallFourY);
 
+	wallLgHzScreen[4].setX(wallTwelveX);
+	wallLgHzScreen[4].setX(wallTwelveX);
+
 	//Short vertical walls
 	wallShortVtScreen[0].setX(wallTwoX);
 	wallShortVtScreen[0].setY(wallTwoY);
 
 	wallShortVtScreen[1].setX(wallFiveX);
 	wallShortVtScreen[1].setY(wallFiveY);
+
+	wallShortVtScreen[2].setX(wallTenX);
+	wallShortVtScreen[2].setY(wallTenY);
 
 	//Short horizontal walls
 	wallShortHzScreen[0].setX(wallSixX);
@@ -151,33 +179,53 @@ void CollisionTypes::initialize(HWND hwnd)
 	wallShortHzScreen[1].setX(wallSevenX);
 	wallShortHzScreen[1].setY(wallSevenY);
 
-	wallShortHzScreen[2].setX(wallEightX);
-	wallShortHzScreen[2].setY(wallEightY);
+	wallShortHzScreen[2].setX(wallThreeX);
+	wallShortHzScreen[2].setY(wallThreeY);
 
-	wallShortHzScreen[3].setX(wallTwelveX);
-	wallShortHzScreen[3].setY(wallTwelveY);
+	//Long vertical walls
+	wallLgVtScreen.setX(0);
+	wallLgVtScreen.setY(280);
+
+#pragma endregion levelOneWall
+	//Powerup placement
+	powerup.setX(1100);
+	powerup.setY(50);
+
+	powerup.setCollisionType(entityNS::BOX);
+	powerup.setEdge(POWERUP_RECT);
+
+
+	//Base placement
+	enemyBase.setX(1040);
+	enemyBase.setY(520);
+	enemyBase.setCollisionType(entityNS::BOX);
+	enemyBase.setEdge(ENEMY_BASE_RECT);
 
 
 	//Wall long horizontal collision box
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < LONG_HZ_WALLS; i++)
 	{
 		wallLgHzScreen[i].setCollisionType(entityNS::BOX);
 		wallLgHzScreen[i].setEdge(WALL_LONG_HZ_RECT);
 	}
 
 	//Wall short vertical collision box
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < SHORT_VT_WALLS; i++)
 	{
 		wallShortVtScreen[i].setCollisionType(entityNS::BOX);
 		wallShortVtScreen[i].setEdge(WALL_SHORT_VT_RECT);
 	}
 
 	//Wall short horizontal collision box
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < SHORT_HZ_WALLS; i++)
 	{
 		wallShortHzScreen[i].setCollisionType(entityNS::BOX);
 		wallShortHzScreen[i].setEdge(WALL_SHORT_HZ_RECT);
 	}
+
+	//Wall long vertical collision box
+	wallLgVtScreen.setCollisionType(entityNS::BOX);
+	wallLgVtScreen.setEdge(WALL_LONG_VT_RECT);
 
 
 	wall.setScale(.5f);
@@ -190,15 +238,28 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	//playerTank.getBullets()[0].setEdge(collision);
 
-	//wall.setEdge();
-
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 	{
-		enemyTanks[i].setPositionX(GAME_WIDTH/(i + 1));
-		enemyTanks[i].setPositionY(GAME_HEIGHT/7);
-		enemyTanks[i].setScale(.25f);
+		enemyTanks[i].setScale(.15f);
 		enemyTanks[i].setEdge(TANK_RECTANGLE);
 	}
+
+	//Enemy tank placement
+	enemyTanks[0].setPositionX(levelOneTankOneX);
+	enemyTanks[0].setPositionY(levelOneTankOneY);
+	enemyTanks[1].setPositionX(levelOneTankTwoX);
+	enemyTanks[1].setPositionY(levelOneTankTwoY);
+	enemyTanks[2].setPositionX(levelOneTankThreeX);
+	enemyTanks[2].setPositionY(levelOneTankThreeY);
+	enemyTanks[3].setPositionX(levelOneTankFourX);
+	enemyTanks[3].setPositionY(levelOneTankFourY);
+	enemyTanks[4].setPositionX(levelOneTankFiveX);
+	enemyTanks[4].setPositionY(levelOneTankFiveY);
+	enemyTanks[5].setPositionX(levelOneTankSixX);
+	enemyTanks[5].setPositionY(levelOneTankSixY);
+	enemyTanks[6].setPositionX(levelOneTankSevenX);
+	enemyTanks[6].setPositionY(levelOneTankSevenY);
+
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.20f);
@@ -212,6 +273,21 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	playerTank.setCollisionType(entityNS::ROTATED_BOX);
 	playerTank.setEdge(TANK_RECTANGLE);
+
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		enemyTanks[i].setCollisionType(entityNS::ROTATED_BOX);
+		enemyTanks[i].setEdge(TANK_RECTANGLE);
+	}
+
+	scoreFont = new TextDX();
+
+	//Initialize the game text
+	if(scoreFont->initialize(graphics, 24, true, false, "Arial") == false)
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing output font"));
+
+	scoreFont->setFontColor(graphicsNS::RED);
+
 
 #pragma endregion
 
@@ -229,42 +305,64 @@ void CollisionTypes::initialize(HWND hwnd)
 		}
 	}
 
+#pragma region patternStepInitialize
+		patternStepIndex = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps[i].initialize(&enemyTanks[0]);
+			patternSteps[i].setActive();
+		}
 
-	//patternsteps
-	//	patternStepIndex = 0;
-	//	for (int i = 0; i < maxPatternSteps; i++)
-	//	{
-	//		patternSteps[i].initialize(&enemyTanks[0]);
-	//		patternSteps[i].setActive();
-	//	}
-	//
-	//	patternSteps[0].setAction(RIGHT);
-	//	patternSteps[0].setTimeForStep(2);
-	//	patternSteps[1].setAction(DOWN);
-	//	patternSteps[1].setTimeForStep(2);
-	//<<<<<<< HEAD
-	//
-	//	patternSteps[2].setAction(LEFT);
-	//	patternSteps[2].setTimeForStep(2);
-	//
-	//	patternSteps[3].setAction(UP);
-	//	patternSteps[3].setTimeForStep(2);
-	//	patternSteps[4].setAction(EVADE);
-	//	patternSteps[4].setTimeForStep(3);
-	//
-	//	/*patternSteps[2].setAction(TRACK);
-	//	patternSteps[2].setTimeForStep(4);
-	//	patternSteps[3].setAction(NONE);
-	//	patternSteps[3].setTimeForStep(2);*/
-	//=======
-	//	patternSteps[2].setAction(LEFT);
-	//	patternSteps[2].setTimeForStep(2);
-	//	patternSteps[3].setAction(UP);
-	//	patternSteps[3].setTimeForStep(2);
-	//	patternSteps[4].setAction(TRACK);
-	//	patternSteps[4].setTimeForStep(5);
-	//>>>>>>> origin/master
-	//
+		patternStepIndex2 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps2[i].initialize(&enemyTanks[1]);
+			patternSteps2[i].setActive();
+		}
+
+		patternStepIndex3 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps3[i].initialize(&enemyTanks[2]);
+			patternSteps3[i].setActive();
+		}
+
+		patternStepIndex4 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps4[i].initialize(&enemyTanks[3]);
+			patternSteps4[i].setActive();
+		}
+
+		patternStepIndex5 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps5[i].initialize(&enemyTanks[4]);
+			patternSteps5[i].setActive();
+		}
+
+		patternStepIndex6 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps6[i].initialize(&enemyTanks[5]);
+			patternSteps6[i].setActive();
+		}
+
+		patternStepIndex7 = 0;
+		for (int i = 0; i < maxPatternSteps; i++)
+		{
+			patternSteps7[i].initialize(&enemyTanks[6]);
+			patternSteps7[i].setActive();
+		}
+
+#pragma endregion patternStepInitialize
+		enemyUpDown();
+		enemyUpDown2();
+		enemyLeftRight();
+		enemyLeftRight2();
+		enemyLeftRight3();
+		enemyLeftRight4();
+		enemyLeftRight5();
 	return;
 }
 
@@ -366,14 +464,6 @@ void CollisionTypes::update()
 	case cheatCodes:
 		break;
 	case level_one:
-		/*		if(input->isKeyDown(TANK_UP_KEY))
-		playerTank.move_up();
-		if(input->isKeyDown(TANK_DOWN_KEY))
-		playerTank.move_down();
-		if (input->isKeyDown(TANK_LEFT_KEY))   
-		playerTank.move_left();
-		if (input->isKeyDown(TANK_RIGHT_KEY))  
-		playerTank.move_right();*/
 		if(!isMusicPlaying)
 		{
 			audio->playCue(MAIN_MUSIC);
@@ -385,9 +475,9 @@ void CollisionTypes::update()
 		if(input->isKeyDown(TANK_DOWN_KEY))
 			playerTank.reverse();
 		playerTank.rotate(playerTankNS::NONE);
-		if (input->isKeyDown(TANK_LEFT_KEY))   // if turn ship0 left
+		if (input->isKeyDown(TANK_LEFT_KEY))   
 			playerTank.rotate(playerTankNS::LEFT);
-		if (input->isKeyDown(TANK_RIGHT_KEY))  // if turn ship0 right
+		if (input->isKeyDown(TANK_RIGHT_KEY))
 			playerTank.rotate(playerTankNS::RIGHT);
 
 		if (input->getMouseLButton())
@@ -412,54 +502,168 @@ void CollisionTypes::update()
 //=============================================================================
 void CollisionTypes::ai()
 {
-	//if (playerTank.isFiring() == false)
-	//	enemyTanks[0].ai(frameTime, playerTank);
-	//else
-	//{
-	//	enemyTanks[0].ai(frameTime, playerTank.getBullets()[0]);
-	//	patternStepIndex = 4;
-	//	patternSteps[4].initialize(&enemyTanks[0]);
-	//	patternSteps[4].setActive();
-	//}
-	///*if (patternStepIndex == maxPatternSteps)
-	//return;*/
-	//if ( (patternStepIndex == maxPatternSteps - 1 && !playerTank.isFiring()) || patternStepIndex == maxPatternSteps)
-	//{
-	//	for (int i = 0; i < maxPatternSteps - 1; i++)
-	//	{
-	//		patternSteps[i].initialize(&enemyTanks[0]);
-	//		
-	//			enemyTank.ai(frameTime, playerTank);
+	enemyTanks[0].ai(frameTime, playerTank);
 
-	//		float distance = D3DXVec2Length(&(enemyTank.getCenterPoint()-playerTank.getCenterPoint()));
+	float distance = D3DXVec2Length(&(enemyTanks[0].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance2 = D3DXVec2Length(&(enemyTanks[1].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance3 = D3DXVec2Length(&(enemyTanks[2].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance4 = D3DXVec2Length(&(enemyTanks[3].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance5 = D3DXVec2Length(&(enemyTanks[4].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance6 = D3DXVec2Length(&(enemyTanks[5].getCenterPoint()-playerTank.getCenterPoint()));
+	float distance7 = D3DXVec2Length(&(enemyTanks[6].getCenterPoint()-playerTank.getCenterPoint()));
 
-	//		if(distance < 200.0f)
-	//		{
-	//			enemyTank.ai(frameTime, playerTank);
-	//			patternStepIndex = 4;
-	//			patternSteps[4].initialize(&enemyTank);
-	//			patternSteps[4].setActive();
-	//		}
-	//		else if(patternStepIndex == maxPatternSteps - 1)
-	//		{
-	//			enemyTank.ai(frameTime, playerTank);
-	//			for (int i = 0; i < maxPatternSteps - 1; i++)
-	//			{
-	//				patternSteps[i].initialize(&enemyTank);
-	//				>>>>>>> origin/master
-	//					patternSteps[i].setActive();
-	//			}
-	//			patternStepIndex = 0;
-	//		}
-	//		<<<<<<< HEAD
-	//			=======
+#pragma region distance
+	if(distance < 100.0f)
+	{
+		enemyTanks[0].ai(frameTime, playerTank);
+		patternStepIndex = 4;
+		patternSteps[4].initialize(&enemyTanks[0]);
+		patternSteps[4].setActive();
+	}
+	else if(patternStepIndex == maxPatternSteps - 1)
+	{
+		enemyTanks[0].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps[i].initialize(&enemyTanks[0]);
+			patternSteps[i].setActive();
+		}
+		patternStepIndex = 0;
+	}
+	if(distance2 < 100.0f)
+	{
+		enemyTanks[1].ai(frameTime, playerTank);
+		patternStepIndex2 = 4;
+		patternSteps2[4].initialize(&enemyTanks[1]);
+		patternSteps2[4].setActive();
+	}
+	else if(patternStepIndex2 == maxPatternSteps - 1)
+	{
+		enemyTanks[1].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps2[i].initialize(&enemyTanks[1]);
+			patternSteps2[i].setActive();
+		}
+		patternStepIndex2 = 0;
+	}
+	if(distance3 < 100.0f)
+	{
+		enemyTanks[2].ai(frameTime, playerTank);
+		patternStepIndex3 = 4;
+		patternSteps3[4].initialize(&enemyTanks[2]);
+		patternSteps3[4].setActive();
+	}
+	else if(patternStepIndex3 == maxPatternSteps - 1)
+	{
+		enemyTanks[2].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps3[i].initialize(&enemyTanks[2]);
+			patternSteps3[i].setActive();
+		}
+		patternStepIndex3 = 0;
+	}
+	if(distance4 < 100.0f)
+	{
+		enemyTanks[3].ai(frameTime, playerTank);
+		patternStepIndex4 = 4;
+		patternSteps4[4].initialize(&enemyTanks[3]);
+		patternSteps4[4].setActive();
+	}
+	else if(patternStepIndex4 == maxPatternSteps - 1)
+	{
+		enemyTanks[3].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps4[i].initialize(&enemyTanks[3]);
+			patternSteps4[i].setActive();
+		}
+		patternStepIndex4 = 0;
+	}
+	if(distance5 < 100.0f)
+	{
+		enemyTanks[4].ai(frameTime, playerTank);
+		patternStepIndex5 = 4;
+		patternSteps5[4].initialize(&enemyTanks[4]);
+		patternSteps5[4].setActive();
+	}
+	else if(patternStepIndex5 == maxPatternSteps - 1)
+	{
+		enemyTanks[4].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps5[i].initialize(&enemyTanks[4]);
+			patternSteps5[i].setActive();
+		}
+		patternStepIndex5 = 0;
+	}
+	if(distance6 < 100.0f)
+	{
+		enemyTanks[5].ai(frameTime, playerTank);
+		patternStepIndex6 = 4;
+		patternSteps6[4].initialize(&enemyTanks[5]);
+		patternSteps6[4].setActive();
+	}
+	else if(patternStepIndex6 == maxPatternSteps - 1)
+	{
+		enemyTanks[5].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps6[i].initialize(&enemyTanks[5]);
+			patternSteps6[i].setActive();
+		}
+		patternStepIndex6 = 0;
+	}
 
-	//			>>>>>>> origin/master
-	//			if (patternSteps[patternStepIndex].isFinished())
-	//				patternStepIndex++;
+	if(distance7 < 100.0f)
+	{
+		enemyTanks[6].ai(frameTime, playerTank);
+		patternStepIndex7 = 4;
+		patternSteps7[4].initialize(&enemyTanks[6]);
+		patternSteps7[4].setActive();
+	}
+	else if(patternStepIndex7 == maxPatternSteps - 1)
+	{
+		enemyTanks[6].ai(frameTime, playerTank);
+		for (int i = 0; i < maxPatternSteps - 1; i++)
+		{
+			patternSteps7[i].initialize(&enemyTanks[6]);
+			patternSteps7[i].setActive();
+		}
+		patternStepIndex7 = 0;
+	}
+#pragma endregion distance
 
-	//		patternSteps[patternStepIndex].update(frameTime);
-	//	}
+#pragma region updatePattern
+	if (patternSteps[patternStepIndex].isFinished())
+		patternStepIndex++;
+	patternSteps[patternStepIndex].update(frameTime);
+
+	if (patternSteps2[patternStepIndex2].isFinished())
+		patternStepIndex2++;
+	patternSteps2[patternStepIndex2].update(frameTime);
+
+	if (patternSteps3[patternStepIndex3].isFinished())
+		patternStepIndex3++;
+	patternSteps3[patternStepIndex3].update(frameTime);
+
+	if (patternSteps4[patternStepIndex4].isFinished())
+		patternStepIndex4++;
+	patternSteps4[patternStepIndex4].update(frameTime);
+
+	if (patternSteps5[patternStepIndex5].isFinished())
+		patternStepIndex5++;
+	patternSteps5[patternStepIndex5].update(frameTime);
+
+	if (patternSteps6[patternStepIndex6].isFinished())
+		patternStepIndex6++;
+	patternSteps6[patternStepIndex6].update(frameTime);
+
+	if (patternSteps7[patternStepIndex7].isFinished())
+		patternStepIndex7++;
+	patternSteps7[patternStepIndex7].update(frameTime);
+#pragma endregion updatePattern
 }
 //=============================================================================
 // Handle collisions
@@ -485,15 +689,21 @@ void CollisionTypes::collisions()
 		}
 	}
 
-	if (playerTank.collidesWith(wall, collisionVector))
-	{
 
-		playerTank.setCollision(true);
-		playerTank.bounce(collisionVector, wall);
+	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+	{
+		for (int j = 0; j < LONG_HZ_WALLS; j++)
+		{
+			if(enemyTanks[i].collidesWith(wallLgHzScreen[j], collisionVector))
+			{
+				enemyTanks[i].setCollision(true);
+				enemyTanks[i].bounce(collisionVector, wallLgHzScreen[j]);
+			}
+		}
+		
 	}
 
-
-
+#pragma region bulletWall
 	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 	{
 		//save some comparisons
@@ -503,9 +713,79 @@ void CollisionTypes::collisions()
 			break;
 		}
 
-		for (int j = 0; j < 4; j++)
+		//Long Hz Collision
+		for (int j = 0; j < LONG_HZ_WALLS; j++)
 		{
 			if (bullets[i].collidesWith(wallLgHzScreen[j], collisionVector))
+			{
+				if (bullets[i].getCollision() == false)
+				{
+					bullets[i].setCollision(true);
+
+					VECTOR2 currentVelocity = bullets[i].getVelocity();
+
+					if (collisionVector.x != 0)
+						currentVelocity.x *= -1;
+					else
+						currentVelocity.y *= -1;
+
+					bullets[i].setVelocity(currentVelocity);
+				}
+			}
+			else 
+				bullets[i].setCollision(false);
+		}
+
+		//Short Hz Collision
+		for (int j = 0; j < SHORT_HZ_WALLS; j++)
+		{
+			if (bullets[i].collidesWith(wallShortHzScreen[j], collisionVector))
+			{
+				if (bullets[i].getCollision() == false)
+				{
+					bullets[i].setCollision(true);
+
+					VECTOR2 currentVelocity = bullets[i].getVelocity();
+
+					if (collisionVector.x != 0)
+						currentVelocity.x *= -1;
+					else
+						currentVelocity.y *= -1;
+
+					bullets[i].setVelocity(currentVelocity);
+				}
+			}
+			else 
+				bullets[i].setCollision(false);
+		}
+
+		//Short Vt Collision
+		for (int j = 0; j < SHORT_VT_WALLS; j++)
+		{
+			if (bullets[i].collidesWith(wallShortVtScreen[j], collisionVector))
+			{
+				if (bullets[i].getCollision() == false)
+				{
+					bullets[i].setCollision(true);
+
+					VECTOR2 currentVelocity = bullets[i].getVelocity();
+
+					if (collisionVector.x != 0)
+						currentVelocity.x *= -1;
+					else
+						currentVelocity.y *= -1;
+
+					bullets[i].setVelocity(currentVelocity);
+				}
+			}
+			else 
+				bullets[i].setCollision(false);
+		}
+
+		//Long Vt Collision
+		for (int j = 0; j < LONG_VT_WALLS; j++)
+		{
+			if (bullets[i].collidesWith(wallLgVtScreen, collisionVector))
 			{
 				if (bullets[i].getCollision() == false)
 				{
@@ -532,16 +812,33 @@ void CollisionTypes::collisions()
 				float currentHealth = enemyTanks[j].getHealth();
 				enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
 				if (enemyTanks[j].getHealth() == 0.0f)
+				{
 					enemyTanks[j].setInvisible();
-
+					score += 100;
+				}
 				bullets[i].setVisible(false);
-
-
 			}
 		}
-	}
 
-	for(int i = 0; i < 4; i++)
+		if (enemyBase.getVisible() && bullets[i].collidesWith(enemyBase, collisionVector))
+		{
+			float currentHealth = enemyBase.getHealth();
+			enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
+			if (enemyBase.getHealth() == 0.0f)
+			{
+				//enemyBase.setInvisible();
+				score += 1000;
+				gamestates = gameover;
+			}
+			bullets[i].setVisible(false);
+		}
+
+	}
+#pragma endregion bulletWall
+
+#pragma region playerWall
+
+	for(int i = 0; i < LONG_HZ_WALLS; i++)
 	{
 		if(playerTank.collidesWith(wallLgHzScreen[i], collisionVector))
 		{
@@ -550,7 +847,7 @@ void CollisionTypes::collisions()
 		}
 	}
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < SHORT_VT_WALLS; i++)
 	{
 		if(playerTank.collidesWith(wallShortVtScreen[i], collisionVector))
 		{
@@ -559,7 +856,7 @@ void CollisionTypes::collisions()
 		}
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < SHORT_HZ_WALLS; i++)
 	{
 		if (playerTank.collidesWith(wallShortHzScreen[i], collisionVector))
 		{
@@ -567,6 +864,13 @@ void CollisionTypes::collisions()
 			playerTank.bounce(collisionVector, wallShortHzScreen[i]);
 		}
 	}
+
+	if (playerTank.collidesWith(wallLgVtScreen, collisionVector))
+	{
+		playerTank.setCollision(true);
+		playerTank.bounce(collisionVector, wallLgVtScreen);
+	}
+#pragma endregion playerWall
 }
 
 //=============================================================================
@@ -574,7 +878,10 @@ void CollisionTypes::collisions()
 //=============================================================================
 void CollisionTypes::render()
 {
-
+	//Score display
+	std::stringstream scoreDisplay;
+	scoreDisplay << "Score: ";
+	scoreDisplay << score;
 
 
 	float angle;
@@ -592,22 +899,27 @@ void CollisionTypes::render()
 		gameMenuScreen.draw();
 		break;
 	case level_one:
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < LONG_HZ_WALLS; i++)
 		{
 			wallLgHzScreen[i].draw();
 		}
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < SHORT_VT_WALLS; i++)
 		{
 			wallShortVtScreen[i].draw();
 		}
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < SHORT_HZ_WALLS; i++)
 		{
 			wallShortHzScreen[i].draw();
 		}
-		//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-			//enemyTanks[i].draw();
+		powerup.draw();
+		enemyBase.draw();
+		wallLgVtScreen.draw();
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+			enemyTanks[i].draw();
 		playerTank.draw();
-		//wall.draw();
+		
+		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
+
 		break;
 	case level_two:
 		break;
@@ -620,6 +932,105 @@ void CollisionTypes::render()
 		break;
 	}
 	graphics->spriteEnd();                  // end drawing sprites
+}
+
+//Enemy pattern functions
+void CollisionTypes::enemyUpDown()
+{
+	patternSteps[0].setAction(RIGHT);
+	patternSteps[0].setTimeForStep(2);
+	patternSteps[1].setAction(NONE);
+	patternSteps[1].setTimeForStep(1);
+	patternSteps[2].setAction(LEFT);
+	patternSteps[2].setTimeForStep(2);
+	patternSteps[3].setAction(NONE);
+	patternSteps[3].setTimeForStep(1);
+	patternSteps[4].setAction(TRACK);
+	patternSteps[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyUpDown2()
+{
+	patternSteps2[0].setAction(LEFT);
+	patternSteps2[0].setTimeForStep(2);
+	patternSteps2[1].setAction(NONE);
+	patternSteps2[1].setTimeForStep(1);
+	patternSteps2[2].setAction(RIGHT);
+	patternSteps2[2].setTimeForStep(2);
+	patternSteps2[3].setAction(NONE);
+	patternSteps2[3].setTimeForStep(1);
+	patternSteps2[4].setAction(TRACK);
+	patternSteps2[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyLeftRight()
+{
+	patternSteps3[0].setAction(LEFT);
+	patternSteps3[0].setTimeForStep(2);
+	patternSteps3[1].setAction(NONE);
+	patternSteps3[1].setTimeForStep(1);
+	patternSteps3[2].setAction(RIGHT);
+	patternSteps3[2].setTimeForStep(2);
+	patternSteps3[3].setAction(NONE);
+	patternSteps3[3].setTimeForStep(1);
+	patternSteps3[4].setAction(TRACK);
+	patternSteps3[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyLeftRight2()
+{
+	patternSteps4[0].setAction(UP);
+	patternSteps4[0].setTimeForStep(2);
+	patternSteps4[1].setAction(NONE);
+	patternSteps4[1].setTimeForStep(1);
+	patternSteps4[2].setAction(DOWN);
+	patternSteps4[2].setTimeForStep(2);
+	patternSteps4[3].setAction(NONE);
+	patternSteps4[3].setTimeForStep(1);
+	patternSteps4[4].setAction(TRACK);
+	patternSteps4[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyLeftRight3()
+{
+	patternSteps5[0].setAction(RIGHT);
+	patternSteps5[0].setTimeForStep(2);
+	patternSteps5[1].setAction(NONE);
+	patternSteps5[1].setTimeForStep(1);
+	patternSteps5[2].setAction(LEFT);
+	patternSteps5[2].setTimeForStep(2);
+	patternSteps5[3].setAction(NONE);
+	patternSteps5[3].setTimeForStep(1);
+	patternSteps5[4].setAction(TRACK);
+	patternSteps5[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyLeftRight4()
+{
+	patternSteps6[0].setAction(RIGHT);
+	patternSteps6[0].setTimeForStep(2);
+	patternSteps6[1].setAction(NONE);
+	patternSteps6[1].setTimeForStep(1);
+	patternSteps6[2].setAction(LEFT);
+	patternSteps6[2].setTimeForStep(2);
+	patternSteps6[3].setAction(NONE);
+	patternSteps6[3].setTimeForStep(1);
+	patternSteps6[4].setAction(TRACK);
+	patternSteps6[4].setTimeForStep(5);
+}
+
+void CollisionTypes::enemyLeftRight5()
+{
+	patternSteps7[0].setAction(RIGHT);
+	patternSteps7[0].setTimeForStep(2);
+	patternSteps7[1].setAction(NONE);
+	patternSteps7[1].setTimeForStep(1);
+	patternSteps7[2].setAction(LEFT);
+	patternSteps7[2].setTimeForStep(2);
+	patternSteps7[3].setAction(NONE);
+	patternSteps7[3].setTimeForStep(1);
+	patternSteps7[4].setAction(TRACK);
+	patternSteps7[4].setTimeForStep(5);
 }
 
 //=============================================================================
