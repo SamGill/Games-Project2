@@ -647,7 +647,7 @@ void CollisionTypes::gameStatesUpdate()
 			gamestates = victory;
 		}
 
-
+		timeInState = 0;
 	}
 
 	if(gamestates == levelTransition && timeInState > 3)
@@ -1140,6 +1140,13 @@ void CollisionTypes::collisions()
        switch (gamestates)
        {
        case level_one:
+		   if(playerTank.collidesWith(powerup, collisionVector))
+		   {
+			   powerup.setVisible(false);
+			   havePowerUp = true;
+		   }
+
+
               for (int i = 0; i < MAX_ENEMY_TANKS; i++)
               {
                      if (playerTank.collidesWith(enemyTanks[i], collisionVector))
@@ -1306,7 +1313,7 @@ void CollisionTypes::collisions()
                            }
                      }
 
-                     if (enemyBase.getVisible() && bullets[i].collidesWith(enemyBase, collisionVector))
+                     if (bullets[i].collidesWith(enemyBase, collisionVector) && bullets[i].getVisible())
                      {
                            float currentHealth = enemyBase.getHealth();
                            enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
@@ -1314,7 +1321,8 @@ void CollisionTypes::collisions()
                            {
                                   //enemyBase.setInvisible();
                                   score += 1000;
-                                  gamestates = gameover;
+								  isBaseOneDead = true;
+								  gamestates = levelTransition;
                            }
                            bullets[i].setVisible(false);
                      }
