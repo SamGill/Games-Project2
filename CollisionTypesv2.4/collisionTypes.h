@@ -118,6 +118,8 @@ private:
 	bool isCannonPlaying;
 	bool isPowerupPlaying;
 
+	bool level2Cheat;
+
 	//Level two patternSteps
 	PatternStep patternStepsLvl2[MAX_ENEMY_TANKS][maxPatternSteps];
 	int patternStepIndexLvlTwo[MAX_ENEMY_TANKS];

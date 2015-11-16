@@ -44,6 +44,7 @@ void CollisionTypes::initialize(HWND hwnd)
 	isLaserPlaying = false;
 	isCannonPlaying = false;
 	isPowerupPlaying = false;
+	level2Cheat = false;
 
 #pragma region game_textures
 
@@ -571,7 +572,10 @@ void CollisionTypes::gameStatesUpdate()
 		//If "Enter" is pressed, start game
 		if(input->wasKeyPressed(0x0D))
 		{
-			gamestates = level_one;
+			if(!level2Cheat)
+				gamestates = level_one;
+			else
+				gamestates = level_two;
 			//gamestates = level_two;
 
 			timeInState = 0;
@@ -612,7 +616,8 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x32))
 		{
 			//Jump to level 2
-			gamestates = level_two;
+			//gamestates = level_two;
+			level2Cheat = true;
 			timeInState = 0;
 		}
 		//If "ESC" was pressed, go back to main menu
@@ -646,6 +651,7 @@ void CollisionTypes::gameStatesUpdate()
 	{
 		initializeLvlTwoPatterns();
 
+		havePowerUp = false;
 		playerTank.setHealth(100.0f);
 		playerTank.setCurrentFrame(0);
 		for (int i =0 ; i < MAX_PLAYER_SHOTS; i++)
@@ -735,7 +741,7 @@ void CollisionTypes::gameStatesUpdate()
 
 void CollisionTypes::update()
 {
-
+	
 	gameStatesUpdate();
 	switch (gamestates)
 	{
@@ -819,7 +825,25 @@ void CollisionTypes::update()
 		}
 
 		if (input->getMouseLButton())
+		{
+			if(havePowerUp)
+			{
+				timeInState = 0;
+				audio->playCue(LASER);
+				isLaserPlaying = true;
+			}
+			else if(!havePowerUp)
+			{
+				timeInState = 0;
+				audio->playCue(CANNON);
+				isCannonPlaying = true;
+			}
+
 			playerTank.fireBullet();
+
+
+
+		}
 		playerTank.update(frameTime);
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].update(frameTime);
@@ -1393,6 +1417,8 @@ void CollisionTypes::collisions()
 					{
 						enemyTanks[j].setInvisible();
 						score += 100;
+						audio->playCue(EXPLOSION);
+
 					}
 					bullets[i].setVisible(false);
 				}
@@ -1410,12 +1436,14 @@ void CollisionTypes::collisions()
 					//enemyBase.setInvisible();
 					score += 1000;
 					isBaseOneDead = true;
+					audio->playCue(EXPLOSION);
 					gamestates = levelTransition;
 				}
 				bullets[i].setVisible(false);
 			}
 
 		}
+
 #pragma endregion bulletWall
 
 #pragma region playerWall
@@ -1555,6 +1583,7 @@ void CollisionTypes::collisions()
 					{
 						enemyTanks[j].setInvisible();
 						score += 150;
+						audio->playCue(EXPLOSION);
 					}
 
 					bullets[i].setVisible(false);
@@ -1574,6 +1603,7 @@ void CollisionTypes::collisions()
 					//enemyBase.setInvisible();
 					score += 2000;
 					isBaseOneDead = true;
+					audio->playCue(EXPLOSION);
 					gamestates = victory;
 				}
 				bullets[i].setVisible(false);

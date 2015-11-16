@@ -112,14 +112,14 @@ void PlayerTank::update(float frameTime)
 
 
 	//// wrap around screen
-	//if (spriteData.x > GAME_WIDTH)                  // if off screen right
-	//    spriteData.x = -playerTankNS::WIDTH;              // position off screen left
-	//else if (spriteData.x < -playerTankNS::WIDTH)         // else if off screen left
-	//    spriteData.x = GAME_WIDTH;                  // position off screen right
-	//if (spriteData.y < -playerTankNS::HEIGHT)             // if off screen top
-	//    spriteData.y = GAME_HEIGHT;                 // position off screen bottom
-	//else if (spriteData.y > GAME_HEIGHT)            // else if off screen bottom
-	//    spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
+	if (spriteData.x > GAME_WIDTH - getWidth() * getScale())                  // if off screen right
+	    spriteData.x = GAME_WIDTH - getWidth() * getScale();              // position off screen left
+	else if (spriteData.x < 0)         // else if off screen left
+	    spriteData.x = 0;                  // position off screen right
+	if (spriteData.y < 0)             // if off screen top
+	    spriteData.y = 0;                 // position off screen bottom
+	else if (spriteData.y > GAME_HEIGHT - getHeight() * getScale())            // else if off screen bottom
+	    spriteData.y = GAME_HEIGHT - getHeight() * getScale();             // position off screen top
 }
 
 //void PlayerTank::circleBounce(VECTOR2 &collisionVector, Entity &ent)

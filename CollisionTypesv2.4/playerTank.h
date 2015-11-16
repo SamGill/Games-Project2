@@ -18,7 +18,7 @@ namespace playerTankNS
 	const int X = GAME_WIDTH/2 - WIDTH/2;   // location on screen
 	const int Y = GAME_HEIGHT/2 - HEIGHT/2;
 	const float ROTATION_RATE = (float)PI/2; // radians per second
-	const float SPEED = 300;                // 100 pixels per second
+	const float SPEED = 200;                // 100 pixels per second
 	enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
 }
 
