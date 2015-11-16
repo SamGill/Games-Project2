@@ -93,13 +93,16 @@
     <ClCompile Include="enemyTank.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gill.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="murray.cpp" />
     <ClCompile Include="patternStep.cpp" />
     <ClCompile Include="playerTank.cpp" />
     <ClCompile Include="ship.cpp" />
     <ClCompile Include="tankHead.cpp" />
+    <ClCompile Include="textDX.cpp" />
     <ClCompile Include="textureManager.cpp" />
     <ClCompile Include="wall.cpp" />
     <ClCompile Include="winmain.cpp" />
@@ -113,14 +116,17 @@
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameError.h" />
+    <ClInclude Include="gill.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="murray.h" />
     <ClInclude Include="patternStep.h" />
     <ClInclude Include="playerTank.h" />
     <ClInclude Include="ship.h" />
     <ClInclude Include="shotBuffer.h" />
     <ClInclude Include="tankHead.h" />
+    <ClInclude Include="textDX.h" />
     <ClInclude Include="textureManager.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>

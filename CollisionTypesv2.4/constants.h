@@ -82,12 +82,12 @@ const UINT GAME_HEIGHT = 600;               // height of game in pixels
 
 const int MAX_PLAYER_SHOTS = 10;
 const int SHOT_TIME_BUFFER = 1;
-const int MAX_ENEMY_TANKS = 10;
+const int MAX_ENEMY_TANKS = 7;
 
-const int LONG_HZ_WALLS = 3;
+const int LONG_HZ_WALLS = 5;
 const int SHORT_HZ_WALLS = 3;
-const int LONG_VT_WALLS = 0;
-const int SHORT_VT_WALLS = 2;
+const int LONG_VT_WALLS = 1;
+const int SHORT_VT_WALLS = 3;
 
 // game
 const double PI = 3.14159265;
@@ -115,9 +115,12 @@ const float LINE_SCALE  = 3.0f;         // this makes the line 96 pixels long
 const RECT BULLET_RECTANGLE = {-16, -16, 16, 16};
 const RECT WALL_RECTANGLE   = {-64, -64, 64, 64};
 const RECT WALL_LONG_HZ_RECT = {-160, -16, 160, 16};
+const RECT WALL_LONG_VT_RECT = {-80, -18, 80, 18};
 const RECT WALL_SHORT_VT_RECT = {-18, -80, 18, 80};
 const RECT WALL_SHORT_HZ_RECT = {-80, -18, 80, 18};
 const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
+const RECT POWERUP_RECT = {-16, -16, 16, 16};
+const RECT ENEMY_BASE_RECT = {-32, -64, 32, 64};
 
 
 const RECT  COLLISION_RECTANGLE = {-30,-16,30,16};
@@ -137,6 +140,11 @@ const char WALL_LONG_VERTICAL[] = "pictures\\wall_long_vertical.png";
 const char WALL_SHORT_HORIZONTAL[] = "pictures\\wall_short_horizontal.png";
 const char WALL_SHORT_VERTICAL[] = "pictures\\wall_short_vertical.png";
 const char WALL_IMAGE[] =     "pictures\\sand_background.png";
+const char SAND_BACKGROUND[] = "pictures\\background.png";
+
+const char POWER_UP[] =		  "pictures\\powerup.png";
+const char ENEMY_BASE[] =	  "pictures\\enemy_base.png";
+
 
 //Splash screen
 const char SPLASH_SCREEN[] =  "pictures\\splash_screen.png";
@@ -149,6 +157,15 @@ const char MENU_SCREEN[] =	  "pictures\\game_menu.png";
 
 //Cheat code screen
 const char CHEAT_SCREEN[] =	  "pictures\\cheat_codes.png";	
+
+//Instructions code screen
+const char INSTRUCTIONS[] =   "pictures\\instructions.png";
+
+//Victory screen
+const char VICTORY[] =		  "pictures\\high_score.png";
+
+//Transition screen
+const char TRANSITION[] =	  "pictures\\level2.png";
 
 // audio files required by audio.cpp
 // WAVE_BANK must be location of .xwb file.
@@ -176,16 +193,22 @@ const UCHAR TANK_DOWN_KEY    = 0x53;     // down arrow
 enum PATTERN_STEP_ACTION {NONE, UP, DOWN, LEFT, RIGHT, TRACK, EVADE};
 
 // States
-enum GameStates {intro, gameMenu, cheatCodes, level_one, level_two, victory, gameover};
+enum GameStates {intro, gameMenu, cheatCodes, instructions, levelTransition, level_one, level_two, victory, gameover};
+
+//Bullet type
+enum bulletType {normal, mega};
 
 #pragma region Level One Setup
 const int wallOneX = 0;
 const int wallOneY = 100;
 
-const int wallTwoX = GAME_WIDTH/2;
+const int wallTwoX = 600;
 const int wallTwoY = 0;
 
-const int wallFourX = GAME_WIDTH/2;
+const int wallThreeX = 1040;
+const int wallThreeY = 100;
+
+const int wallFourX = 500;
 const int wallFourY = 150;
 
 const int wallFiveX = 475;
@@ -201,17 +224,35 @@ const int wallEightX = 1040;
 const int wallEightY = 300;
 
 const int wallNineX = 0;
-const int wallNineY = 300;
+const int wallNineY = 350;
 
-const int wallElevenX = 160;
+const int wallTenX = 540;
+const int wallTenY = 372;
+
+const int wallElevenX = 220;
 const int wallElevenY = 500;
 
 const int wallTwelveX = 880;
-const int wallTwelveY = 300;
+const int wallTwelveY = 600;
 
 const int levelOnePlayerX = 10;
 const int levelOnePlayerY = 10;
 
+
+const int levelOneTankOneX = 20;
+const int levelOneTankOneY = 120;
+const int levelOneTankTwoX = 40;
+const int levelOneTankTwoY = 250;
+const int levelOneTankThreeX = 650;
+const int levelOneTankThreeY = 50;
+const int levelOneTankFourX = 50;
+const int levelOneTankFourY = 380;
+const int levelOneTankFiveX = 650;
+const int levelOneTankFiveY = 200;
+const int levelOneTankSixX = 700;
+const int levelOneTankSixY = 450;
+const int levelOneTankSevenX = 880;
+const int levelOneTankSevenY = 325;
 
 #pragma endregion Level One Setup
 
