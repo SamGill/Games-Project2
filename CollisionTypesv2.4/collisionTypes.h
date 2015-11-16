@@ -18,7 +18,8 @@ class CollisionTypes;
 #include "patternStep.h"
 #include "wall.h"
 #include "murray.h"
-#include "gill.h";
+#include "gill.h"
+#include "crackOne.h"
 #include <cmath>
 #include "textDX.h"
 
@@ -51,6 +52,8 @@ private:
 	//Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
+	crackOne	   crackone;
+	PlayerTank     crackTwo;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
 	Wall           wall;
@@ -106,6 +109,8 @@ private:
 	//For level one base
 	bool isBaseOneDead;
 	bool isBaseTwoDead;
+
+	bool havePowerUp;
 
 public:
     // Constructor

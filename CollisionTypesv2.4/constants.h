@@ -133,6 +133,13 @@ const char MENU_IMAGE[] =     "pictures\\menu.png";      // menu texture
 
 const char TANK_BODY[]  =     "pictures\\tank_body.png";
 const char TANK_HEAD[]  =     "pictures\\tank_head.png";
+
+const char TANK_CRACK_ONE[] = "pictures\\tank_body2.png";
+const char TANK_CRACK_TWO[] = "pictures\\tank_body3.png";
+//const char TANK_CRACK_ONE[] = "pictures\\tank_body2.png";
+
+
+
 const char BULLET_IMAGE[] =   "pictures\\bullet.png";
 const char ENEMY_TANK[] =     "pictures\\enemy_tank.png";
 const char WALL_LONG_HORIZONTAL[] = "pictures\\wall_long_horizontal.png";
@@ -253,6 +260,11 @@ const int levelOneTankSixX = 700;
 const int levelOneTankSixY = 450;
 const int levelOneTankSevenX = 880;
 const int levelOneTankSevenY = 325;
+
+const int  JPO_COLS = 3;
+const int  JPO_WIDTH = 512;
+const int  JPO_HEIGHT = 512;
+//JPO actions
 
 #pragma endregion Level One Setup
 

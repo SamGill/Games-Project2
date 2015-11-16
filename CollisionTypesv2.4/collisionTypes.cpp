@@ -77,6 +77,15 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!enemyTankTexture.initialize(graphics, ENEMY_TANK))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
+	if (!tankCrackOneTexture.initialize(graphics, TANK_CRACK_ONE))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+	if (!tankCrackTwoTexture.initialize(graphics, TANK_CRACK_TWO))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
+
+
+
+
 	if (!tankBodyTexture.initialize(graphics, TANK_BODY))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
@@ -101,10 +110,13 @@ void CollisionTypes::initialize(HWND hwnd)
 	if (!powerup.initialize(this, murrayNS::WIDTH, murrayNS::HEIGHT, 0, &powerupTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
 
-	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
+	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 3, &tankBodyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
-	if (!playerTank.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankBodyTexture))
+	if (!crackone.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankCrackOneTexture))
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
+
+	if (!crackTwo.initialize(this, playerTankNS::WIDTH, playerTankNS::HEIGHT, 0, &tankCrackTwoTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing body"));
 
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
@@ -298,8 +310,18 @@ void CollisionTypes::initialize(HWND hwnd)
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.15f);
 
+	crackone.setScale(.15f);
+	crackTwo.setScale(.15f);
+
+
 	playerTank.setX(levelOnePlayerX);
 	playerTank.setY(levelOnePlayerY);
+
+	crackone.setX(levelOnePlayerX);
+	crackone.setY(levelOnePlayerX);
+
+	crackTwo.setX(levelOnePlayerX);
+	crackTwo.setY(levelOnePlayerX);
 
 
 	if (!playerTank.initializeHead(this, tankHeadNS::WIDTH,tankHeadNS::HEIGHT,0, &tankHeadTexture, &bulletTexture))
@@ -402,6 +424,12 @@ void CollisionTypes::initialize(HWND hwnd)
 		enemyLeftRight3();
 		enemyLeftRight4();
 		enemyLeftRight5();
+
+
+		//Tank cracks invisible at first
+		crackone.setVisible(false);
+		crackTwo.setVisible(true);
+
 	return;
 }
 
@@ -572,20 +600,36 @@ void CollisionTypes::update()
 		}
 
 		if(input->isKeyDown(TANK_UP_KEY))
+		{
 			playerTank.forward();
+		}
 		if(input->isKeyDown(TANK_DOWN_KEY))
+		{
 			playerTank.reverse();
+		}
 		playerTank.rotate(playerTankNS::NONE);
-		if (input->isKeyDown(TANK_LEFT_KEY))   
+		if (input->isKeyDown(TANK_LEFT_KEY))
+		{
 			playerTank.rotate(playerTankNS::LEFT);
+		}
 		if (input->isKeyDown(TANK_RIGHT_KEY))
+		{
 			playerTank.rotate(playerTankNS::RIGHT);
+		}
 
 		if (input->getMouseLButton())
 			playerTank.fireBullet();
 		playerTank.update(frameTime);
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].update(frameTime);
+
+		if(playerTank.getHealth() <= 80.0f && playerTank.getHealth() > 40.0f)
+			playerTank.setCurrentFrame(1);
+		else if(playerTank.getHealth() <= 40.0f && playerTank.getHealth() > 0.0f)
+			playerTank.setCurrentFrame(2);
+		else
+			playerTank.setCurrentFrame(0);
+
 		break;
 	case level_two:
 		break;
@@ -784,6 +828,8 @@ void CollisionTypes::collisions()
 		{
 
 			playerTank.setVelocity(VECTOR2(-collisionVector));
+			crackone.setVelocity(VECTOR2(-collisionVector));
+			crackTwo.setVelocity(VECTOR2(-collisionVector));
 			enemyTanks[i].setVelocity(VECTOR2(collisionVector));
 			playerTank.setCollision(true);
 
@@ -945,6 +991,8 @@ void CollisionTypes::collisions()
 		{
 			playerTank.setCollision(true);
 			playerTank.bounce(collisionVector, wallLgHzScreen[i]);
+			crackone.bounce(collisionVector, wallLgHzScreen[i]);
+			crackTwo.bounce(collisionVector, wallLgHzScreen[i]);
 		}
 	}
 
@@ -954,6 +1002,9 @@ void CollisionTypes::collisions()
 		{
 			playerTank.setCollision(true);
 			playerTank.bounce(collisionVector, wallShortVtScreen[i]);
+			crackone.bounce(collisionVector, wallShortVtScreen[i]);
+			crackTwo.bounce(collisionVector, wallShortVtScreen[i]);
+
 		}
 	}
 
@@ -963,6 +1014,8 @@ void CollisionTypes::collisions()
 		{
 			playerTank.setCollision(true);
 			playerTank.bounce(collisionVector, wallShortHzScreen[i]);
+			crackone.bounce(collisionVector, wallShortHzScreen[i]);
+			crackTwo.bounce(collisionVector, wallShortHzScreen[i]);
 		}
 	}
 
@@ -970,6 +1023,8 @@ void CollisionTypes::collisions()
 	{
 		playerTank.setCollision(true);
 		playerTank.bounce(collisionVector, wallLgVtScreen);
+		crackone.bounce(collisionVector, wallLgVtScreen);
+		crackTwo.bounce(collisionVector, wallLgVtScreen);
 	}
 #pragma endregion playerWall
 }
@@ -1030,6 +1085,8 @@ void CollisionTypes::render()
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].draw();
 		playerTank.draw();
+		//crackone.draw();
+		//crackTwo.draw();
 		
 		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 		break;
