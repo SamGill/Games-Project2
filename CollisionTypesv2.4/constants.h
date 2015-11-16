@@ -119,7 +119,8 @@ const float LINE_SCALE  = 3.0f;         // this makes the line 96 pixels long
 const RECT BULLET_RECTANGLE = {-16, -16, 16, 16};
 const RECT WALL_RECTANGLE   = {-64, -64, 64, 64};
 const RECT WALL_LONG_HZ_RECT = {-160, -16, 160, 16};
-const RECT WALL_LONG_VT_RECT = {-80, -18, 80, 18};
+//const RECT WALL_LONG_VT_RECT = {-80, -18, 80, 18};
+const RECT WALL_LONG_VT_RECT = {-16, -160, 16, 160};
 const RECT WALL_SHORT_VT_RECT = {-18, -80, 18, 80};
 const RECT WALL_SHORT_HZ_RECT = {-80, -18, 80, 18};
 const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
@@ -251,7 +252,6 @@ const int wallTwelveY = 600;
 
 const int levelOnePlayerX = 10;
 const int levelOnePlayerY = 10;
-
 
 const int levelOneTankOneX = 20;
 const int levelOneTankOneY = 120;

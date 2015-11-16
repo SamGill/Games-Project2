@@ -100,11 +100,12 @@ public:
 
 	void rotate(enemyTankNS::DIRECTION dir) {direction = dir;}
 
-	VECTOR2 getVelocity() {return velocity;}
+	VECTOR2 getVelocity() { return velocity; }
 
 	void ai(float time, Entity &t);
 
-	Bullet* getBullets() {return bullets;}
+
+	Bullet* getBullets() {return bullets; }
 
 	void vectorTrack();
 	void deltaTrack();
