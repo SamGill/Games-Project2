@@ -428,8 +428,8 @@ void CollisionTypes::initialize(HWND hwnd)
 				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
 		}
 	}
-	
-	
+
+
 #pragma region patternStepInitialize
 	patternStepIndex = 0;
 	for (int i = 0; i < maxPatternSteps; i++)
@@ -664,6 +664,9 @@ void CollisionTypes::gameStatesUpdate()
 			enemyTanks[i].setHealth(100);
 			enemyTanks[i].setVisible();
 		}
+
+		enemyBase.setHealth(100);
+		enemyBase.setY(enemyBase.getY() + enemyBase.getHeight() * enemyBase.getScale());
 
 		playerTank.setX(levelOnePlayerX);
 		playerTank.setY(levelOnePlayerY);
@@ -1148,220 +1151,242 @@ void CollisionTypes::ai()
 //=============================================================================
 void CollisionTypes::collisions()
 {
-       Bullet* bullets = playerTank.getBullets();
+	Bullet* bullets = playerTank.getBullets();
 
-       collisionVector.x = 0;      // clear collision vector
-       collisionVector.y = 0;
+	collisionVector.x = 0;      // clear collision vector
+	collisionVector.y = 0;
 
-       //playerTank.setCollision(false);
+	//playerTank.setCollision(false);
 
-       switch (gamestates)
-       {
-       case level_one:
-		   if(playerTank.collidesWith(powerup, collisionVector))
-		   {
-			   powerup.setVisible(false);
-			   havePowerUp = true;
-		   }
+	switch (gamestates)
+	{
+#pragma region level1
+	case level_one:
+		if(playerTank.collidesWith(powerup, collisionVector))
+		{
+			powerup.setVisible(false);
+			havePowerUp = true;
+		}
 
-		   if(havePowerUp)
-		   {
-			   //Change bullet
-				for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		if(havePowerUp)
+		{
+			//Change bullet
+			for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+			{
+				playerTank.head.bullet[i].setCurrentFrame(1);
+				playerTank.head.bullet[i].setScale(.5f);
+			}
+		}
+
+
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		{
+
+			for (int j = 0; j < NUM_ENEMY_BULLETS; j++)
+			{
+				Bullet* eBullets = enemyTanks[i].getBullets();
+				if (eBullets[j].collidesWith(playerTank, collisionVector) && eBullets[j].getVisible())
 				{
-					playerTank.head.bullet[i].setCurrentFrame(1);
-					playerTank.head.bullet[i].setScale(.5f);
+					playerTank.setHealth(playerTank.getHealth() - 20.0f);
+					if (playerTank.getHealth() == 60.0f)
+						playerTank.setCurrentFrame(1);
+					else if (playerTank.getHealth() == 20)
+						playerTank.setCurrentFrame(2);
+					else if (playerTank.getHealth() == 0)
+						gamestates = gameover;
+
+					eBullets[j].setVisible(false);
+
+					gameStatesUpdate();
 				}
-		   }
 
+			}
 
-              for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-              {
-                     if (playerTank.collidesWith(enemyTanks[i], collisionVector))
-                     {
-                           playerTank.setVelocity(VECTOR2(-collisionVector));
-                           enemyTanks[i].setVelocity(VECTOR2(collisionVector));
-                           playerTank.setCollision(true);
-                     }
+			if (playerTank.collidesWith(enemyTanks[i], collisionVector))
+			{
+				playerTank.setVelocity(VECTOR2(-collisionVector));
+				enemyTanks[i].setVelocity(VECTOR2(collisionVector));
+				playerTank.setCollision(true);
+			}
 
-                     for (int j = 0; j < LONG_HZ_WALLS; j++)
-                     {
-                           if(enemyTanks[i].collidesWith(wallLgHzScreen[j], collisionVector))
-                           {
-                                  enemyTanks[i].setCollision(true);
-                                  enemyTanks[i].bounce(collisionVector, wallLgHzScreen[j]);
-                           }
-                           Bullet* bullets = enemyTanks[i].getBullets();
-                           for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
-                           {
-                                  if (bullets[z].collidesWith(wallLgHzScreen[j], collisionVector))
-                                         bullets[z].setVisible(false);
-                           }
-                     }
+			for (int j = 0; j < LONG_HZ_WALLS; j++)
+			{
+				if(enemyTanks[i].collidesWith(wallLgHzScreen[j], collisionVector))
+				{
+					enemyTanks[i].setCollision(true);
+					enemyTanks[i].bounce(collisionVector, wallLgHzScreen[j]);
+				}
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallLgHzScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
 
-                     for (int j = 0; j < LONG_VT_WALLS; j++)
-                     {
-                           Bullet* bullets = enemyTanks[i].getBullets();
-                           for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
-                           {
-                                  if (bullets[z].collidesWith(wallLgVtScreen, collisionVector))
-                                         bullets[z].setVisible(false);
-                           }
-                     }
+			for (int j = 0; j < LONG_VT_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallLgVtScreen, collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
 
-                     for (int j = 0; j < SHORT_HZ_WALLS; j++)
-                     {
-                           Bullet* bullets = enemyTanks[i].getBullets();
-                           for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
-                           {
-                                  if (bullets[z].collidesWith(wallShortHzScreen[j], collisionVector))
-                                         bullets[z].setVisible(false);
-                           }
-                     }
+			for (int j = 0; j < SHORT_HZ_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallShortHzScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
 
-                     for (int j = 0; j < SHORT_VT_WALLS; j++)
-                     {
-                           Bullet* bullets = enemyTanks[i].getBullets();
-                           for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
-                           {
-                                  if (bullets[z].collidesWith(wallShortVtScreen[j], collisionVector))
-                                         bullets[z].setVisible(false);
-                           }
-                     }
+			for (int j = 0; j < SHORT_VT_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallShortVtScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
 
-              }
+		}
 
 #pragma region bulletWall
 
-              for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
-              {
-                     //Long Hz Collision
-                     for (int j = 0; j < LONG_HZ_WALLS; j++)
-                     {
-                           if (bullets[i].collidesWith(wallLgHzScreen[j], collisionVector))
-                           {
-                                  if (bullets[i].getCollision() == false)
-                                  {
-                                         bullets[i].setCollision(true);
-                                         VECTOR2 currentVelocity = bullets[i].getVelocity();
+		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		{
+			//Long Hz Collision
+			for (int j = 0; j < LONG_HZ_WALLS; j++)
+			{
+				if (bullets[i].collidesWith(wallLgHzScreen[j], collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].setCollision(true);
+						VECTOR2 currentVelocity = bullets[i].getVelocity();
 
-                                         if (collisionVector.x != 0)
-                                                currentVelocity.x *= -1;
-                                         else
-                                                currentVelocity.y *= -1;
+						if (collisionVector.x != 0)
+							currentVelocity.x *= -1;
+						else
+							currentVelocity.y *= -1;
 
-                                         bullets[i].setVelocity(currentVelocity);
-                                  }
-                           }
-                           else 
-                                  bullets[i].setCollision(false);
-                     }
+						bullets[i].setVelocity(currentVelocity);
+					}
+				}
+				else 
+					bullets[i].setCollision(false);
+			}
 
-                     //Short Hz Collision
-                     for (int j = 0; j < SHORT_HZ_WALLS; j++)
-                     {
-                           if (bullets[i].collidesWith(wallShortHzScreen[j], collisionVector))
-                           {
-                                  if (bullets[i].getCollision() == false)
-                                  {
-                                         bullets[i].setCollision(true);
+			//Short Hz Collision
+			for (int j = 0; j < SHORT_HZ_WALLS; j++)
+			{
+				if (bullets[i].collidesWith(wallShortHzScreen[j], collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].setCollision(true);
 
-                                         VECTOR2 currentVelocity = bullets[i].getVelocity();
+						VECTOR2 currentVelocity = bullets[i].getVelocity();
 
-                                         if (collisionVector.x != 0)
-                                                currentVelocity.x *= -1;
-                                         else
-                                                currentVelocity.y *= -1;
+						if (collisionVector.x != 0)
+							currentVelocity.x *= -1;
+						else
+							currentVelocity.y *= -1;
 
-                                         bullets[i].setVelocity(currentVelocity);
-                                  }
-                           }
-                           else 
-                                  bullets[i].setCollision(false);
-                     }
+						bullets[i].setVelocity(currentVelocity);
+					}
+				}
+				else 
+					bullets[i].setCollision(false);
+			}
 
-                     //Short Vt Collision
-                     for (int j = 0; j < SHORT_VT_WALLS; j++)
-                     {
-                           if (bullets[i].collidesWith(wallShortVtScreen[j], collisionVector))
-                           {
-                                  if (bullets[i].getCollision() == false)
-                                  {
-                                         bullets[i].setCollision(true);
+			//Short Vt Collision
+			for (int j = 0; j < SHORT_VT_WALLS; j++)
+			{
+				if (bullets[i].collidesWith(wallShortVtScreen[j], collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].setCollision(true);
 
-                                         VECTOR2 currentVelocity = bullets[i].getVelocity();
+						VECTOR2 currentVelocity = bullets[i].getVelocity();
 
-                                         if (collisionVector.x != 0)
-                                                currentVelocity.x *= -1;
-                                         else
-                                                currentVelocity.y *= -1;
+						if (collisionVector.x != 0)
+							currentVelocity.x *= -1;
+						else
+							currentVelocity.y *= -1;
 
-                                         bullets[i].setVelocity(currentVelocity);
-                                  }
-                           }
-                           else 
-                                  bullets[i].setCollision(false);
-                     }
+						bullets[i].setVelocity(currentVelocity);
+					}
+				}
+				else 
+					bullets[i].setCollision(false);
+			}
 
-                     //Long Vt Collision
-                     for (int j = 0; j < LONG_VT_WALLS; j++)
-                     {
-                           if (bullets[i].collidesWith(wallLgVtScreen, collisionVector))
-                           {
-                                  if (bullets[i].getCollision() == false)
-                                  {
-                                         bullets[i].setCollision(true);
+			//Long Vt Collision
+			for (int j = 0; j < LONG_VT_WALLS; j++)
+			{
+				if (bullets[i].collidesWith(wallLgVtScreen, collisionVector))
+				{
+					if (bullets[i].getCollision() == false)
+					{
+						bullets[i].setCollision(true);
 
-                                         VECTOR2 currentVelocity = bullets[i].getVelocity();
+						VECTOR2 currentVelocity = bullets[i].getVelocity();
 
-                                         if (collisionVector.x != 0)
-                                                currentVelocity.x *= -1;
-                                         else
-                                                currentVelocity.y *= -1;
+						if (collisionVector.x != 0)
+							currentVelocity.x *= -1;
+						else
+							currentVelocity.y *= -1;
 
-                                         bullets[i].setVelocity(currentVelocity);
-                                  }
-                           }
-                           else 
-                                  bullets[i].setCollision(false);
-                     }
+						bullets[i].setVelocity(currentVelocity);
+					}
+				}
+				else 
+					bullets[i].setCollision(false);
+			}
 
-                     for (int j = 0; j < MAX_ENEMY_TANKS; j++)
-                     {
-							if (enemyTanks[j].getVisible() && bullets[i].collidesWith(enemyTanks[j], collisionVector) && bullets[i].getVisible())
-							{
-								float currentHealth = enemyTanks[j].getHealth();
-								if(!havePowerUp)
-									enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
-								else
-									enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 100.0f);
-								if (enemyTanks[j].getHealth() <= 0.0f)
-								{
-										enemyTanks[j].setInvisible();
-										score += 100;
-								}
-								bullets[i].setVisible(false);
-							}
-                     }
+			for (int j = 0; j < MAX_ENEMY_TANKS; j++)
+			{
+				if (enemyTanks[j].getVisible() && bullets[i].collidesWith(enemyTanks[j], collisionVector) && bullets[i].getVisible())
+				{
+					float currentHealth = enemyTanks[j].getHealth();
+					if(!havePowerUp)
+						enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
+					else
+						enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 100.0f);
+					if (enemyTanks[j].getHealth() <= 0.0f)
+					{
+						enemyTanks[j].setInvisible();
+						score += 100;
+					}
+					bullets[i].setVisible(false);
+				}
+			}
 
-                     if (bullets[i].collidesWith(enemyBase, collisionVector) && bullets[i].getVisible())
-                     {
-                           float currentHealth = enemyBase.getHealth();
-						   if(!havePowerUp)
-								enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
-						   else
-							   enemyBase.setHealth(enemyBase.getHealth() - 20.0f);
-                           if (enemyBase.getHealth() <= 0.0f)
-                           {
-                                  //enemyBase.setInvisible();
-                                  score += 1000;
-								  isBaseOneDead = true;
-								  gamestates = levelTransition;
-                           }
-                           bullets[i].setVisible(false);
-                     }
+			if (bullets[i].collidesWith(enemyBase, collisionVector) && bullets[i].getVisible())
+			{
+				float currentHealth = enemyBase.getHealth();
+				if(!havePowerUp)
+					enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
+				else
+					enemyBase.setHealth(enemyBase.getHealth() - 20.0f);
+				if (enemyBase.getHealth() <= 0.0f)
+				{
+					//enemyBase.setInvisible();
+					score += 1000;
+					isBaseOneDead = true;
+					gamestates = levelTransition;
+				}
+				bullets[i].setVisible(false);
+			}
 
-              }
+		}
 #pragma endregion bulletWall
 
 #pragma region playerWall
@@ -1399,6 +1424,8 @@ void CollisionTypes::collisions()
 			playerTank.bounce(collisionVector, wallLgVtScreen);
 		}
 		break;
+#pragma endregion level1
+#pragma region level2
 	case level_two:
 
 		if (playerTank.collidesWith(wallLgHzScreen[0], collisionVector))
@@ -1407,6 +1434,31 @@ void CollisionTypes::collisions()
 			playerTank.bounce(collisionVector, wallLgHzScreen[0]);
 		}
 
+		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
+		{
+			Bullet* eBullets = enemyTanks[i].getBullets();
+			for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+			{
+				if (eBullets[z].collidesWith(wallLgHzScreen[0], collisionVector))
+					eBullets[z].setVisible(false);
+
+
+				if (eBullets[z].collidesWith(playerTank, collisionVector) && eBullets[z].getVisible())
+				{
+					playerTank.setHealth(playerTank.getHealth() - 20.0f);
+					if (playerTank.getHealth() == 60.0f)
+						playerTank.setCurrentFrame(1);
+					else if (playerTank.getHealth() == 20)
+						playerTank.setCurrentFrame(2);
+					else if (playerTank.getHealth() == 0)
+						gamestates = gameover;
+
+					eBullets[z].setVisible(false);
+
+					gameStatesUpdate();
+				}
+			}
+		}
 
 
 		//First Check for all player Tank collisions
@@ -1425,6 +1477,13 @@ void CollisionTypes::collisions()
 					enemyTanks[j].setCollision(true);
 					enemyTanks[j].bounce(collisionVector, wallLvl2Horizontal[i]);
 				}
+
+				Bullet* eBullets = enemyTanks[j].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (eBullets[z].collidesWith(wallLvl2Horizontal[i], collisionVector))
+						eBullets[z].setVisible(false);
+				}
 			}
 		}
 		for (int i = 0; i < NUM_LVL_TWO_VT_WALL; i++)
@@ -1442,6 +1501,13 @@ void CollisionTypes::collisions()
 					enemyTanks[j].setCollision(true);
 					enemyTanks[j].bounce(collisionVector, wallLvl2Vertical[i]);
 				}
+
+				Bullet* eBullets = enemyTanks[j].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (eBullets[z].collidesWith(wallLvl2Vertical[i], collisionVector))
+						eBullets[z].setVisible(false);
+				}
 			}
 		}
 
@@ -1449,6 +1515,41 @@ void CollisionTypes::collisions()
 		//next check for all bullet collisoins
 		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 		{
+
+			for (int j = 0; j < MAX_ENEMY_TANKS; j++)
+			{
+				if (bullets[i].collidesWith(enemyTanks[j], collisionVector) && bullets[i].getVisible())
+				{
+					enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 100.0/3);
+
+					if (enemyTanks[j].getHealth() <= 0)
+					{
+						enemyTanks[j].setInvisible();
+						score += 150;
+					}
+
+					bullets[i].setVisible(false);
+				}
+
+			}
+
+			if (bullets[i].collidesWith(enemyBase, collisionVector) && bullets[i].getVisible())
+			{
+				float currentHealth = enemyBase.getHealth();
+				if(!havePowerUp)
+					enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
+				else
+					enemyBase.setHealth(enemyBase.getHealth() - 20.0f);
+				if (enemyBase.getHealth() <= 0.0f)
+				{
+					//enemyBase.setInvisible();
+					score += 2000;
+					isBaseOneDead = true;
+					gamestates = victory;
+				}
+				bullets[i].setVisible(false);
+			}
+
 
 			if (bullets[i].collidesWith(wallLgHzScreen[0], collisionVector))
 			{
@@ -1490,7 +1591,7 @@ void CollisionTypes::collisions()
 			bullets[i].setCollision(false);
 		}
 	}
-
+#pragma endregion level2
 
 
 #pragma endregion playerWall
@@ -1568,7 +1669,10 @@ void CollisionTypes::render()
 
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].draw();
-		//circleWall.draw();
+		enemyBase.draw();
+		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
+
+		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 		break;
 	case victory:
 		victoryScreen.draw();
