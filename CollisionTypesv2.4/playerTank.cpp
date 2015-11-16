@@ -58,6 +58,7 @@ bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 
 		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 			head.bullet[i].setScale(spriteData.scale);
+
 	}
 
 	return result;
@@ -81,21 +82,22 @@ void PlayerTank::draw()
 //=============================================================================
 void PlayerTank::update(float frameTime)
 {
+	Entity::update(frameTime);
 
-    switch (direction)                          // rotate ship
-    {
-    case playerTankNS::LEFT:
-        spriteData.angle -= frameTime * playerTankNS::ROTATION_RATE;  // rotate left
-        break;							
-    case playerTankNS::RIGHT:			
-        spriteData.angle += frameTime * playerTankNS::ROTATION_RATE;  // rotate right
-        break;
-    }
+	switch (direction)                          // rotate ship
+	{
+	case playerTankNS::LEFT:
+		spriteData.angle -= frameTime * playerTankNS::ROTATION_RATE;  // rotate left
+		break;							
+	case playerTankNS::RIGHT:			
+		spriteData.angle += frameTime * playerTankNS::ROTATION_RATE;  // rotate right
+		break;
+	}
 
 	spriteData.x += velocity.x * frameTime;
 	spriteData.y += velocity.y * frameTime;
-	velocity.y = 0;
-	velocity.x = 0;
+	/*velocity.y = 0;
+	velocity.x = 0;*/
 
 
 	head.setX(spriteData.x);
@@ -106,7 +108,6 @@ void PlayerTank::update(float frameTime)
 	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 		head.bullet[i].update(frameTime);
 
-	Entity::update(frameTime);
 
 	//// wrap around screen
 	//if (spriteData.x > GAME_WIDTH)                  // if off screen right
@@ -119,3 +120,77 @@ void PlayerTank::update(float frameTime)
 	//    spriteData.y = -playerTankNS::HEIGHT;             // position off screen top
 }
 
+//void PlayerTank::circleBounce(VECTOR2 &collisionVector, Entity &ent)
+//{
+//	VECTOR2 Vdiff = ent.getVelocity() - velocity;
+//	VECTOR2 cUV = collisionVector;              // collision unit vector
+//	Graphics::Vector2Normalize(&cUV);
+//	float cUVdotVdiff = Graphics::Vector2Dot(&cUV, &Vdiff);
+//	float massRatio = 1.0f;
+//	//if (getMass() != 0)
+//		massRatio *= (ent.getMass() / (getMass() + ent.getMass()));
+//
+//	// If entities are already moving apart then bounce must
+//	// have been previously called and they are still colliding.
+//	// Move entities apart along collisionVector
+//	if(cUVdotVdiff > 0)
+//	{
+//		setX(getX() - cUV.x * massRatio);
+//		setY(getY() - cUV.y * massRatio);
+//	}
+//	else 
+//	{
+//		//deltaV += ((massRatio * cUVdotVdiff) * cUV);
+//		deltaV += 100 * cUV;
+//	
+//		//velocity *= -1;
+//	}
+//}
+
+void PlayerTank::circleBounce(VECTOR2 &collisionVector, Entity &ent, float frameTime)
+{
+	VECTOR2 Vdiff = ent.getVelocity() - velocity;
+	VECTOR2 cUV = collisionVector;              // collision unit vector
+
+	Graphics::Vector2Normalize(&Vdiff);
+	Graphics::Vector2Normalize(&cUV);
+	float cUVdotVdiff = Graphics::Vector2Dot(&cUV, &Vdiff);
+	float massRatio = 1.0f;
+	if (getMass() != 0)
+		massRatio *= (ent.getMass() / (getMass() + ent.getMass()));
+	if(massRatio < 0.1f)
+		massRatio = 0.1f;
+
+	// Move entities out of collision along collision vector
+	VECTOR2 cv;
+	int count=10;   // loop limit
+	/*do
+	{
+	setX(getX() - cUV.x);
+	setY(getY() - cUV.y);
+	rotatedBoxReady = false;
+	count--;
+	} while( this->collidesWith(ent, cv) && count);*/
+
+	// bounce
+	//deltaV -= ((massRatio * cUVdotVdiff) 10 * cUV;
+	/*velocity.x = 0;
+	velocity.y = 0;*/
+	//deltaV -= collisionVector;
+
+	VECTOR2 uvelocity = velocity/playerTankNS::SPEED;
+
+	float cosine = Graphics::Vector2Dot(&uvelocity, &cUV);
+	if (  .9 < abs(cosine) && abs(cosine) < 1.1 || -.9 > cosine && cosine > -1.1  )
+	{
+		if (velocity.x == 0 && velocity.y == 0)
+			velocity = collisionVector;
+		else
+			velocity *= -1;
+	}
+	else
+		velocity = -collisionVector;
+
+	spriteData.x += frameTime * velocity.x;
+	spriteData.y += frameTime * velocity.y;
+}

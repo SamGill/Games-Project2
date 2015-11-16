@@ -78,11 +78,15 @@ const char CLASS_NAME[] = "Collisions";
 const char GAME_TITLE[] = "Tank Banditos";
 const bool FULLSCREEN = false;              // windowed or fullscreen
 const UINT GAME_WIDTH =  1200;               // width of game in pixels
-const UINT GAME_HEIGHT = 600;               // height of game in pixels
+const UINT GAME_HEIGHT = 700;               // height of game in pixels
 
+const int NUM_ENEMY_BULLETS = 6;
 const int MAX_PLAYER_SHOTS = 10;
 const int SHOT_TIME_BUFFER = 1;
 const int MAX_ENEMY_TANKS = 7;
+
+const int NUM_LVL_TWO_HZ_WALL = 4;
+const int NUM_LVL_TWO_VT_WALL = 3;
 
 const int LONG_HZ_WALLS = 5;
 const int SHORT_HZ_WALLS = 3;
@@ -122,7 +126,6 @@ const RECT TANK_RECTANGLE   = {-167, -123, 167, 123};
 const RECT POWERUP_RECT = {-16, -16, 16, 16};
 const RECT ENEMY_BASE_RECT = {-32, -64, 32, 64};
 
-
 const RECT  COLLISION_RECTANGLE = {-30,-16,30,16};
 const RECT  COLLISION_BOX = {-30,-30,30,30};
 const float   COLLISION_RADIUS = 29;
@@ -147,7 +150,11 @@ const char WALL_LONG_VERTICAL[] = "pictures\\wall_long_vertical.png";
 const char WALL_SHORT_HORIZONTAL[] = "pictures\\wall_short_horizontal.png";
 const char WALL_SHORT_VERTICAL[] = "pictures\\wall_short_vertical.png";
 const char WALL_IMAGE[] =     "pictures\\sand_background.png";
+
 const char SAND_BACKGROUND[] = "pictures\\background.png";
+
+const char WALL_CIRCLE[] =    "pictures\\circular_wall.png";
+
 
 const char POWER_UP[] =		  "pictures\\powerup.png";
 const char ENEMY_BASE[] =	  "pictures\\enemy_base.png";
@@ -260,7 +267,6 @@ const int levelOneTankSixX = 700;
 const int levelOneTankSixY = 450;
 const int levelOneTankSevenX = 880;
 const int levelOneTankSevenY = 325;
-
 const int  JPO_COLS = 3;
 const int  JPO_WIDTH = 512;
 const int  JPO_HEIGHT = 512;

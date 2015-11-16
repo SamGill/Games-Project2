@@ -17,8 +17,8 @@ namespace playerTankNS
 	const int HEIGHT = 512;                  // image height
 	const int X = GAME_WIDTH/2 - WIDTH/2;   // location on screen
 	const int Y = GAME_HEIGHT/2 - HEIGHT/2;
-	const float ROTATION_RATE = (float)PI/3; // radians per second
-	const float SPEED = 100;                // 100 pixels per second
+	const float ROTATION_RATE = (float)PI/2; // radians per second
+	const float SPEED = 300;                // 100 pixels per second
 	enum DIRECTION {NONE, LEFT, RIGHT};     // rotation direction
 }
 
@@ -41,7 +41,7 @@ public:
 	virtual void draw();
 
 	bool initializeHead(Game *gamePtr, int width, int height, int ncols,
-                            TextureManager *textureM, TextureManager *textureZ);
+		TextureManager *textureM, TextureManager *textureZ);
 
 	// Set collision Boolean
 	void setCollision(bool c)
@@ -63,47 +63,47 @@ public:
 	// Get collision type
 	entityNS::COLLISION_TYPE getCollisionType() {return collisionType;}
 
-	 // direction of rotation force
-    void rotate(playerTankNS::DIRECTION dir) {direction = dir;}
+	// direction of rotation force
+	void rotate(playerTankNS::DIRECTION dir) {direction = dir;}
 
 	void stop();
 
 	/*void move_up()
 	{
-		if (velocity.x != 0.0f)
-			return;
+	if (velocity.x != 0.0f)
+	return;
 
-		velocity.y = -playerTankNS::SPEED;
-		spriteData.angle = 0.0f;
+	velocity.y = -playerTankNS::SPEED;
+	spriteData.angle = 0.0f;
 	}
 
 	void move_right()
 	{
-		if (velocity.y != 0.0f)
-			return;
+	if (velocity.y != 0.0f)
+	return;
 
-		velocity.x = playerTankNS::SPEED;
-		spriteData.angle = PI/2;
+	velocity.x = playerTankNS::SPEED;
+	spriteData.angle = PI/2;
 	}
 
 	void move_left()
 	{
-		if (velocity.y != 0.0f)
-			return;
+	if (velocity.y != 0.0f)
+	return;
 
 
-		velocity.x = -playerTankNS::SPEED;
-		spriteData.angle = 3 * PI/2;
+	velocity.x = -playerTankNS::SPEED;
+	spriteData.angle = 3 * PI/2;
 
 	}
 
 	void move_down()
 	{
-		if (velocity.x != 0.0f)
-			return;
+	if (velocity.x != 0.0f)
+	return;
 
-		velocity.y = playerTankNS::SPEED;
-		spriteData.angle = PI;
+	velocity.y = playerTankNS::SPEED;
+	spriteData.angle = PI;
 	}*/
 
 	void fireBullet()
@@ -121,18 +121,22 @@ public:
 		return head.bullet;
 	}
 
-	 // move forward
-    void forward()
-    {
-        velocity.x = (float)cos(spriteData.angle) * playerTankNS::SPEED;
-        velocity.y = (float)sin(spriteData.angle) * playerTankNS::SPEED;
-    }
+	// move forward
+	void forward()
+	{
 
-    // move in reverse
-    void reverse()
-    {
-        velocity.x = -(float)cos(spriteData.angle) * playerTankNS::SPEED;
-        velocity.y = -(float)sin(spriteData.angle) * playerTankNS::SPEED;
-    }
+		velocity.x = (float)cos(spriteData.angle) * playerTankNS::SPEED;
+		velocity.y = (float)sin(spriteData.angle) * playerTankNS::SPEED;
+
+	}
+
+	// move in reverse
+	void reverse()
+	{
+		velocity.x = -(float)cos(spriteData.angle) * playerTankNS::SPEED;
+		velocity.y = -(float)sin(spriteData.angle) * playerTankNS::SPEED;
+	}
+
+	void circleBounce(VECTOR2 &collisionVector, Entity &ent, float frameTime);
 
 };

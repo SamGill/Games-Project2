@@ -20,9 +20,158 @@
     <ClCompile Include="murray.cpp" />
     <ClCompile Include="gill.cpp" />
     <ClCompile Include="textDX.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="crackOne.cpp" />
   </ItemGroup>
   <ItemGroup>
+=======
+  </ItemGroup>
+  <ItemGroup>
+<<<<<<< HEAD
+  
+    <ClCompile Include="ship.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="playerTank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="textureManager.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="image.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="graphics.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files\NotUsuallyEdited</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="tankHead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="enemyTank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="patternStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="wall.cpp">
+		<Filter>Source Files</Filter>
+	</ClCompile>
+	
+    <ClCompile Include="collisionTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+    <ClCompile Include="audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="ship.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="collisionTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="playerTank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="input.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="image.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="graphics.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="gameError.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="game.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="entity.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="textureManager.h">
+      <Filter>Header Files\NotUsuallyEdited</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="tankHead.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="bullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="enemyTank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="patternStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="shotBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+	
+    <ClInclude Include="bullet.h">
+		<Filter>Header Files</Filter>
+	</ClInclude>
+	
+    <ClInclude Include="audio.h">
+		<Filter>Header Files</Filter>
+    </ClInclude>
+=======
+>>>>>>> origin/master
     <ClInclude Include="audio.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="collisionTypes.h" />
@@ -44,6 +193,10 @@
     <ClInclude Include="murray.h" />
     <ClInclude Include="gill.h" />
     <ClInclude Include="textDX.h" />
+<<<<<<< HEAD
     <ClInclude Include="crackOne.h" />
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
   </ItemGroup>
 </Project>

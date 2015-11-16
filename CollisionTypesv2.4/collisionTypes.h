@@ -19,7 +19,6 @@ class CollisionTypes;
 #include "wall.h"
 #include "murray.h"
 #include "gill.h"
-#include "crackOne.h"
 #include <cmath>
 #include "textDX.h"
 
@@ -31,9 +30,9 @@ class CollisionTypes;
 class CollisionTypes : public Game
 {
 private:
-    // game items
-    TextureManager menuTexture, gameTextures;   // game texture
-    Ship    rectangle, square, circle, ship;    // targets and spaceship
+	// game items
+	TextureManager menuTexture, gameTextures;   // game texture
+	Ship    rectangle, square, circle, ship;    // targets and spaceship
 
 	TextureManager tankBodyTexture;
 	TextureManager tankCrackOneTexture, tankCrackTwoTexture, tankCrackThreeTexture;
@@ -42,20 +41,24 @@ private:
 	TextureManager enemyTankTexture;
 	TextureManager wallTexture;
 	TextureManager splashScreenTexture, gameOverTexture, gameMenuTexture, cheatCodeTexture;
+	//Wall texture Managers for level1
 	TextureManager wallLgHzTexture, wallShortHzTexture, wallLgVtTexture, wallShortVtTexture;
 	TextureManager powerupTexture, enemyBaseTexture;
 	TextureManager victoryTexture, instructionsTexture, transitionTexture;
 	TextureManager sandTexture;
+
+	//Wall textures for level2
+	Wall wallLvl2Vertical[3], wallLvl2Horizontal[4], wallLgHzScreenLvl2;
 
 	Image splashScreen, gameOverScreen, gameMenuScreen, cheatCodeScreen, instructionsScreen, victoryScreen, transitionScreen;
 	Image sandScreen;
 	//Image wallLgHzScreen, wallLgVtScreen, wallShortHzScreen, wallShortVtScreen;
 
 	PlayerTank     playerTank;
-	crackOne	   crackone;
 	PlayerTank     crackTwo;
 	enemyTank	   enemyTanks[MAX_ENEMY_TANKS];
 	enemyTank	   enemyTank;
+
 	Wall           wall;
 	Wall		   wallLgHzScreen[LONG_HZ_WALLS], wallLgVtScreen, wallShortHzScreen[SHORT_HZ_WALLS], wallShortVtScreen[SHORT_VT_WALLS];
 	murray		   powerup;
@@ -64,24 +67,25 @@ private:
 	TextDX		   *scoreFont;
 	TextDX		   *finalScoreFont;
 
+
+
 	GameStates gamestates;
 
 	bulletType bullet_type;
 
 	int score;
 
+	Image   menu;               // menu image
+	bool    menuOn;
+	VECTOR2 collisionVector;    // collision vector
+	Image   line;               // for drawing collision vector
+	float   lineRadians;
+	float   lineScale;          // distance/LINE_LENGTH
+	float   AxBx;
+	float   AyBy;
+	float   lineLength;
 
-    Image   menu;               // menu image
-    bool    menuOn;
-    VECTOR2 collisionVector;    // collision vector
-    Image   line;               // for drawing collision vector
-    float   lineRadians;
-    float   lineScale;          // distance/LINE_LENGTH
-    float   AxBx;
-    float   AyBy;
-    float   lineLength;
-
-    VECTOR2 lineEnds[2];        // x,y of line endpoints
+	VECTOR2 lineEnds[2];        // x,y of line endpoints
 	PatternStep patternSteps[maxPatternSteps];
 	PatternStep patternSteps2[maxPatternSteps];
 	PatternStep patternSteps3[maxPatternSteps];
@@ -89,8 +93,6 @@ private:
 	PatternStep patternSteps5[maxPatternSteps];
 	PatternStep patternSteps6[maxPatternSteps];
 	PatternStep patternSteps7[maxPatternSteps];
-
-
 
 	int patternStepIndex;
 	int patternStepIndex2;
@@ -112,21 +114,29 @@ private:
 
 	bool havePowerUp;
 
+	//Level two patternSteps
+	PatternStep patternStepsLvl2[MAX_ENEMY_TANKS][maxPatternSteps];
+	int patternStepIndexLvlTwo[MAX_ENEMY_TANKS];
+
+	void performEnemyTankPatternStep(int index);
+
+	void initializeLvlTwoPatterns();
+
 public:
-    // Constructor
-    CollisionTypes();
+	// Constructor
+	CollisionTypes();
 
-    // Destructor
-    virtual ~CollisionTypes();
+	// Destructor
+	virtual ~CollisionTypes();
 
-    // Initialize the game
-    void initialize(HWND hwnd);
-    void update();      // must override pure virtual from Game
-    void ai();          // "
-    void collisions();  // "
-    void render();      // "
-    void releaseAll();
-    void resetAll();
+	// Initialize the game
+	void initialize(HWND hwnd);
+	void update();      // must override pure virtual from Game
+	void ai();          // "
+	void collisions();  // "
+	void render();      // "
+	void releaseAll();
+	void resetAll();
 
 	void gameStatesUpdate();
 

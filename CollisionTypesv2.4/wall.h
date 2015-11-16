@@ -12,6 +12,8 @@ namespace wallNS
     const int HEIGHT = 128;                  // image height
     const int X = GAME_WIDTH/2;   // location on screen
     const int Y = GAME_HEIGHT/2;
+	const float MASS = 1.0e14f;         // mass
+	const int   COLLISION_RADIUS = 252/2;   // for circular collision
 }
 
 // inherits from Entity class

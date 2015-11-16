@@ -7,6 +7,11 @@ class enemyTank;
 #include "entity.h"
 #include "constants.h"
 #include "graphics.h"
+#include "bullet.h"
+#include "shotBuffer.h"
+#include "patternStep.h"
+
+#define maxPatternSteps 5
 
 namespace enemyTankNS
 {
@@ -37,7 +42,24 @@ private:
 	//void deltaTrack();
 	//void evade();
 	VECTOR2 angleVector;
-
+	Bullet bullets[NUM_ENEMY_BULLETS];
+	Bullet testRay;
+	ShotBuffer shotBuffer;
+	int numBulletsFired;
+	void organizeBullets()
+	{
+		numBulletsFired = 0;
+		for (int i = 0; i < NUM_ENEMY_BULLETS; i++)
+		{
+			if (bullets[i].getVisible())
+			{
+				//puts the bullet in the earliest spot that isn't a visible as well.
+				std::swap(bullets[numBulletsFired], bullets[i]);
+				numBulletsFired++;
+			}
+			
+		}
+	}
 public:
     // constructor
     enemyTank();
@@ -45,6 +67,10 @@ public:
     // inherited member functions
     virtual bool initialize(Game *gamePtr, int width, int height, int ncols,
                             TextureManager *textureM);
+	virtual void draw();
+	bool initializeBullets(Game *gamePtr, int width, int height, int ncols,
+                            TextureManager *textureM);
+
     void update(float frameTime);
 
     // Set collision Boolean
@@ -78,8 +104,12 @@ public:
 
 	void ai(float time, Entity &t);
 
+	Bullet* getBullets() {return bullets;}
+
 	void vectorTrack();
 	void deltaTrack();
 	void evade();
+	void fireAtPlayer();
+	void fireBullet(VECTOR2);
 };
 #endif

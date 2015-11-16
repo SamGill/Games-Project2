@@ -29,6 +29,8 @@ Bullet::Bullet() : Entity()
 	//collisionType = entityNS::ROTATED_BOX;
 	collisionType = entityNS::CIRCLE;
 
+	mass = 300.0f;
+
 	target = false;
 
 }
@@ -51,11 +53,17 @@ bool Bullet::initialize(Game *gamePtr, int width, int height, int ncols,
 //=============================================================================
 void Bullet::update(float frameTime)
 {
-
+	
 	Entity::update(frameTime);
 
+	if (D3DXVec2Length(&velocity) < bulletNS::SPEED)
+	{
+		D3DXVec2Normalize(&velocity, &velocity);
+		velocity *= bulletNS::SPEED;
+	}
 	spriteData.x += velocity.x * frameTime;
 	spriteData.y += velocity.y * frameTime;
+	
 
 	bool isOffscreen = spriteData.x > GAME_WIDTH || spriteData.x < 0 || spriteData.y > GAME_HEIGHT || spriteData.y < 0;
 
@@ -68,27 +76,24 @@ void Bullet::update(float frameTime)
 }
 
 
-void Bullet::reflectVelocity(float x, float y)
+void Bullet::circleBounce(VECTOR2 &collisionVector, Entity &ent)
 {
-	if (x < 0)
-	{
+    VECTOR2 Vdiff = ent.getVelocity() - velocity;
+    VECTOR2 cUV = collisionVector;              // collision unit vector
+    Graphics::Vector2Normalize(&cUV);
+    float cUVdotVdiff = Graphics::Vector2Dot(&cUV, &Vdiff);
+    float massRatio = 2.0f;
+    if (getMass() != 0)
+        massRatio *= (ent.getMass() / (getMass() + ent.getMass()));
 
-	}
-	else if (x > 0)
-	{
-		
-	}
-	else if (y > 0)
-	{
-
-	}
-	else if (y < 0)
-	{
-
-	}
-
-	/*	if (velocity.x > 0 && velocity.y > 0 || velocity.x < 0 && velocity.y < 0 || velocity.x > 0 && velocity.y < 0)
-	velocity.x *= -1;
-	else if (velocity.x > 0 && velocity.y < 0)
-	velocity.y *= -1;*/
+    // If entities are already moving apart then bounce must
+    // have been previously called and they are still colliding.
+    // Move entities apart along collisionVector
+    if(cUVdotVdiff > 0)
+    {
+        setX(getX() - cUV.x * massRatio);
+        setY(getY() - cUV.y * massRatio);
+    }
+    else 
+        deltaV += ((massRatio * cUVdotVdiff) * cUV);
 }
