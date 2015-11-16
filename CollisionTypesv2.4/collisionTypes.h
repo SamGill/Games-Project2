@@ -153,6 +153,10 @@ public:
 	void enemyLeftRight3();
 	void enemyLeftRight4();
 	void enemyLeftRight5();
+	void reinitialize();
+	
+
+	
 };
 
 #endif

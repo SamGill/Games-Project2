@@ -300,7 +300,7 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	//Base placement
 	enemyBase.setX(1040);
-	enemyBase.setY(520);
+	enemyBase.setY(520 + enemyBase.getHeight());
 	enemyBase.setCollisionType(entityNS::BOX);
 	enemyBase.setEdge(ENEMY_BASE_RECT);
 
@@ -681,7 +681,7 @@ void CollisionTypes::gameStatesUpdate()
 		}
 
 		enemyBase.setHealth(100);
-		enemyBase.setY(enemyBase.getY() + enemyBase.getHeight() * enemyBase.getScale());
+		//enemyBase.setY(enemyBase.getY() + enemyBase.getHeight() * enemyBase.getScale());
 
 		playerTank.setX(levelOnePlayerX);
 		playerTank.setY(levelOnePlayerY);
@@ -715,6 +715,7 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x59))
 		{
 			gamestates = intro;
+			reinitialize();
 			timeInState = 0;
 		}
 		if(input->wasKeyPressed(0x4E))
@@ -730,7 +731,9 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x52))
 		{
 			gamestates = intro;
+			reinitialize();
 			timeInState = 0;
+
 		}
 		else if(input->wasKeyPressed(0x45))
 		{
@@ -741,7 +744,7 @@ void CollisionTypes::gameStatesUpdate()
 
 void CollisionTypes::update()
 {
-	
+
 	gameStatesUpdate();
 	switch (gamestates)
 	{
@@ -1218,6 +1221,8 @@ void CollisionTypes::collisions()
 		if(playerTank.collidesWith(powerup, collisionVector))
 		{
 			powerup.setVisible(false);
+			if (havePowerUp == false)
+				audio->playCue(POWERUP);
 			havePowerUp = true;
 		}
 
@@ -2020,4 +2025,68 @@ void CollisionTypes::initializeLvlTwoPatterns()
 	patternStepsLvl2[6][4].setAction(TRACK);
 	patternStepsLvl2[6][4].setTimeForStep(5);
 
+}
+
+
+void CollisionTypes::reinitialize()
+{
+	score = 0;
+	//isMusicPlaying = false;
+	isBaseOneDead = false;
+	isBaseTwoDead = false;
+	havePowerUp = false;
+	isLaserPlaying = false;
+	isCannonPlaying = false;
+	isPowerupPlaying = false;
+	level2Cheat = false;
+
+	powerup.setVisible(true);
+
+	enemyTanks[0].setPositionX(levelOneTankOneX);
+	enemyTanks[0].setPositionY(levelOneTankOneY);
+	enemyTanks[1].setPositionX(levelOneTankTwoX);
+	enemyTanks[1].setPositionY(levelOneTankTwoY);
+	enemyTanks[2].setPositionX(levelOneTankThreeX);
+	enemyTanks[2].setPositionY(levelOneTankThreeY);
+	enemyTanks[3].setPositionX(levelOneTankFourX);
+	enemyTanks[3].setPositionY(levelOneTankFourY);
+	enemyTanks[4].setPositionX(levelOneTankFiveX);
+	enemyTanks[4].setPositionY(levelOneTankFiveY);
+	enemyTanks[5].setPositionX(levelOneTankSixX);
+	enemyTanks[5].setPositionY(levelOneTankSixY);
+	enemyTanks[6].setPositionX(levelOneTankSevenX);
+	enemyTanks[6].setPositionY(levelOneTankSevenY);
+
+	for (int i =0; i < MAX_ENEMY_TANKS; i++)
+	{
+		enemyTanks[i].setHealth(100);
+		enemyTanks[i].setVisible();
+	}
+	playerTank.setHealth(100);
+	playerTank.setCurrentFrame(0);
+	playerTank.setScale(.15f);
+
+	enemyBase.setHealth(100);
+
+	playerTank.setX(levelOnePlayerX);
+	playerTank.setY(levelOnePlayerY);
+
+	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+	{
+		playerTank.head.bullet[i].setScale(.15f);
+		playerTank.head.bullet[i].setCurrentFrame(0);
+		playerTank.head.bullet[i].setVisible(false);
+	}
+	scoreFont = new TextDX();
+	finalScoreFont = new TextDX();
+
+	//Initialize the game text
+	if(scoreFont->initialize(graphics, 24, true, false, "Arial") == false)
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing output font"));
+
+	if(finalScoreFont->initialize(graphics, 48, true, false, "Bauhaus 93") == false)
+		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing output font"));
+
+	finalScoreFont->setFontColor(graphicsNS::RED);
+	scoreFont->setFontColor(graphicsNS::RED);
 }
