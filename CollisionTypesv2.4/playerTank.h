@@ -29,11 +29,11 @@ private:
 	playerTankNS::DIRECTION direction;    // direction of rotation
 	bool collision;                 // true when ship is colliding
 	bool target;                    // true if target, false if ship
-	TankHead head;
+	
 public:
 	// constructor
 	PlayerTank();
-
+	TankHead head;
 	// inherited member functions
 	virtual bool initialize(Game *gamePtr, int width, int height, int ncols,
 		TextureManager *textureM);

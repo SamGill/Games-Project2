@@ -40,6 +40,7 @@ void CollisionTypes::initialize(HWND hwnd)
 	isMusicPlaying = false;
 	isBaseOneDead = false;
 	isBaseTwoDead = false;
+	havePowerUp = false;
 
 #pragma region game_textures
 
@@ -152,12 +153,6 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	if(!enemyBaseTexture.initialize(graphics, ENEMY_BASE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
-
-	if(!enemyBase.initialize(this, gillNS::WIDTH, gillNS::HEIGHT, 0, &enemyBaseTexture))
-
-
-		if(!enemyBaseTexture.initialize(graphics, ENEMY_BASE))
-			throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing texture"));
 
 	if(!enemyBase.initialize(this, gillNS::WIDTH, gillNS::HEIGHT, 0, &enemyBaseTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing powerup"));
@@ -339,8 +334,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	wall.setX(400);
 	wall.setY(400);
 
-	//playerTank.getBullets()[0].setEdge(collision);
-
 	for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 	{
 		enemyTanks[i].setScale(.15f);
@@ -390,8 +383,6 @@ void CollisionTypes::initialize(HWND hwnd)
 
 	playerTank.setCurrentFrame(0);
 	playerTank.setScale(.15f);
-	crackTwo.setScale(.15f);
-
 
 	playerTank.setX(levelOnePlayerX);
 	playerTank.setY(levelOnePlayerY);
@@ -422,7 +413,6 @@ void CollisionTypes::initialize(HWND hwnd)
 	finalScoreFont->setFontColor(graphicsNS::RED);
 	scoreFont->setFontColor(graphicsNS::RED);
 
-
 #pragma endregion
 
 	// init sound system
@@ -438,6 +428,8 @@ void CollisionTypes::initialize(HWND hwnd)
 				throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
 		}
 	}
+	
+	
 #pragma region patternStepInitialize
 	patternStepIndex = 0;
 	for (int i = 0; i < maxPatternSteps; i++)
@@ -1146,6 +1138,16 @@ void CollisionTypes::collisions()
 			   havePowerUp = true;
 		   }
 
+		   if(havePowerUp)
+		   {
+			   //Change bullet
+				for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+				{
+					playerTank.head.bullet[i].setCurrentFrame(1);
+					playerTank.head.bullet[i].setScale(.5f);
+				}
+		   }
+
 
               for (int i = 0; i < MAX_ENEMY_TANKS; i++)
               {
@@ -1300,24 +1302,30 @@ void CollisionTypes::collisions()
 
                      for (int j = 0; j < MAX_ENEMY_TANKS; j++)
                      {
-                           if (enemyTanks[j].getVisible() && bullets[i].collidesWith(enemyTanks[j], collisionVector))
-                           {
-                                  float currentHealth = enemyTanks[j].getHealth();
-                                  enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
-                                  if (enemyTanks[j].getHealth() == 0.0f)
-                                  {
-                                         enemyTanks[j].setInvisible();
-                                         score += 100;
-                                  }
-                                  bullets[i].setVisible(false);
-                           }
+							if (enemyTanks[j].getVisible() && bullets[i].collidesWith(enemyTanks[j], collisionVector) && bullets[i].getVisible())
+							{
+								float currentHealth = enemyTanks[j].getHealth();
+								if(!havePowerUp)
+									enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 20.0f);
+								else
+									enemyTanks[j].setHealth(enemyTanks[j].getHealth() - 100.0f);
+								if (enemyTanks[j].getHealth() <= 0.0f)
+								{
+										enemyTanks[j].setInvisible();
+										score += 100;
+								}
+								bullets[i].setVisible(false);
+							}
                      }
 
                      if (bullets[i].collidesWith(enemyBase, collisionVector) && bullets[i].getVisible())
                      {
                            float currentHealth = enemyBase.getHealth();
-                           enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
-                           if (enemyBase.getHealth() == 0.0f)
+						   if(!havePowerUp)
+								enemyBase.setHealth(enemyBase.getHealth() - 10.0f);
+						   else
+							   enemyBase.setHealth(enemyBase.getHealth() - 20.0f);
+                           if (enemyBase.getHealth() <= 0.0f)
                            {
                                   //enemyBase.setInvisible();
                                   score += 1000;
@@ -1501,8 +1509,6 @@ void CollisionTypes::render()
 		break;
 	case level_one:
 		sandScreen.draw();
-		//for (int i = 0; i < MAX_ENEMY_TANKS; i++)
-		//enemyTanks[i].draw();
 		playerTank.draw();
 		for (int i = 0; i < LONG_HZ_WALLS; i++)
 		{
@@ -1522,14 +1528,13 @@ void CollisionTypes::render()
 		for (int i = 0; i < MAX_ENEMY_TANKS; i++)
 			enemyTanks[i].draw();
 		playerTank.draw();
-		//crackone.draw();
-		//crackTwo.draw();
 
 		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 
 		scoreFont->print(scoreDisplay.str(), GAME_WIDTH - 150, 20); //Displays score
 		break;
 	case level_two:
+		sandScreen.draw();
 		playerTank.draw();
 		wallLgHzScreen[0].draw();
 		for (int i = 0; i < NUM_LVL_TWO_HZ_WALL; i++)

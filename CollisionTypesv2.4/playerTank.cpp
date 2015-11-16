@@ -49,7 +49,7 @@ bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 	bool result = head.initialize(gamePtr, width, height, ncols, textureM);
 
 	for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
-		head.bullet[i].initialize(gamePtr, bulletNS::WIDTH, bulletNS::HEIGHT, 0, textureZ);
+		head.bullet[i].initialize(gamePtr, bulletNS::WIDTH, bulletNS::HEIGHT, 2, textureZ);
 
 	if (result)
 	{
@@ -57,7 +57,9 @@ bool PlayerTank::initializeHead(Game *gamePtr, int width, int height, int ncols,
 		head.setCurrentFrame(0);
 
 		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
+		{
 			head.bullet[i].setScale(spriteData.scale);
+		}
 
 	}
 
