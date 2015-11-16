@@ -44,6 +44,7 @@ void CollisionTypes::initialize(HWND hwnd)
 	isLaserPlaying = false;
 	isCannonPlaying = false;
 	isPowerupPlaying = false;
+	level2Cheat = false;
 
 #pragma region game_textures
 
@@ -571,7 +572,10 @@ void CollisionTypes::gameStatesUpdate()
 		//If "Enter" is pressed, start game
 		if(input->wasKeyPressed(0x0D))
 		{
-			gamestates = level_one;
+			if(!level2Cheat)
+				gamestates = level_one;
+			else
+				gamestates = level_two;
 			//gamestates = level_two;
 
 			timeInState = 0;
@@ -612,7 +616,8 @@ void CollisionTypes::gameStatesUpdate()
 		if(input->wasKeyPressed(0x32))
 		{
 			//Jump to level 2
-			gamestates = level_two;
+			//gamestates = level_two;
+			level2Cheat = true;
 			timeInState = 0;
 		}
 		//If "ESC" was pressed, go back to main menu
@@ -1187,6 +1192,7 @@ void CollisionTypes::collisions()
               {
                      powerup.setVisible(false);
                      havePowerUp = true;
+					 audio->playCue(POWERUP);
               }
 
               if(havePowerUp)
@@ -1385,6 +1391,7 @@ void CollisionTypes::collisions()
                                   {
                                          enemyTanks[j].setInvisible();
                                          score += 100;
+										 audio->playCue(EXPLOSION);
                                   }
                                   bullets[i].setVisible(false);
                            }
@@ -1402,6 +1409,7 @@ void CollisionTypes::collisions()
                                   //enemyBase.setInvisible();
                                   score += 1000;
                                   isBaseOneDead = true;
+								  audio->playCue(EXPLOSION);
                                   gamestates = levelTransition;
                            }
                            bullets[i].setVisible(false);
