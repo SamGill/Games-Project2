@@ -70,9 +70,6 @@ void CollisionTypes::initialize(HWND hwnd)
 			throw(GameError(gameErrorNS::WARNING, "wall short vertical not initialized"));
 	}
 
-
-
-
 	//Placement of walls
 	wallLgHzScreen[0].setX(wallOneX);
 	wallLgHzScreen[0].setY(wallOneY);
@@ -452,11 +449,9 @@ void CollisionTypes::initialize(HWND hwnd)
 	return;
 }
 
-
 //=============================================================================
 // Update all game items
 //=============================================================================
-
 void CollisionTypes::gameStatesUpdate()
 {
 	timeInState += frameTime;
@@ -789,6 +784,7 @@ void CollisionTypes::ai()
 		}
 	}
 }
+
 //=============================================================================
 // Handle collisions
 //=============================================================================
@@ -820,15 +816,50 @@ void CollisionTypes::collisions()
 					enemyTanks[i].setCollision(true);
 					enemyTanks[i].bounce(collisionVector, wallLgHzScreen[j]);
 				}
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallLgHzScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
 			}
+
+			for (int j = 0; j < LONG_VT_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallLgVtScreen, collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
+
+			for (int j = 0; j < SHORT_HZ_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallShortHzScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
+
+			for (int j = 0; j < SHORT_VT_WALLS; j++)
+			{
+				Bullet* bullets = enemyTanks[i].getBullets();
+				for (int z = 0; z < NUM_ENEMY_BULLETS; z++)
+				{
+					if (bullets[z].collidesWith(wallShortVtScreen[j], collisionVector))
+						bullets[z].setVisible(false);
+				}
+			}
+
 		}
 
 #pragma region bulletWall
 
 		for (int i = 0; i < MAX_PLAYER_SHOTS; i++)
 		{
-
-
 			//Long Hz Collision
 			for (int j = 0; j < LONG_HZ_WALLS; j++)
 			{
